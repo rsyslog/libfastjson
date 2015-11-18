@@ -169,18 +169,16 @@ static char needsEscape[256] = {
 	0, 0, 0, 0, 0, 0, 0, 0
 };
 
-static void json_escape_str(struct printbuf *pb, const char *str, int len)
+static void json_escape_str(struct printbuf *pb, const char *str)
 {
-	int pos = 0, start_offset = 0;
-	unsigned char c;
-	while (pos < len)
-	{
-		c = str[pos];
-		if(needsEscape[c]) {
-			if(pos - start_offset > 0)
-				printbuf_memappend_no_nul(pb, str + start_offset, pos - start_offset);
-			switch(c)
-			{
+	const char *start_offset = str;
+	while(1) { /* broken below on 0-byte */
+		if(needsEscape[(int)*str]) {
+			if(*str == '\0')
+				break;
+			if(str != start_offset)
+				printbuf_memappend_no_nul(pb, start_offset, str - start_offset);
+			switch(*str) {
 			case '\b': printbuf_memappend_no_nul(pb, "\\b", 2);
 				break;
 			case '\n': printbuf_memappend_no_nul(pb, "\\n", 2);
@@ -198,16 +196,16 @@ static void json_escape_str(struct printbuf *pb, const char *str, int len)
 			case '/': printbuf_memappend_no_nul(pb, "\\/", 2);
 				break;
 			default: sprintbuf(pb, "\\u00%c%c",
-				json_hex_chars[c >> 4],
-				json_hex_chars[c & 0xf]);
+				json_hex_chars[*str >> 4],
+				json_hex_chars[*str & 0xf]);
 				break;
 			}
-			start_offset = ++pos;
+			start_offset = ++str;
 		} else
-			pos++;
+			++str;
 	}
-	if (pos - start_offset > 0)
-		printbuf_memappend_no_nul(pb, str + start_offset, pos - start_offset);
+	if(str != start_offset)
+		printbuf_memappend_no_nul(pb, start_offset, str - start_offset);
 }
 
 
@@ -401,7 +399,7 @@ static int json_object_object_to_json_string(struct json_object* jso,
 			printbuf_memappend_no_nul(pb, " ", 1);
 		indent(pb, level+1, flags);
 		printbuf_memappend_no_nul(pb, "\"", 1);
-		json_escape_str(pb, iter.key, strlen(iter.key));
+		json_escape_str(pb, iter.key);
 		if (flags & JSON_C_TO_STRING_SPACED)
 			printbuf_memappend_no_nul(pb, "\": ", 3);
 		else
@@ -831,7 +829,7 @@ static int json_object_string_to_json_string(struct json_object* jso,
 						 int flags)
 {
 	printbuf_memappend_no_nul(pb, "\"", 1);
-	json_escape_str(pb, get_string_component(jso), jso->o.c_string.len);
+	json_escape_str(pb, get_string_component(jso));
 	printbuf_memappend_no_nul(pb, "\"", 1);
 	return 0; /* we need to keep compatible with the API */
 }

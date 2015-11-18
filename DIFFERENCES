@@ -1,0 +1,10 @@
+Differences to json-c
+
+* we do NOT handle NUL characters inside strings or names
+  At the time of fork, json-c did not properly handle this, but
+  could at least, with tricks, generate outbound json with NUL
+  in string values. We do not support this.
+  This also means libfastjson is not 100% JSON compliant. Sorry
+  for that, but we try to keep things working great in the C
+  spirit, and that JSON feature simply doesn't play well here.
+  If you need 100% JSON compliance, look for another library.
