@@ -40,8 +40,9 @@ struct printbuf* printbuf_new(void)
 {
   struct printbuf *p;
 
-  p = (struct printbuf*)calloc(1, sizeof(struct printbuf));
+  p = (struct printbuf*)malloc(sizeof(struct printbuf));
   if(!p) return NULL;
+  /* note: *ALL* data items must be initialized! */
   p->size = printbuf_initial_size;
   p->bpos = 0;
   if(!(p->buf = (char*)malloc(p->size))) {
