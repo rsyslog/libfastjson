@@ -1,7 +1,7 @@
 AC_PREREQ(2.52)
 
 # Process this file with autoconf to produce a configure script.
-AC_INIT([json-c], 0.12.99, [json-c@googlegroups.com])
+AC_INIT([libfastjson], 0.99.0, [rsyslog@lists.adiscon.com])
 
 AM_INIT_AUTOMAKE
 
@@ -62,7 +62,7 @@ AC_LANG_PUSH([C])
 AC_MSG_CHECKING([if .gnu.warning accepts long strings])
 AC_LINK_IFELSE([AC_LANG_SOURCE([[
 extern void json_object_get();
-__asm__(".section .gnu.json_object_get,\n\t.ascii \"Please link against libjson-c instead of libjson\"\n\t.text");
+__asm__(".section .gnu.json_object_get,\n\t.ascii \"Please link against libfastjson instead of libjson\"\n\t.text");
 
 int main(int c,char* v) {return 0;}
 ]])], [
@@ -109,9 +109,9 @@ AX_APPEND_COMPILE_FLAGS([-D_GNU_SOURCE -D_REENTRANT])
 
 AC_CONFIG_FILES([
 Makefile
-json-c.pc
+libfastjson.pc
 tests/Makefile
-json-c-uninstalled.pc
+libfastjson-uninstalled.pc
 ])
 
 AC_OUTPUT

@@ -2,13 +2,13 @@
 EXTRA_DIST = README.html README-WIN32.html config.h.win32 doc json-c.vcproj
 SUBDIRS = . tests
 
-lib_LTLIBRARIES = libjson-c.la 
+lib_LTLIBRARIES = libfastjson.la 
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = json-c.pc
+pkgconfig_DATA = libfastjson.pc
 
-libjson_cincludedir = $(includedir)/json-c
-libjson_cinclude_HEADERS = \
+libfastjsonincludedir = $(includedir)/libfastjson
+libfastjsoninclude_HEADERS = \
 	arraylist.h \
 	bits.h \
 	debug.h \
@@ -25,14 +25,14 @@ libjson_cinclude_HEADERS = \
 	printbuf.h \
 	random_seed.h
 
-#libjsonx_includedir = $(libdir)/json-c-@VERSION@
+#libjsonx_includedir = $(libdir)/libfastjson-@VERSION@
 #
 #libjsonx_include_HEADERS = \
 #	json_config.h
 
-libjson_c_la_LDFLAGS = -version-info 3:0:0 -no-undefined @JSON_BSYMBOLIC_LDFLAGS@
+libfastjson_la_LDFLAGS = -version-info 3:0:0 -no-undefined @JSON_BSYMBOLIC_LDFLAGS@
 
-libjson_c_la_SOURCES = \
+libfastjson_la_SOURCES = \
 	arraylist.c \
 	debug.c \
 	json_c_version.c \
@@ -54,20 +54,20 @@ maintainer-clean-local:
 	-rm -rf configure
 
 uninstall-local:
-	rm -rf "$(DESTDIR)@includedir@/json-c"
+	rm -rf "$(DESTDIR)@includedir@/libfastjson"
 	rm -f "$(DESTDIR)@includedir@/json"
 
 ANDROID_CFLAGS = -I$(top_srcdir) -DHAVE_CONFIG_H
 
 Android.mk: Makefile.am
-	androgenizer -:PROJECT json-c \
-		-:SHARED libjson-c \
+	androgenizer -:PROJECT libfastjson \
+		-:SHARED libfastjson \
 		-:TAGS eng debug \
 		-:REL_TOP $(top_srcdir) -:ABS_TOP $(abs_top_srcdir) \
-		-:SOURCES $(libjson_c_la_SOURCES) $(nodist_libjson_c_la_SOURCES) \
-		-:CFLAGS $(DEFS) $(ANDROID_CFLAGS) $(libjson_c_la_CFLAGS) \
-		-:LDFLAGS $(libjson_c_la_LDFLAGS) $(libjson_c_la_LIBADD) \
-		-:HEADER_TARGET json-c \
-		-:HEADERS $(libjson_cinclude_HEADERS) \
+		-:SOURCES $(libfastjson_la_SOURCES) $(nodist_libfastjson_la_SOURCES) \
+		-:CFLAGS $(DEFS) $(ANDROID_CFLAGS) $(libfastjson_la_CFLAGS) \
+		-:LDFLAGS $(libfastjson_la_LDFLAGS) $(libfastjson_la_LIBADD) \
+		-:HEADER_TARGET libfastjson \
+		-:HEADERS $(libfastjsoninclude_HEADERS) \
 		-:PASSTHROUGH LOCAL_ARM_MODE:=arm \
 	> $@
