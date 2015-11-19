@@ -128,6 +128,13 @@ struct lh_table {
 	lh_entry_free_fn *free_fn;
 	lh_hash_fn *hash_fn;
 	lh_equal_fn *equal_fn;
+
+	/* we set aside memory for the default table size, so
+	 * as long as we do not have more entries than these, we
+	 * do not need to malloc the table. This is at the price
+	 * of wasted memory for tables with MORE entries.
+	 */
+	struct lh_entry dflt_table[JSON_OBJECT_DEF_HASH_ENTRIES];
 };
 
 

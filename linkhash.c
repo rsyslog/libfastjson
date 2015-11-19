@@ -477,8 +477,12 @@ struct lh_table* lh_table_new(int size,
 	if(!t) lh_abort("lh_table_new: calloc failed\n");
 	t->count = 0;
 	t->size = size;
-	t->table = (struct lh_entry*)malloc(size * sizeof(struct lh_entry));
-	if(!t->table) lh_abort("lh_table_new: calloc failed\n");
+	if(size <= JSON_OBJECT_DEF_HASH_ENTRIES) {
+		t->table = t->dflt_table;
+	} else {
+		t->table = (struct lh_entry*)malloc(size * sizeof(struct lh_entry));
+		if(!t->table) lh_abort("lh_table_new: calloc failed\n");
+	}
 	t->free_fn = free_fn;
 	t->hash_fn = hash_fn;
 	t->equal_fn = equal_fn;
@@ -511,7 +515,8 @@ void lh_table_resize(struct lh_table *t, int new_size)
 			(ent->k_is_constant) ? JSON_C_OBJECT_KEY_IS_CONSTANT : 0 );
 		ent = ent->next;
 	}
-	free(t->table);
+	if(t->table != t->dflt_table)
+		free(t->table);
 	t->table = new_t->table;
 	t->size = new_size;
 	t->head = new_t->head;
@@ -527,7 +532,8 @@ void lh_table_free(struct lh_table *t)
 			t->free_fn(c);
 		}
 	}
-	free(t->table);
+	if(t->table != t->dflt_table)
+		free(t->table);
 	free(t);
 }
 
