@@ -477,7 +477,7 @@ struct lh_table* lh_table_new(int size,
 	if(!t) lh_abort("lh_table_new: calloc failed\n");
 	t->count = 0;
 	t->size = size;
-	t->table = (struct lh_entry*)calloc(size, sizeof(struct lh_entry));
+	t->table = (struct lh_entry*)malloc(size * sizeof(struct lh_entry));
 	if(!t->table) lh_abort("lh_table_new: calloc failed\n");
 	t->free_fn = free_fn;
 	t->hash_fn = hash_fn;
