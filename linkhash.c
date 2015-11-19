@@ -473,8 +473,15 @@ struct lh_table* lh_table_new(int size,
 	int i;
 	struct lh_table *t;
 
-	t = (struct lh_table*)calloc(1, sizeof(struct lh_table));
+	t = (struct lh_table*)malloc(sizeof(struct lh_table));
 	if(!t) lh_abort("lh_table_new: calloc failed\n");
+	/* Note: we use malloc, not calloc, so we need to init all
+	 * data items explicitely. As the the structure is quite
+	 * large and most parts need no init, this is worth the
+	 * extra effort.
+	 */
+	t->head = NULL;
+	t->tail = NULL;
 	t->count = 0;
 	t->size = size;
 	if(size <= JSON_OBJECT_DEF_HASH_ENTRIES) {
