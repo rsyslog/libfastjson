@@ -383,22 +383,22 @@ static int json_object_object_to_json_string(struct json_object* jso,
 	int had_children = 0;
 	struct json_object_iter iter;
 
-	printbuf_memappend_no_nul(pb, "{" /*}*/, 1);
+	printbuf_memappend_char(pb, '{' /*}*/);
 	if (flags & JSON_C_TO_STRING_PRETTY)
-		printbuf_memappend_no_nul(pb, "\n", 1);
+		printbuf_memappend_char(pb, '\n');
 	json_object_object_foreachC(jso, iter)
 	{
 		if (had_children)
 		{
-			printbuf_memappend_no_nul(pb, ",", 1);
+			printbuf_memappend_char(pb, ',');
 			if (flags & JSON_C_TO_STRING_PRETTY)
-				printbuf_memappend_no_nul(pb, "\n", 1);
+				printbuf_memappend_char(pb, '\n');
 		}
 		had_children = 1;
 		if (flags & JSON_C_TO_STRING_SPACED)
-			printbuf_memappend_no_nul(pb, " ", 1);
+			printbuf_memappend_char(pb, ' ');
 		indent(pb, level+1, flags);
-		printbuf_memappend_no_nul(pb, "\"", 1);
+		printbuf_memappend_char(pb, '\"');
 		json_escape_str(pb, iter.key);
 		if (flags & JSON_C_TO_STRING_SPACED)
 			printbuf_memappend_no_nul(pb, "\": ", 3);
@@ -418,7 +418,7 @@ static int json_object_object_to_json_string(struct json_object* jso,
 	if (flags & JSON_C_TO_STRING_SPACED)
 		printbuf_memappend_no_nul(pb, /*{*/ " }", 2);
 	else
-		printbuf_memappend_no_nul(pb, /*{*/ "}", 1);
+		printbuf_memappend_char(pb, /*{*/ '}');
 	return 0; /* we need to keep compatible with the API */
 }
 
@@ -828,9 +828,9 @@ static int json_object_string_to_json_string(struct json_object* jso,
 					     int level,
 						 int flags)
 {
-	printbuf_memappend_no_nul(pb, "\"", 1);
+	printbuf_memappend_char(pb, '\"');
 	json_escape_str(pb, get_string_component(jso));
-	printbuf_memappend_no_nul(pb, "\"", 1);
+	printbuf_memappend_char(pb, '\"');
 	return 0; /* we need to keep compatible with the API */
 }
 
@@ -925,21 +925,21 @@ static int json_object_array_to_json_string(struct json_object* jso,
 {
 	int had_children = 0;
 	int ii;
-	printbuf_memappend_no_nul(pb, "[", 1);
+	printbuf_memappend_char(pb, '[');
 	if (flags & JSON_C_TO_STRING_PRETTY)
-		printbuf_memappend_no_nul(pb, "\n", 1);
+		printbuf_memappend_char(pb, '\n');
 	for(ii=0; ii < json_object_array_length(jso); ii++)
 	{
 		struct json_object *val;
 		if (had_children)
 		{
-			printbuf_memappend_no_nul(pb, ",", 1);
+			printbuf_memappend_char(pb, ',');
 			if (flags & JSON_C_TO_STRING_PRETTY)
-				printbuf_memappend_no_nul(pb, "\n", 1);
+				printbuf_memappend_char(pb, '\n');
 		}
 		had_children = 1;
 		if (flags & JSON_C_TO_STRING_SPACED)
-			printbuf_memappend_no_nul(pb, " ", 1);
+			printbuf_memappend_char(pb, ' ');
 		indent(pb, level + 1, flags);
 		val = json_object_array_get_idx(jso, ii);
 		if(val == NULL)
@@ -950,14 +950,14 @@ static int json_object_array_to_json_string(struct json_object* jso,
 	if (flags & JSON_C_TO_STRING_PRETTY)
 	{
 		if (had_children)
-			printbuf_memappend_no_nul(pb, "\n", 1);
+			printbuf_memappend_char(pb, '\n');
 		indent(pb,level,flags);
 	}
 
 	if (flags & JSON_C_TO_STRING_SPACED)
 		printbuf_memappend_no_nul(pb, " ]", 2);
 	else
-		printbuf_memappend_no_nul(pb, "]", 1);
+		printbuf_memappend_char(pb, ']');
 	return 0; /* we need to keep compatible with the API */
 }
 

@@ -54,10 +54,9 @@ do {                                                         \
  * constructed. To do so, printbuf_terminate_string() must be
  * called first.
  */
-extern void
-printbuf_memappend_no_nul(struct printbuf *p, const char *buf, int size);
-extern void
-printbuf_terminate_string(struct printbuf *const p);
+void printbuf_memappend_no_nul(struct printbuf *p, const char *buf, int size);
+void printbuf_memappend_char(struct printbuf *p, const char c);
+void printbuf_terminate_string(struct printbuf *const p);
 
 #define printbuf_length(p) ((p)->bpos)
 
