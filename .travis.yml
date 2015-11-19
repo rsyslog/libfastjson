@@ -20,6 +20,4 @@ before_script:
 
 script:
   - make
-
-after_success:
   - make check
