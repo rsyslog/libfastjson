@@ -1,3 +1,5 @@
+1.0
+- bugfix: reference counting was not thread-safe
 
 NEXT.VERSION
 
