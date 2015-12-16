@@ -24,6 +24,8 @@ fi
 # enable silent build by default
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
+AC_CONFIG_MACRO_DIR([m4])
+
 # Checks for programs.
 
 # Checks for libraries.
@@ -39,6 +41,12 @@ AC_CHECK_HEADER(inttypes.h,[AC_DEFINE([JSON_C_HAVE_INTTYPES_H],[1],[Public defin
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 AC_TYPE_SIZE_T
+
+
+# check for availability of atomic operations
+RS_ATOMIC_OPERATIONS
+RS_ATOMIC_OPERATIONS_64BIT
+
 
 # Checks for library functions.
 AC_FUNC_VPRINTF

@@ -10,6 +10,7 @@ pkgconfig_DATA = libfastjson.pc
 libfastjsonincludedir = $(includedir)/libfastjson
 libfastjsoninclude_HEADERS = \
 	arraylist.h \
+	atomic.h \
 	bits.h \
 	debug.h \
 	json.h \
@@ -71,3 +72,5 @@ Android.mk: Makefile.am
 		-:HEADERS $(libfastjsoninclude_HEADERS) \
 		-:PASSTHROUGH LOCAL_ARM_MODE:=arm \
 	> $@
+
+ACLOCAL_AMFLAGS = -I m4

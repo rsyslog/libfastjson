@@ -4,6 +4,7 @@
  * Copyright (c) 2004, 2005 Metaparadigm Pte. Ltd.
  * Michael Clark <michael@metaparadigm.com>
  * Copyright (c) 2009 Hewlett-Packard Development Company, L.P.
+ * Copyright (c) 2015 Rainer Gerhards
  *
  * This library is free software; you can redistribute it and/or modify
  * it under the terms of the MIT license. See COPYING for details.
@@ -20,6 +21,7 @@
 #include <errno.h>
 
 #include "debug.h"
+#include "atomic.h"
 #include "printbuf.h"
 #include "linkhash.h"
 #include "arraylist.h"
@@ -214,11 +216,7 @@ static void json_escape_str(struct printbuf *pb, const char *str)
 extern struct json_object* json_object_get(struct json_object *jso)
 {
 	if (!jso) return jso;
-#if defined __GNUC__
-    __sync_add_and_fetch(&jso->_ref_count, 1);
-#else
-    ++jso->_ref_count;
-#endif        
+	ATOMIC_INC_AND_FETCH_int(&jso->_ref_count, &jso->_mut_ref_count);
 	return jso;
 }
 
@@ -226,16 +224,13 @@ int json_object_put(struct json_object *jso)
 {
 	if(!jso) return 0;
 
-#if defined __GNUC__
-    if (__sync_fetch_and_sub(&jso->_ref_count, 1) > 0) return 0;
-#else
-    if (--jso->_ref_count > 0) return 0;
-#endif
+	const int cnt = ATOMIC_DEC_AND_FETCH(&jso->_ref_count, &jso->_mut_ref_count);
+	if(cnt > 0) return 0;
 
-    if (jso->_user_delete)
-        jso->_user_delete(jso, jso->_userdata);
-    jso->_delete(jso);
-    return 1;
+	if (jso->_user_delete)
+		jso->_user_delete(jso, jso->_userdata);
+	jso->_delete(jso);
+	return 1;
 }
 
 
@@ -249,6 +244,7 @@ static void json_object_generic_delete(struct json_object* jso)
 	lh_table_delete(json_object_table, jso);
 #endif /* REFCOUNT_DEBUG */
 	printbuf_free(jso->_pb);
+	DESTROY_ATOMIC_HELPER_MUT(jso->_mut_ref_count);
 	free(jso);
 }
 
@@ -262,6 +258,7 @@ static struct json_object* json_object_new(enum json_type o_type)
 	jso->o_type = o_type;
 	jso->_ref_count = 1;
 	jso->_delete = &json_object_generic_delete;
+	INIT_ATOMIC_HELPER_MUT(jso->_mut_ref_count);
 #ifdef REFCOUNT_DEBUG
 	lh_table_insert(json_object_table, jso, jso);
 	MC_DEBUG("json_object_new_%s: %p\n", json_type_to_name(jso->o_type), jso);

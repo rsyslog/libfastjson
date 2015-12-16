@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2004, 2005 Metaparadigm Pte. Ltd.
  * Michael Clark <michael@metaparadigm.com>
+ * Copyright (c) 2015 Rainer Gerhards
  *
  * This library is free software; you can redistribute it and/or modify
  * it under the terms of the MIT license. See COPYING for details.
@@ -11,6 +12,8 @@
 
 #ifndef _json_object_private_h_
 #define _json_object_private_h_
+
+#include "atomic.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -46,6 +49,7 @@ struct json_object
   } o;
   json_object_delete_fn *_user_delete;
   void *_userdata;
+  DEF_ATOMIC_HELPER_MUT(_mut_ref_count)
 };
 
 #ifdef __cplusplus
