@@ -1,4 +1,4 @@
-1.0
+0.99.0 2015-12-18
 - bugfix: reference counting was not thread-safe
 
 NEXT.VERSION

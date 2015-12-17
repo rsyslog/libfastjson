@@ -1,6 +1,6 @@
 
-EXTRA_DIST = README.html README-WIN32.html config.h.win32 doc json-c.vcproj
-SUBDIRS = . tests
+EXTRA_DIST = README.html README-WIN32.html config.h.win32 json-c.vcproj
+SUBDIRS = . # tests
 
 lib_LTLIBRARIES = libfastjson.la 
 
@@ -11,6 +11,7 @@ libfastjsonincludedir = $(includedir)/libfastjson
 libfastjsoninclude_HEADERS = \
 	arraylist.h \
 	atomic.h \
+	math_compat.h \
 	bits.h \
 	debug.h \
 	json.h \
