@@ -4,7 +4,7 @@
  * Copyright (c) 2004, 2005 Metaparadigm Pte. Ltd.
  * Michael Clark <michael@metaparadigm.com>
  * Copyright (c) 2009 Hewlett-Packard Development Company, L.P.
- * Copyright (c) 2015 Rainer Gerhards
+ * Copyright (c) 2015-2016 Rainer Gerhards
  *
  * This library is free software; you can redistribute it and/or modify
  * it under the terms of the MIT license. See COPYING for details.
@@ -684,6 +684,13 @@ extern const char* json_object_get_string(struct json_object *obj);
  */
 extern int json_object_get_string_len(struct json_object *obj);
 
+
+/** Get the number of direct members inside a json object.
+ *
+ * @param obj the json_object instance
+ * @returns int
+ */
+int json_object_get_member_count(struct json_object *jso);
 #ifdef __cplusplus
 }
 #endif

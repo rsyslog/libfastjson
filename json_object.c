@@ -1039,3 +1039,7 @@ struct json_object* json_object_array_get_idx(struct json_object *jso,
 	return (struct json_object*)array_list_get_idx(jso->o.c_array, idx);
 }
 
+int json_object_get_member_count(struct json_object *jso)
+{
+	return jso->o.c_object->count;
+}
