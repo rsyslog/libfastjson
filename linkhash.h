@@ -21,6 +21,7 @@ extern "C" {
 
 /**
  * golden prime used in hash functions
+ * internal functionality - NOT PART OF THE API
  */
 #define LH_PRIME 0x9e370001UL
 
@@ -28,16 +29,19 @@ extern "C" {
  * The fraction of filled hash buckets until an insert will cause the table
  * to be resized.
  * This can range from just above 0 up to 1.0.
+ * internal functionality - NOT PART OF THE API
  */
 #define LH_LOAD_FACTOR 0.66
 
 /**
  * sentinel pointer value for empty slots
+ * internal functionality - NOT PART OF THE API
  */
 #define LH_EMPTY (void*)-1
 
 /**
  * sentinel pointer value for freed slots
+ * internal functionality - NOT PART OF THE API
  */
 #define LH_FREED (void*)-2
 
@@ -75,6 +79,7 @@ typedef int (lh_equal_fn) (const void *k1, const void *k2);
 
 /**
  * An entry in the hash table
+ * internal functionality - NOT PART OF THE API
  */
 struct lh_entry {
 	/**
@@ -99,6 +104,7 @@ struct lh_entry {
 
 /**
  * The hash table structure.
+ * internal functionality - NOT PART OF THE API
  */
 struct lh_table {
 	/**
@@ -140,12 +146,14 @@ struct lh_table {
 
 /**
  * Convenience list iterator.
+ * internal functionality - NOT PART OF THE API
  */
 #define lh_foreach(table, entry) \
 for(entry = table->head; entry; entry = entry->next)
 
 /**
  * lh_foreach_safe allows calling of deletion routine while iterating.
+ * internal functionality - NOT PART OF THE API
  */
 #define lh_foreach_safe(table, entry, tmp) \
 for(entry = table->head; entry && ((tmp = entry->next) || 1); entry = tmp)
@@ -167,6 +175,7 @@ for(entry = table->head; entry && ((tmp = entry->next) || 1); entry = tmp)
  * lh_ptr_hash and lh_char_hash for comparing pointer values
  * and C strings respectively.
  * @return a pointer onto the linkhash table.
+ * internal functionality - NOT PART OF THE API
  */
 extern struct lh_table* lh_table_new(int size,
 				     lh_entry_free_fn *free_fn,
@@ -180,6 +189,7 @@ extern struct lh_table* lh_table_new(int size,
  * @param name table name.
  * @param free_fn callback function used to free memory for entries.
  * @return a pointer onto the linkhash table.
+ * internal functionality - NOT PART OF THE API
  */
 extern struct lh_table* lh_kchar_table_new(int size,
 					   lh_entry_free_fn *free_fn);
@@ -192,6 +202,7 @@ extern struct lh_table* lh_kchar_table_new(int size,
  * @param name table name.
  * @param free_fn callback function used to free memory for entries.
  * @return a pointer onto the linkhash table.
+ * internal functionality - NOT PART OF THE API
  */
 extern struct lh_table* lh_kptr_table_new(int size,
 					  lh_entry_free_fn *free_fn);
@@ -202,6 +213,7 @@ extern struct lh_table* lh_kptr_table_new(int size,
  * If a callback free function is provided then it is called for all
  * entries in the table.
  * @param t table to free.
+ * internal functionality - NOT PART OF THE API
  */
 extern void lh_table_free(struct lh_table *t);
 
@@ -211,6 +223,7 @@ extern void lh_table_free(struct lh_table *t);
  * @param t the table to insert into.
  * @param k a pointer to the key to insert.
  * @param v a pointer to the value to insert.
+ * internal functionality - NOT PART OF THE API
  */
 extern int lh_table_insert(struct lh_table *t, void *k, const void *v);
 
@@ -226,6 +239,7 @@ extern int lh_table_insert(struct lh_table *t, void *k, const void *v);
  * @param v a pointer to the value to insert.
  * @param h hash value of the key to insert
  * @param opts opts, a subset of JSON_OBJECT_ADD_* flags is supported
+ * internal functionality - NOT PART OF THE API
  */
 extern int lh_table_insert_w_hash(struct lh_table *t, void *k, const void *v, const unsigned long h, const unsigned opts);
 
@@ -235,6 +249,7 @@ extern int lh_table_insert_w_hash(struct lh_table *t, void *k, const void *v, co
  * @param t the table to lookup
  * @param k a pointer to the key to lookup
  * @return a pointer to the record structure of the value or NULL if it does not exist.
+ * internal functionality - NOT PART OF THE API
  */
 extern struct lh_entry* lh_table_lookup_entry(struct lh_table *t, const void *k);
 
@@ -248,6 +263,7 @@ extern struct lh_entry* lh_table_lookup_entry(struct lh_table *t, const void *k)
  * @param k a pointer to the key to lookup
  * @param h hash value of the key to lookup
  * @return a pointer to the record structure of the value or NULL if it does not exist.
+ * internal functionality - NOT PART OF THE API
  */
 extern struct lh_entry* lh_table_lookup_entry_w_hash(struct lh_table *t, const void *k, const unsigned long h);
 
@@ -257,6 +273,7 @@ extern struct lh_entry* lh_table_lookup_entry_w_hash(struct lh_table *t, const v
  * @param k a pointer to the key to lookup
  * @return a pointer to the found value or NULL if it does not exist.
  * @deprecated Use lh_table_lookup_ex instead.
+ * internal functionality - NOT PART OF THE API
  */
 THIS_FUNCTION_IS_DEPRECATED(extern const void* lh_table_lookup(struct lh_table *t, const void *k));
 
@@ -266,6 +283,7 @@ THIS_FUNCTION_IS_DEPRECATED(extern const void* lh_table_lookup(struct lh_table *
  * @param k a pointer to the key to lookup
  * @param v a pointer to a where to store the found value (set to NULL if it doesn't exist).
  * @return whether or not the key was found
+ * internal functionality - NOT PART OF THE API
  */
 extern json_bool lh_table_lookup_ex(struct lh_table *t, const void *k, void **v);
 
@@ -277,6 +295,7 @@ extern json_bool lh_table_lookup_ex(struct lh_table *t, const void *k, void **v)
  * @param e a pointer to the entry to delete.
  * @return 0 if the item was deleted.
  * @return -1 if it was not found.
+ * internal functionality - NOT PART OF THE API
  */
 extern int lh_table_delete_entry(struct lh_table *t, struct lh_entry *e);
 
@@ -289,6 +308,7 @@ extern int lh_table_delete_entry(struct lh_table *t, struct lh_entry *e);
  * @param k a pointer to the key to delete.
  * @return 0 if the item was deleted.
  * @return -1 if it was not found.
+ * internal functionality - NOT PART OF THE API
  */
 extern int lh_table_delete(struct lh_table *t, const void *k);
 
