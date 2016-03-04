@@ -1,4 +1,10 @@
-0.99.1 2016-01-??
+0.99.2 2016-03-04
+- new API: json_object_get_member_count()
+
+0.99.1
+was never released, but has accidently been used by some
+Adiscon packages. In order to prevent confusion, we have decided
+not to use this version number for any official version.
 
 0.99.0 2015-12-22
 - bugfix: reference counting was not thread-safe
