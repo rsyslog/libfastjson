@@ -9,6 +9,7 @@
  *
  */
 
+#define _GNU_SOURCE
 #include <stdio.h>
 #include "config.h"
 #include "random_seed.h"
