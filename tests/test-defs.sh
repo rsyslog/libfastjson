@@ -70,6 +70,7 @@ fi
 #
 run_output_test()
 {
+	echo "test run in directory: " `pwd`
 	if [ "$1" = "-o" ] ; then
 		TEST_OUTPUT="$2"
 		shift

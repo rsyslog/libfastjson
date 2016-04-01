@@ -20,4 +20,4 @@ before_script:
 
 script:
   - make
-  - make check
+  - make distcheck
