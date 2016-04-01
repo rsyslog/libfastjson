@@ -22,6 +22,7 @@ int main(int argc, char **argv)
 	printf("==================================\n");
 	test_incremental_parse();
 	printf("==================================\n");
+	return 0;
 }
 
 static void test_basic_parse()
