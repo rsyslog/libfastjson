@@ -1,7 +1,7 @@
 AC_PREREQ(2.52)
 
 # Process this file with autoconf to produce a configure script.
-AC_INIT([libfastjson], 0.99.2, [rsyslog@lists.adiscon.com])
+AC_INIT([libfastjson], 0.99.3, [rsyslog@lists.adiscon.com])
 
 AM_INIT_AUTOMAKE
 
