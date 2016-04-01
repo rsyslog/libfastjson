@@ -120,8 +120,8 @@ AC_CONFIG_FILES([
 Makefile
 libfastjson.pc
 libfastjson-uninstalled.pc
+tests/Makefile
 ])
-#tests/Makefile
 
 AC_OUTPUT
 

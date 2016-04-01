@@ -1,7 +1,7 @@
 
 EXTRA_DIST = README.html README-WIN32.html config.h.win32 json-c.vcproj \
 	atomic.h
-SUBDIRS = . # tests
+SUBDIRS = . tests
 
 lib_LTLIBRARIES = libfastjson.la 
 
