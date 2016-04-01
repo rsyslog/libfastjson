@@ -3,7 +3,7 @@
 #include <stddef.h>
 #include <string.h>
 
-#include "json.h"
+#include "../json.h"
 
 int main(int argc, char **argv)
 {

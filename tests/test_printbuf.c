@@ -1,3 +1,4 @@
+#include "config.h"
 #include <assert.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -5,8 +6,8 @@
 #include <string.h>
 #include <limits.h>
 
-#include "debug.h"
-#include "printbuf.h"
+#include "../debug.h"
+#include "../printbuf.h"
 
 static void test_basic_printbuf_memset(void);
 static void test_printbuf_memset_length(void);

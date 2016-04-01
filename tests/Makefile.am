@@ -25,12 +25,12 @@ check_PROGRAMS += $(TESTS:.test=)
 
 # Note: handled by test1.test
 check_PROGRAMS += test1Formatted 
-test1Formatted_SOURCES = test1.c parse_flags.c
+test1Formatted_SOURCES = test1.c parse_flags.c parse_flags.h
 test1Formatted_CPPFLAGS = -DTEST_FORMATTED
 
 # Note: handled by test2.test
 check_PROGRAMS += test2Formatted
-test2Formatted_SOURCES = test2.c parse_flags.c
+test2Formatted_SOURCES = test2.c parse_flags.c parse_flags.h
 test2Formatted_CPPFLAGS = -DTEST_FORMATTED
 
 EXTRA_DIST=

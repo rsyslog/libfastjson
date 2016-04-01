@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "json.h"
+#include "../json.h"
 #include "parse_flags.h"
 
 #if !defined(HAVE_STRCASECMP) && defined(_MSC_VER)

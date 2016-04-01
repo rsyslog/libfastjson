@@ -3,7 +3,7 @@
 #include <stddef.h>
 #include <string.h>
 
-#include "json.h"
+#include "../json.h"
 #include "parse_flags.h"
 
 #ifdef TEST_FORMATTED

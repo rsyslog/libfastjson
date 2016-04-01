@@ -1,11 +1,12 @@
+#include "config.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stddef.h>
 #include <string.h>
 #include <assert.h>
 
-#include "json.h"
-#include "json_tokener.h"
+#include "../json.h"
+#include "../json_tokener.h"
 
 static void test_case_parse(void);
 

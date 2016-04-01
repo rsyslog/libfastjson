@@ -4,8 +4,8 @@
 #include <string.h>
 #include <assert.h>
 
-#include "json.h"
-#include "json_tokener.h"
+#include "../json.h"
+#include "../json_tokener.h"
 
 static void test_basic_parse(void);
 static void test_verbose_parse(void);

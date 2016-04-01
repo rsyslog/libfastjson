@@ -8,10 +8,10 @@
 #include <stdlib.h>
 #include "config.h"
 
-#include "json_inttypes.h"
-#include "json_object.h"
-#include "json_tokener.h"
-#include "json_util.h"
+#include "../json_inttypes.h"
+#include "../json_object.h"
+#include "../json_tokener.h"
+#include "../json_util.h"
 
 static void getit(struct json_object *new_obj, const char *field);
 static void checktype_header(void);

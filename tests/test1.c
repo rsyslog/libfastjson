@@ -4,7 +4,7 @@
 #include <string.h>
 #include <assert.h>
 
-#include "json.h"
+#include "../json.h"
 #include "parse_flags.h"
 
 static int sort_fn (const void *j1, const void *j2)

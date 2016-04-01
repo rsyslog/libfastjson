@@ -1,12 +1,12 @@
+#include "config.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stddef.h>
 #include <string.h>
 #include <assert.h>
 
-#include "config.h"
-#include "json.h"
-#include "json_tokener.h"
+#include "../json.h"
+#include "../json_tokener.h"
 
 #ifdef HAVE_LOCALE_H
 #include <locale.h>

@@ -4,8 +4,8 @@
 
 #include "config.h"
 
-#include "json_inttypes.h"
-#include "json_util.h"
+#include "../json_inttypes.h"
+#include "../json_util.h"
 
 void checkit(const char *buf)
 {
