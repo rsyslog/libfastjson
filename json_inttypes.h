@@ -1,10 +1,10 @@
 
-#ifndef _json_inttypes_h_
-#define _json_inttypes_h_
+#ifndef _fj_json_inttypes_h_
+#define _fj_json_inttypes_h_
 
 #include "json_config.h"
 
-#ifdef JSON_C_HAVE_INTTYPES_H
+#ifdef FJSON_C_HAVE_INTTYPES_H
 /* inttypes.h includes stdint.h */
 #include <inttypes.h>
 

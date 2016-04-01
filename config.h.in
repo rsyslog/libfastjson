@@ -3,6 +3,9 @@
 /* Enable RDRANR Hardware RNG Hash Seed */
 #undef ENABLE_RDRAND
 
+/* Public define for json_inttypes.h */
+#undef FJSON_C_HAVE_INTTYPES_H
+
 /* Define if .gnu.warning accepts long strings. */
 #undef HAS_GNU_WARNING_LONG
 
@@ -128,9 +131,6 @@
 
 /* Define to 1 if you have the `vsyslog' function. */
 #undef HAVE_VSYSLOG
-
-/* Public define for json_inttypes.h */
-#undef JSON_C_HAVE_INTTYPES_H
 
 /* Define to the sub-directory in which libtool stores uninstalled libraries.
    */

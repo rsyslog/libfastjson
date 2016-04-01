@@ -21,22 +21,22 @@ int main(int argc, char **argv)
 /* make sure only lowercase forms are parsed in strict mode */
 static void test_case_parse()
 {
-	struct json_tokener *tok;
-	json_object *new_obj;
+	struct fjson_tokener *tok;
+	fjson_object *new_obj;
 
-	tok = json_tokener_new();
-	json_tokener_set_flags(tok, JSON_TOKENER_STRICT);
+	tok = fjson_tokener_new();
+	fjson_tokener_set_flags(tok, FJSON_TOKENER_STRICT);
 
-	new_obj = json_tokener_parse_ex(tok, "True", 4);
+	new_obj = fjson_tokener_parse_ex(tok, "True", 4);
 	assert (new_obj == NULL);
 
-	new_obj = json_tokener_parse_ex(tok, "False", 5);
+	new_obj = fjson_tokener_parse_ex(tok, "False", 5);
 	assert (new_obj == NULL);
 
-	new_obj = json_tokener_parse_ex(tok, "Null", 4);
+	new_obj = fjson_tokener_parse_ex(tok, "Null", 4);
 	assert (new_obj == NULL);
 
 	printf("OK\n");
 
-	json_tokener_free(tok);
+	fjson_tokener_free(tok);
 }

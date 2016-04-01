@@ -15,8 +15,8 @@ int main()
 	// this test has a space after the null character. check that it's still included
 	const char *input = " \0 ";
 	const char *expected = "\" \\u0000 \"";
-	struct json_object *string = json_object_new_string_len(input, 3);
-	const char *json = json_object_to_json_string(string);
+	struct fjson_object *string = fjson_object_new_string_len(input, 3);
+	const char *json = fjson_object_to_json_string(string);
 
 	int strings_match =  !strcmp( expected, json);
 	int retval = 0;
@@ -33,13 +33,13 @@ int main()
 		printf("FAIL\n");
 		retval=1;
 	}
-	json_object_put(string);
+	fjson_object_put(string);
 
-	struct json_object *parsed_str = json_tokener_parse(expected);
+	struct fjson_object *parsed_str = fjson_tokener_parse(expected);
 	if (parsed_str)
 	{
-		int parsed_len = json_object_get_string_len(parsed_str);
-		const char *parsed_cstr = json_object_get_string(parsed_str);
+		int parsed_len = fjson_object_get_string_len(parsed_str);
+		const char *parsed_cstr = fjson_object_get_string(parsed_str);
 		int ii;
 		printf("Re-parsed object string len=%d, chars=[", parsed_len);
 		for (ii = 0; ii < parsed_len ; ii++)
@@ -47,7 +47,7 @@ int main()
 			printf("%s%d", (ii ? ", " : ""), (int)parsed_cstr[ii]);
 		}
 		printf("]\n");
-		json_object_put(parsed_str);
+		fjson_object_put(parsed_str);
 	}
 	else
 	{

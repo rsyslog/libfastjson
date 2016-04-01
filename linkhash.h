@@ -10,8 +10,8 @@
  *
  */
 
-#ifndef _linkhash_h_
-#define _linkhash_h_
+#ifndef _fj_linkhash_h_
+#define _fj_linkhash_h_
 
 #include "json_object.h"
 
@@ -48,19 +48,19 @@ extern "C" {
 /**
  * default string hash function
  */
-#define JSON_C_STR_HASH_DFLT 0
+#define FJSON_C_STR_HASH_DFLT 0
 
 /**
  * perl-like string hash function
  */
-#define JSON_C_STR_HASH_PERLLIKE 1
+#define FJSON_C_STR_HASH_PERLLIKE 1
 
 /**
  * This function sets the hash function to be used for strings.
- * Must be one of the JSON_C_STR_HASH_* values.
+ * Must be one of the FJSON_C_STR_HASH_* values.
  * @returns 0 - ok, -1 if parameter was invalid
  */
-int json_global_set_string_hash(const int h);
+int fjson_global_set_string_hash(const int h);
 
 struct lh_entry;
 
@@ -140,7 +140,7 @@ struct lh_table {
 	 * do not need to malloc the table. This is at the price
 	 * of wasted memory for tables with MORE entries.
 	 */
-	struct lh_entry dflt_table[JSON_OBJECT_DEF_HASH_ENTRIES];
+	struct lh_entry dflt_table[FJSON_OBJECT_DEF_HASH_ENTRIES];
 };
 
 
@@ -238,7 +238,7 @@ extern int lh_table_insert(struct lh_table *t, void *k, const void *v);
  * @param k a pointer to the key to insert.
  * @param v a pointer to the value to insert.
  * @param h hash value of the key to insert
- * @param opts opts, a subset of JSON_OBJECT_ADD_* flags is supported
+ * @param opts opts, a subset of FJSON_OBJECT_ADD_* flags is supported
  * internal functionality - NOT PART OF THE API
  */
 extern int lh_table_insert_w_hash(struct lh_table *t, void *k, const void *v, const unsigned long h, const unsigned opts);
@@ -285,7 +285,7 @@ THIS_FUNCTION_IS_DEPRECATED(extern const void* lh_table_lookup(struct lh_table *
  * @return whether or not the key was found
  * internal functionality - NOT PART OF THE API
  */
-extern json_bool lh_table_lookup_ex(struct lh_table *t, const void *k, void **v);
+extern fjson_bool lh_table_lookup_ex(struct lh_table *t, const void *k, void **v);
 
 /**
  * Delete a record from the table.

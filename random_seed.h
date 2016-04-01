@@ -9,14 +9,14 @@
  *
  */
 
-#ifndef seed_h
-#define seed_h
+#ifndef fj_seed_h
+#define fj_seed_h
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-extern int json_c_get_random_seed();
+extern int fjson_c_get_random_seed();
 
 #ifdef __cplusplus
 }

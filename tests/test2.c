@@ -8,7 +8,7 @@
 #include "parse_flags.h"
 
 #ifdef TEST_FORMATTED
-#define json_object_to_json_string(obj) json_object_to_json_string_ext(obj,sflags)
+#define fjson_object_to_json_string(obj) fjson_object_to_json_string_ext(obj,sflags)
 #else
 /* no special define */
 #endif
@@ -16,7 +16,7 @@
 
 int main(int argc, char **argv)
 {
-	json_object *new_obj;
+	fjson_object *new_obj;
 #ifdef TEST_FORMATTED
 	int sflags = 0;
 #endif
@@ -27,9 +27,9 @@ int main(int argc, char **argv)
 	sflags = parse_flags(argc, argv);
 #endif
 
-	new_obj = json_tokener_parse("/* more difficult test case */ { \"glossary\": { \"title\": \"example glossary\", \"GlossDiv\": { \"title\": \"S\", \"GlossList\": [ { \"ID\": \"SGML\", \"SortAs\": \"SGML\", \"GlossTerm\": \"Standard Generalized Markup Language\", \"Acronym\": \"SGML\", \"Abbrev\": \"ISO 8879:1986\", \"GlossDef\": \"A meta-markup language, used to create markup languages such as DocBook.\", \"GlossSeeAlso\": [\"GML\", \"XML\", \"markup\"] } ] } } }");
-	printf("new_obj.to_string()=%s\n", json_object_to_json_string(new_obj));
-	json_object_put(new_obj);
+	new_obj = fjson_tokener_parse("/* more difficult test case */ { \"glossary\": { \"title\": \"example glossary\", \"GlossDiv\": { \"title\": \"S\", \"GlossList\": [ { \"ID\": \"SGML\", \"SortAs\": \"SGML\", \"GlossTerm\": \"Standard Generalized Markup Language\", \"Acronym\": \"SGML\", \"Abbrev\": \"ISO 8879:1986\", \"GlossDef\": \"A meta-markup language, used to create markup languages such as DocBook.\", \"GlossSeeAlso\": [\"GML\", \"XML\", \"markup\"] } ] } } }");
+	printf("new_obj.to_string()=%s\n", fjson_object_to_json_string(new_obj));
+	fjson_object_put(new_obj);
 
 	return 0;
 }

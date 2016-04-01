@@ -1,6 +1,6 @@
 /*
- * Tests if casting within the json_object_get_* functions work correctly.
- * Also checks the json_object_get_type and json_object_is_type functions.
+ * Tests if casting within the fjson_object_get_* functions work correctly.
+ * Also checks the fjson_object_get_type and fjson_object_is_type functions.
  */
 
 #include "config.h"
@@ -13,9 +13,9 @@
 #include "../json_tokener.h"
 #include "../json_util.h"
 
-static void getit(struct json_object *new_obj, const char *field);
+static void getit(struct fjson_object *new_obj, const char *field);
 static void checktype_header(void);
-static void checktype(struct json_object *new_obj, const char *field);
+static void checktype(struct fjson_object *new_obj, const char *field);
 
 int main(int argc, char **argv)
 {
@@ -30,9 +30,9 @@ int main(int argc, char **argv)
 	}";
 	/* Note: 2147483649 = INT_MAX + 2 */
 
-	struct json_object *new_obj;
+	struct fjson_object *new_obj;
 
-	new_obj = json_tokener_parse(input);
+	new_obj = fjson_tokener_parse(input);
 	printf("Parsed input: %s\n", input);
 	printf("Result is %s\n", (new_obj == NULL) ? "NULL (error!)" : "not NULL");
 	if (!new_obj)
@@ -46,7 +46,7 @@ int main(int argc, char **argv)
 	getit(new_obj, "big_number");
 	getit(new_obj, "a_null");
 
-	// Now check the behaviour of the json_object_is_type() function.
+	// Now check the behaviour of the fjson_object_is_type() function.
 	printf("\n================================\n");
 	checktype_header();
 	checktype(new_obj, NULL);
@@ -58,54 +58,54 @@ int main(int argc, char **argv)
 	checktype(new_obj, "big_number");
 	checktype(new_obj, "a_null");
 
-	json_object_put(new_obj);
+	fjson_object_put(new_obj);
 
 	return 0;
 }
 
-static void getit(struct json_object *new_obj, const char *field)
+static void getit(struct fjson_object *new_obj, const char *field)
 {
-	struct json_object *o = NULL;
-	if (!json_object_object_get_ex(new_obj, field, &o))
+	struct fjson_object *o = NULL;
+	if (!fjson_object_object_get_ex(new_obj, field, &o))
 		printf("Field %s does not exist\n", field);
 
-	enum json_type o_type = json_object_get_type(o);
-	printf("new_obj.%s json_object_get_type()=%s\n", field,
-	       json_type_to_name(o_type));
-	printf("new_obj.%s json_object_get_int()=%d\n", field,
-	       json_object_get_int(o));
-	printf("new_obj.%s json_object_get_int64()=%" PRId64 "\n", field,
-	       json_object_get_int64(o));
-	printf("new_obj.%s json_object_get_boolean()=%d\n", field,
-	       json_object_get_boolean(o));
-	printf("new_obj.%s json_object_get_double()=%f\n", field,
-	       json_object_get_double(o));
+	enum fjson_type o_type = fjson_object_get_type(o);
+	printf("new_obj.%s fjson_object_get_type()=%s\n", field,
+	       fjson_type_to_name(o_type));
+	printf("new_obj.%s fjson_object_get_int()=%d\n", field,
+	       fjson_object_get_int(o));
+	printf("new_obj.%s fjson_object_get_int64()=%" PRId64 "\n", field,
+	       fjson_object_get_int64(o));
+	printf("new_obj.%s fjson_object_get_boolean()=%d\n", field,
+	       fjson_object_get_boolean(o));
+	printf("new_obj.%s fjson_object_get_double()=%f\n", field,
+	       fjson_object_get_double(o));
 }
 
 static void checktype_header()
 {
-	printf("json_object_is_type: %s,%s,%s,%s,%s,%s,%s\n",
-		json_type_to_name(json_type_null),
-		json_type_to_name(json_type_boolean),
-		json_type_to_name(json_type_double),
-		json_type_to_name(json_type_int),
-		json_type_to_name(json_type_object),
-		json_type_to_name(json_type_array),
-		json_type_to_name(json_type_string));
+	printf("fjson_object_is_type: %s,%s,%s,%s,%s,%s,%s\n",
+		fjson_type_to_name(fjson_type_null),
+		fjson_type_to_name(fjson_type_boolean),
+		fjson_type_to_name(fjson_type_double),
+		fjson_type_to_name(fjson_type_int),
+		fjson_type_to_name(fjson_type_object),
+		fjson_type_to_name(fjson_type_array),
+		fjson_type_to_name(fjson_type_string));
 }
-static void checktype(struct json_object *new_obj, const char *field)
+static void checktype(struct fjson_object *new_obj, const char *field)
 {
-	struct json_object *o = new_obj;
-	if (field && !json_object_object_get_ex(new_obj, field, &o))
+	struct fjson_object *o = new_obj;
+	if (field && !fjson_object_object_get_ex(new_obj, field, &o))
 		printf("Field %s does not exist\n", field);
 			
 	printf("new_obj%s%-18s: %d,%d,%d,%d,%d,%d,%d\n",
 		field ? "." : " ", field ? field : "",
-		json_object_is_type(o, json_type_null),
-		json_object_is_type(o, json_type_boolean),
-		json_object_is_type(o, json_type_double),
-		json_object_is_type(o, json_type_int),
-		json_object_is_type(o, json_type_object),
-		json_object_is_type(o, json_type_array),
-		json_object_is_type(o, json_type_string));
+		fjson_object_is_type(o, fjson_type_null),
+		fjson_object_is_type(o, fjson_type_boolean),
+		fjson_object_is_type(o, fjson_type_double),
+		fjson_object_is_type(o, fjson_type_int),
+		fjson_object_is_type(o, fjson_type_object),
+		fjson_object_is_type(o, fjson_type_array),
+		fjson_object_is_type(o, fjson_type_string));
 }

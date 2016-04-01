@@ -10,8 +10,8 @@
  *
  */
 
-#ifndef _DEBUG_H_
-#define _DEBUG_H_
+#ifndef _FJ_DEBUG_H_
+#define _FJ_DEBUG_H_
 
 #include <stdlib.h>
 

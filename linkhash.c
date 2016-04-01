@@ -37,13 +37,13 @@ static unsigned long lh_perllike_str_hash(const void *k);
 static lh_hash_fn *char_hash_fn = lh_char_hash;
 
 int
-json_global_set_string_hash(const int h)
+fjson_global_set_string_hash(const int h)
 {
 	switch(h) {
-	case JSON_C_STR_HASH_DFLT:
+	case FJSON_C_STR_HASH_DFLT:
 		char_hash_fn = lh_char_hash;
 		break;
-	case JSON_C_STR_HASH_PERLLIKE:
+	case FJSON_C_STR_HASH_PERLLIKE:
 		char_hash_fn = lh_perllike_str_hash;
 		break;
 	default:
@@ -446,7 +446,7 @@ static unsigned long lh_char_hash(const void *k)
 	if (random_seed == -1) {
 		int seed;
 		/* we can't use -1 as it is the unitialized sentinel */
-		while ((seed = json_c_get_random_seed()) == -1);
+		while ((seed = fjson_c_get_random_seed()) == -1);
 #if defined __GNUC__
 		(void)__sync_val_compare_and_swap(&random_seed, -1, seed);
 #elif defined _MSC_VER
@@ -484,7 +484,7 @@ struct lh_table* lh_table_new(int size,
 	t->tail = NULL;
 	t->count = 0;
 	t->size = size;
-	if(size <= JSON_OBJECT_DEF_HASH_ENTRIES) {
+	if(size <= FJSON_OBJECT_DEF_HASH_ENTRIES) {
 		t->table = t->dflt_table;
 	} else {
 		t->table = (struct lh_entry*)malloc(size * sizeof(struct lh_entry));
@@ -519,7 +519,7 @@ void lh_table_resize(struct lh_table *t, int new_size)
 	while(ent) {
 		lh_table_insert_w_hash(new_t, ent->k, ent->v,
 			lh_get_hash(new_t, ent->k),
-			(ent->k_is_constant) ? JSON_C_OBJECT_KEY_IS_CONSTANT : 0 );
+			(ent->k_is_constant) ? FJSON_C_OBJECT_KEY_IS_CONSTANT : 0 );
 		ent = ent->next;
 	}
 	if(t->table != t->dflt_table)
@@ -559,7 +559,7 @@ int lh_table_insert_w_hash(struct lh_table *t, void *k, const void *v, const uns
 	}
 
 	t->table[n].k = k;
-	t->table[n].k_is_constant = (opts & JSON_C_OBJECT_KEY_IS_CONSTANT);
+	t->table[n].k_is_constant = (opts & FJSON_C_OBJECT_KEY_IS_CONSTANT);
 	t->table[n].v = v;
 	t->count++;
 
@@ -608,7 +608,7 @@ const void* lh_table_lookup(struct lh_table *t, const void *k)
 	return result;
 }
 
-json_bool lh_table_lookup_ex(struct lh_table* t, const void* k, void **v)
+fjson_bool lh_table_lookup_ex(struct lh_table* t, const void* k, void **v)
 {
 	struct lh_entry *e = lh_table_lookup_entry(t, k);
 	if (e != NULL) {

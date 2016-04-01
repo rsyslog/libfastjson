@@ -31,8 +31,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef INCLUDED_ATOMIC_H
-#define INCLUDED_ATOMIC_H
+#ifndef FJ_INCLUDED_ATOMIC_H
+#define FJ_INCLUDED_ATOMIC_H
 
 #ifdef HAVE_ATOMIC_BUILTINS
 #	define ATOMIC_SUB(data, val, phlpmut) __sync_fetch_and_sub(data, val)

@@ -32,7 +32,7 @@
 static int printbuf_initial_size = 32;
 static int printbuf_extend(struct printbuf *p, int min_size);
 
-void json_global_set_printbuf_initial_size(int size)
+void fjson_global_set_printbuf_initial_size(int size)
 {
 	printbuf_initial_size = size;
 }

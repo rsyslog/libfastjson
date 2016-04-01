@@ -1,5 +1,5 @@
 /*
- * $Id: json_object.h,v 1.12 2006/01/30 23:07:57 mclark Exp $
+ * $Id: fjson_object.h,v 1.12 2006/01/30 23:07:57 mclark Exp $
  *
  * Copyright (c) 2004, 2005 Metaparadigm Pte. Ltd.
  * Michael Clark <michael@metaparadigm.com>
@@ -11,8 +11,8 @@
  *
  */
 
-#ifndef _json_object_h_
-#define _json_object_h_
+#ifndef _fj_json_object_h_
+#define _fj_json_object_h_
 
 #ifdef __GNUC__
 #define THIS_FUNCTION_IS_DEPRECATED(func) func __attribute__ ((deprecated))
@@ -28,44 +28,44 @@
 extern "C" {
 #endif
 
-#define JSON_OBJECT_DEF_HASH_ENTRIES 16
+#define FJSON_OBJECT_DEF_HASH_ENTRIES 16
 
 /**
- * A flag for the json_object_to_json_string_ext() and
- * json_object_to_file_ext() functions which causes the output
+ * A flag for the fjson_object_to_json_string_ext() and
+ * fjson_object_to_file_ext() functions which causes the output
  * to have no extra whitespace or formatting applied.
  */
-#define JSON_C_TO_STRING_PLAIN      0
+#define FJSON_C_TO_STRING_PLAIN      0
 /**
- * A flag for the json_object_to_json_string_ext() and
- * json_object_to_file_ext() functions which causes the output to have
+ * A flag for the fjson_object_to_json_string_ext() and
+ * fjson_object_to_file_ext() functions which causes the output to have
  * minimal whitespace inserted to make things slightly more readable.
  */
-#define JSON_C_TO_STRING_SPACED     (1<<0)
+#define FJSON_C_TO_STRING_SPACED     (1<<0)
 /**
- * A flag for the json_object_to_json_string_ext() and
- * json_object_to_file_ext() functions which causes
+ * A flag for the fjson_object_to_json_string_ext() and
+ * fjson_object_to_file_ext() functions which causes
  * the output to be formatted.
  *
  * See the "Two Space Tab" option at http://jsonformatter.curiousconcept.com/
  * for an example of the format.
  */
-#define JSON_C_TO_STRING_PRETTY     (1<<1)
+#define FJSON_C_TO_STRING_PRETTY     (1<<1)
 /**
- * A flag for the json_object_to_json_string_ext() and
- * json_object_to_file_ext() functions which causes
+ * A flag for the fjson_object_to_json_string_ext() and
+ * fjson_object_to_file_ext() functions which causes
  * the output to be formatted.
  *
  * Instead of a "Two Space Tab" this gives a single tab character.
  */
-#define JSON_C_TO_STRING_PRETTY_TAB (1<<3)
+#define FJSON_C_TO_STRING_PRETTY_TAB (1<<3)
 /**
  * A flag to drop trailing zero for float values
  */
-#define JSON_C_TO_STRING_NOZERO     (1<<2)
+#define FJSON_C_TO_STRING_NOZERO     (1<<2)
 
 /**
- * A flag for the json_object_object_add_ex function which
+ * A flag for the fjson_object_object_add_ex function which
  * causes the value to be added without a check if it already exists.
  * Note: it is the responsibilty of the caller to ensure that no
  * key is added multiple times. If this is done, results are
@@ -74,9 +74,9 @@ extern "C" {
  * knows for sure the key values are unique (e.g. because the
  * code adds a well-known set of constant key values).
  */
-#define JSON_C_OBJECT_ADD_KEY_IS_NEW (1<<1)
+#define FJSON_C_OBJECT_ADD_KEY_IS_NEW (1<<1)
 /**
- * A flag for the json_object_object_add_ex function which
+ * A flag for the fjson_object_object_add_ex function which
  * flags the key as being constant memory. This means that
  * the key will NOT be copied via strdup(), resulting in a
  * potentially huge performance win (malloc, strdup and
@@ -89,138 +89,138 @@ extern "C" {
  * The general use-case for this flag is cases where the
  * key is given as a real constant value in the function
  * call, e.g. as in
- *   json_object_object_add_ex(obj, "ip", json,
- *       JSON_C_OBJECT_KEY_IS_CONSTANT);
+ *   fjson_object_object_add_ex(obj, "ip", json,
+ *       FJSON_C_OBJECT_KEY_IS_CONSTANT);
  */
-#define JSON_C_OBJECT_KEY_IS_CONSTANT (1<<2)
+#define FJSON_C_OBJECT_KEY_IS_CONSTANT (1<<2)
 
 #undef FALSE
-#define FALSE ((json_bool)0)
+#define FALSE ((fjson_bool)0)
 
 #undef TRUE
-#define TRUE ((json_bool)1)
+#define TRUE ((fjson_bool)1)
 
-extern const char *json_number_chars;
-extern const char *json_hex_chars;
+extern const char *fjson_number_chars;
+extern const char *fjson_hex_chars;
 
 /* CAW: added for ANSI C iteration correctness */
-struct json_object_iter
+struct fjson_object_iter
 {
 	char *key;
-	struct json_object *val;
+	struct fjson_object *val;
 	struct lh_entry *entry;
 };
 
 /* forward structure definitions */
 
-typedef int json_bool;
+typedef int fjson_bool;
 typedef struct printbuf printbuf;
 typedef struct lh_table lh_table;
 typedef struct array_list array_list;
-typedef struct json_object json_object;
-typedef struct json_object_iter json_object_iter;
-typedef struct json_tokener json_tokener;
+typedef struct fjson_object fjson_object;
+typedef struct fjson_object_iter fjson_object_iter;
+typedef struct fjson_tokener fjson_tokener;
 
 /**
- * Type of custom user delete functions.  See json_object_set_serializer.
+ * Type of custom user delete functions.  See fjson_object_set_serializer.
  */
-typedef void (json_object_delete_fn)(struct json_object *jso, void *userdata);
+typedef void (fjson_object_delete_fn)(struct fjson_object *jso, void *userdata);
 
 /**
- * Type of a custom serialization function.  See json_object_set_serializer.
+ * Type of a custom serialization function.  See fjson_object_set_serializer.
  */
-typedef int (json_object_to_json_string_fn)(struct json_object *jso,
+typedef int (fjson_object_to_json_string_fn)(struct fjson_object *jso,
 						struct printbuf *pb,
 						int level,
 						int flags);
 
 /* supported object types */
 
-typedef enum json_type {
-  /* If you change this, be sure to update json_type_to_name() too */
-  json_type_null,
-  json_type_boolean,
-  json_type_double,
-  json_type_int,
-  json_type_object,
-  json_type_array,
-  json_type_string
-} json_type;
+typedef enum fjson_type {
+  /* If you change this, be sure to update fjson_type_to_name() too */
+  fjson_type_null,
+  fjson_type_boolean,
+  fjson_type_double,
+  fjson_type_int,
+  fjson_type_object,
+  fjson_type_array,
+  fjson_type_string
+} fjson_type;
 
 /* reference counting functions */
 
 /**
- * Increment the reference count of json_object, thereby grabbing shared
+ * Increment the reference count of fjson_object, thereby grabbing shared
  * ownership of obj.
  *
- * @param obj the json_object instance
+ * @param obj the fjson_object instance
  */
-extern struct json_object* json_object_get(struct json_object *obj);
+extern struct fjson_object* fjson_object_get(struct fjson_object *obj);
 
 /**
- * Decrement the reference count of json_object and free if it reaches zero.
+ * Decrement the reference count of fjson_object and free if it reaches zero.
  * You must have ownership of obj prior to doing this or you will cause an
  * imbalance in the reference count.
  *
- * @param obj the json_object instance
+ * @param obj the fjson_object instance
  * @returns 1 if the object was freed.
  */
-int json_object_put(struct json_object *obj);
+int fjson_object_put(struct fjson_object *obj);
 
 /**
- * Check if the json_object is of a given type
- * @param obj the json_object instance
+ * Check if the fjson_object is of a given type
+ * @param obj the fjson_object instance
  * @param type one of:
-     json_type_null (i.e. obj == NULL),
-     json_type_boolean,
-     json_type_double,
-     json_type_int,
-     json_type_object,
-     json_type_array,
-     json_type_string
+     fjson_type_null (i.e. obj == NULL),
+     fjson_type_boolean,
+     fjson_type_double,
+     fjson_type_int,
+     fjson_type_object,
+     fjson_type_array,
+     fjson_type_string
  */
-extern int json_object_is_type(struct json_object *obj, enum json_type type);
+extern int fjson_object_is_type(struct fjson_object *obj, enum fjson_type type);
 
 /**
- * Get the type of the json_object.  See also json_type_to_name() to turn this
+ * Get the type of the fjson_object.  See also fjson_type_to_name() to turn this
  * into a string suitable, for instance, for logging.
  *
- * @param obj the json_object instance
+ * @param obj the fjson_object instance
  * @returns type being one of:
-     json_type_null (i.e. obj == NULL),
-     json_type_boolean,
-     json_type_double,
-     json_type_int,
-     json_type_object,
-     json_type_array,
-     json_type_string
+     fjson_type_null (i.e. obj == NULL),
+     fjson_type_boolean,
+     fjson_type_double,
+     fjson_type_int,
+     fjson_type_object,
+     fjson_type_array,
+     fjson_type_string
  */
-extern enum json_type json_object_get_type(struct json_object *obj);
+extern enum fjson_type fjson_object_get_type(struct fjson_object *obj);
 
 
 /** Stringify object to json format.
- * Equivalent to json_object_to_json_string_ext(obj, JSON_C_TO_STRING_SPACED)
+ * Equivalent to fjson_object_to_json_string_ext(obj, FJSON_C_TO_STRING_SPACED)
  * The pointer you get is an internal of your json object. You don't
- * have to free it, later use of json_object_put() should be sufficient.
+ * have to free it, later use of fjson_object_put() should be sufficient.
  * If you can not ensure there's no concurrent access to *obj use
  * strdup().
- * @param obj the json_object instance
+ * @param obj the fjson_object instance
  * @returns a string in JSON format
  */
-extern const char* json_object_to_json_string(struct json_object *obj);
+extern const char* fjson_object_to_json_string(struct fjson_object *obj);
 
 /** Stringify object to json format
- * @see json_object_to_json_string() for details on how to free string.
- * @param obj the json_object instance
- * @param flags formatting options, see JSON_C_TO_STRING_PRETTY and other constants
+ * @see fjson_object_to_json_string() for details on how to free string.
+ * @param obj the fjson_object instance
+ * @param flags formatting options, see FJSON_C_TO_STRING_PRETTY and other constants
  * @returns a string in JSON format
  */
-extern const char* json_object_to_json_string_ext(struct json_object *obj, int
+extern const char* fjson_object_to_json_string_ext(struct fjson_object *obj, int
 flags);
 
 /**
  * Set a custom serialization function to be used when this particular object
- * is converted to a string by json_object_to_json_string.
+ * is converted to a string by fjson_object_to_json_string.
  *
  * If a custom serializer is already set on this object, any existing
  * user_delete function is called before the new one is set.
@@ -234,154 +234,154 @@ flags);
  *
  * The user_delete parameter is optional and may be passed as NULL, even if
  * the userdata parameter is non-NULL.  It will be called just before the
- * json_object is deleted, after it's reference count goes to zero
- * (see json_object_put()).
+ * fjson_object is deleted, after it's reference count goes to zero
+ * (see fjson_object_put()).
  * If this is not provided, it is up to the caller to free the userdata at
- * an appropriate time. (i.e. after the json_object is deleted)
+ * an appropriate time. (i.e. after the fjson_object is deleted)
  *
  * @param jso the object to customize
  * @param to_string_func the custom serialization function
  * @param userdata an optional opaque cookie
  * @param user_delete an optional function from freeing userdata
  */
-extern void json_object_set_serializer(json_object *jso,
-	json_object_to_json_string_fn to_string_func,
+extern void fjson_object_set_serializer(fjson_object *jso,
+	fjson_object_to_json_string_fn to_string_func,
 	void *userdata,
-	json_object_delete_fn *user_delete);
+	fjson_object_delete_fn *user_delete);
 
 /**
  * Simply call free on the userdata pointer.
- * Can be used with json_object_set_serializer().
+ * Can be used with fjson_object_set_serializer().
  *
  * @param jso unused
  * @param userdata the pointer that is passed to free().
  */
-json_object_delete_fn json_object_free_userdata;
+fjson_object_delete_fn fjson_object_free_userdata;
 
 /**
  * Copy the jso->_userdata string over to pb as-is.
- * Can be used with json_object_set_serializer().
+ * Can be used with fjson_object_set_serializer().
  *
  * @param jso The object whose _userdata is used.
  * @param pb The destination buffer.
  * @param level Ignored.
  * @param flags Ignored.
  */
-json_object_to_json_string_fn json_object_userdata_to_json_string;
+fjson_object_to_json_string_fn fjson_object_userdata_to_json_string;
 
 
 /* object type methods */
 
 /** Create a new empty object with a reference count of 1.  The caller of
  * this object initially has sole ownership.  Remember, when using
- * json_object_object_add or json_object_array_put_idx, ownership will
- * transfer to the object/array.  Call json_object_get if you want to maintain
+ * fjson_object_object_add or fjson_object_array_put_idx, ownership will
+ * transfer to the object/array.  Call fjson_object_get if you want to maintain
  * shared ownership or also add this object as a child of multiple objects or
  * arrays.  Any ownerships you acquired but did not transfer must be released
- * through json_object_put.
+ * through fjson_object_put.
  *
- * @returns a json_object of type json_type_object
+ * @returns a fjson_object of type fjson_type_object
  */
-extern struct json_object* json_object_new_object(void);
+extern struct fjson_object* fjson_object_new_object(void);
 
-/** Get the hashtable of a json_object of type json_type_object
- * @param obj the json_object instance
+/** Get the hashtable of a fjson_object of type fjson_type_object
+ * @param obj the fjson_object instance
  * @returns a linkhash
  */
-extern struct lh_table* json_object_get_object(struct json_object *obj);
+extern struct lh_table* fjson_object_get_object(struct fjson_object *obj);
 
 /** Get the size of an object in terms of the number of fields it has.
- * @param obj the json_object whose length to return
+ * @param obj the fjson_object whose length to return
  */
-extern int json_object_object_length(struct json_object* obj);
+extern int fjson_object_object_length(struct fjson_object* obj);
 
-/** Add an object field to a json_object of type json_type_object
+/** Add an object field to a fjson_object of type fjson_type_object
  *
  * The reference count will *not* be incremented. This is to make adding
  * fields to objects in code more compact. If you want to retain a reference
  * to an added object, independent of the lifetime of obj, you must wrap the
- * passed object with json_object_get.
+ * passed object with fjson_object_get.
  *
  * Upon calling this, the ownership of val transfers to obj.  Thus you must
  * make sure that you do in fact have ownership over this object.  For instance,
- * json_object_new_object will give you ownership until you transfer it,
- * whereas json_object_object_get does not.
+ * fjson_object_new_object will give you ownership until you transfer it,
+ * whereas fjson_object_object_get does not.
  *
- * @param obj the json_object instance
+ * @param obj the fjson_object instance
  * @param key the object field name (a private copy will be duplicated)
- * @param val a json_object or NULL member to associate with the given field
+ * @param val a fjson_object or NULL member to associate with the given field
  */
-extern void json_object_object_add(struct json_object* obj, const char *key,
-				   struct json_object *val);
+extern void fjson_object_object_add(struct fjson_object* obj, const char *key,
+				   struct fjson_object *val);
 
-/** Add an object field to a json_object of type json_type_object
+/** Add an object field to a fjson_object of type fjson_type_object
  *
- * The semantics are identical to json_object_object_add, except that an
+ * The semantics are identical to fjson_object_object_add, except that an
  * additional flag fields gives you more control over some detail aspects
- * of processing. See the description of JSON_C_OBJECT_ADD_* flags for more
+ * of processing. See the description of FJSON_C_OBJECT_ADD_* flags for more
  * details.
  *
- * @param obj the json_object instance
+ * @param obj the fjson_object instance
  * @param key the object field name (a private copy will be duplicated)
- * @param val a json_object or NULL member to associate with the given field
+ * @param val a fjson_object or NULL member to associate with the given field
  * @param opts process-modifying options. To specify multiple options, use 
  *             arithmetic or (OPT1|OPT2)
  */
-extern void json_object_object_add_ex(struct json_object* obj, const char *key,
-				   struct json_object *val, const unsigned opts);
+extern void fjson_object_object_add_ex(struct fjson_object* obj, const char *key,
+				   struct fjson_object *val, const unsigned opts);
 
-/** Get the json_object associate with a given object field
+/** Get the fjson_object associate with a given object field
  *
  * *No* reference counts will be changed.  There is no need to manually adjust
- * reference counts through the json_object_put/json_object_get methods unless
+ * reference counts through the fjson_object_put/fjson_object_get methods unless
  * you need to have the child (value) reference maintain a different lifetime
  * than the owning parent (obj). Ownership of the returned value is retained
- * by obj (do not do json_object_put unless you have done a json_object_get).
- * If you delete the value from obj (json_object_object_del) and wish to access
+ * by obj (do not do fjson_object_put unless you have done a fjson_object_get).
+ * If you delete the value from obj (fjson_object_object_del) and wish to access
  * the returned reference afterwards, make sure you have first gotten shared
- * ownership through json_object_get (& don't forget to do a json_object_put
+ * ownership through fjson_object_get (& don't forget to do a fjson_object_put
  * or transfer ownership to prevent a memory leak).
  *
- * @param obj the json_object instance
+ * @param obj the fjson_object instance
  * @param key the object field name
- * @returns the json_object associated with the given field name
- * @deprecated Please use json_object_object_get_ex
+ * @returns the fjson_object associated with the given field name
+ * @deprecated Please use fjson_object_object_get_ex
  */
-THIS_FUNCTION_IS_DEPRECATED(extern struct json_object* json_object_object_get(struct json_object* obj,
+THIS_FUNCTION_IS_DEPRECATED(extern struct fjson_object* fjson_object_object_get(struct fjson_object* obj,
 						  const char *key));
 
-/** Get the json_object associated with a given object field.
+/** Get the fjson_object associated with a given object field.
  *
  * This returns true if the key is found, false in all other cases (including
- * if obj isn't a json_type_object).
+ * if obj isn't a fjson_type_object).
  *
  * *No* reference counts will be changed.  There is no need to manually adjust
- * reference counts through the json_object_put/json_object_get methods unless
+ * reference counts through the fjson_object_put/fjson_object_get methods unless
  * you need to have the child (value) reference maintain a different lifetime
  * than the owning parent (obj).  Ownership of value is retained by obj.
  *
- * @param obj the json_object instance
+ * @param obj the fjson_object instance
  * @param key the object field name
- * @param value a pointer where to store a reference to the json_object
+ * @param value a pointer where to store a reference to the fjson_object
  *              associated with the given field name.
  *
  *              It is safe to pass a NULL value.
  * @returns whether or not the key exists
  */
-extern json_bool json_object_object_get_ex(struct json_object* obj,
+extern fjson_bool fjson_object_object_get_ex(struct fjson_object* obj,
 						  const char *key,
-                                                  struct json_object **value);
+                                                  struct fjson_object **value);
 
-/** Delete the given json_object field
+/** Delete the given fjson_object field
  *
  * The reference count will be decremented for the deleted object.  If there
  * are no more owners of the value represented by this key, then the value is
  * freed.  Otherwise, the reference to the value will remain in memory.
  *
- * @param obj the json_object instance
+ * @param obj the fjson_object instance
  * @param key the object field name
  */
-extern void json_object_object_del(struct json_object* obj, const char *key);
+extern void fjson_object_object_del(struct fjson_object* obj, const char *key);
 
 /**
  * Iterate through all keys and values of an object.
@@ -391,35 +391,35 @@ extern void json_object_object_del(struct json_object* obj, const char *key);
  * Deleting an existing key, or replacing an existing key with a
  * new value IS allowed.
  *
- * @param obj the json_object instance
+ * @param obj the fjson_object instance
  * @param key the local name for the char* key variable defined in the body
- * @param val the local name for the json_object* object variable defined in
+ * @param val the local name for the fjson_object* object variable defined in
  *            the body
  */
 #if defined(__GNUC__) && !defined(__STRICT_ANSI__) && __STDC_VERSION__ >= 199901L
 
-# define json_object_object_foreach(obj,key,val) \
+# define fjson_object_object_foreach(obj,key,val) \
 	char *key = NULL; \
-	struct json_object *val __attribute__((__unused__)) = NULL; \
-	for(struct lh_entry *entry ## key = json_object_get_object(obj)->head, *entry_next ## key = NULL; \
+	struct fjson_object *val __attribute__((__unused__)) = NULL; \
+	for(struct lh_entry *entry ## key = fjson_object_get_object(obj)->head, *entry_next ## key = NULL; \
 		({ if(entry ## key) { \
 			key = (char*)entry ## key->k; \
-			val = (struct json_object*)entry ## key->v; \
+			val = (struct fjson_object*)entry ## key->v; \
 			entry_next ## key = entry ## key->next; \
 		} ; entry ## key; }); \
 		entry ## key = entry_next ## key )
 
 #else /* ANSI C or MSC */
 
-# define json_object_object_foreach(obj,key,val) \
+# define fjson_object_object_foreach(obj,key,val) \
 	char *key;\
-	struct json_object *val; \
+	struct fjson_object *val; \
 	struct lh_entry *entry ## key; \
 	struct lh_entry *entry_next ## key = NULL; \
-	for(entry ## key = json_object_get_object(obj)->head; \
+	for(entry ## key = fjson_object_get_object(obj)->head; \
 		(entry ## key ? ( \
 			key = (char*)entry ## key->k, \
-			val = (struct json_object*)entry ## key->v, \
+			val = (struct fjson_object*)entry ## key->v, \
 			entry_next ## key = entry ## key->next, \
 			entry ## key) : 0); \
 		entry ## key = entry_next ## key)
@@ -427,40 +427,40 @@ extern void json_object_object_del(struct json_object* obj, const char *key);
 #endif /* defined(__GNUC__) && !defined(__STRICT_ANSI__) && __STDC_VERSION__ >= 199901L */
 
 /** Iterate through all keys and values of an object (ANSI C Safe)
- * @param obj the json_object instance
+ * @param obj the fjson_object instance
  * @param iter the object iterator
  */
-#define json_object_object_foreachC(obj,iter) \
- for(iter.entry = json_object_get_object(obj)->head; (iter.entry ? (iter.key = (char*)iter.entry->k, iter.val = (struct json_object*)iter.entry->v, iter.entry) : 0); iter.entry = iter.entry->next)
+#define fjson_object_object_foreachC(obj,iter) \
+ for(iter.entry = fjson_object_get_object(obj)->head; (iter.entry ? (iter.key = (char*)iter.entry->k, iter.val = (struct fjson_object*)iter.entry->v, iter.entry) : 0); iter.entry = iter.entry->next)
 
 /* Array type methods */
 
-/** Create a new empty json_object of type json_type_array
- * @returns a json_object of type json_type_array
+/** Create a new empty fjson_object of type fjson_type_array
+ * @returns a fjson_object of type fjson_type_array
  */
-extern struct json_object* json_object_new_array(void);
+extern struct fjson_object* fjson_object_new_array(void);
 
-/** Get the arraylist of a json_object of type json_type_array
- * @param obj the json_object instance
+/** Get the arraylist of a fjson_object of type fjson_type_array
+ * @param obj the fjson_object instance
  * @returns an arraylist
  */
-extern struct array_list* json_object_get_array(struct json_object *obj);
+extern struct array_list* fjson_object_get_array(struct fjson_object *obj);
 
-/** Get the length of a json_object of type json_type_array
- * @param obj the json_object instance
+/** Get the length of a fjson_object of type fjson_type_array
+ * @param obj the fjson_object instance
  * @returns an int
  */
-extern int json_object_array_length(struct json_object *obj);
+extern int fjson_object_array_length(struct fjson_object *obj);
 
-/** Sorts the elements of jso of type json_type_array
+/** Sorts the elements of jso of type fjson_type_array
 *
-* Pointers to the json_object pointers will be passed as the two arguments
+* Pointers to the fjson_object pointers will be passed as the two arguments
 * to @sort_fn
 *
-* @param obj the json_object instance
+* @param obj the fjson_object instance
 * @param sort_fn a sorting function
 */
-extern void json_object_array_sort(struct json_object *jso, int(*sort_fn)(const void *, const void *));
+extern void fjson_object_array_sort(struct fjson_object *jso, int(*sort_fn)(const void *, const void *));
 
 /** Binary search a sorted array for a specified key object.
  *
@@ -468,98 +468,98 @@ extern void json_object_array_sort(struct json_object *jso, int(*sort_fn)(const 
  * Usually you create some dummy object with the parameter compared in
  * it, to identify the right item you're actually looking for.
  *
- * @see json_object_array_sort() for hints on the compare function.
+ * @see fjson_object_array_sort() for hints on the compare function.
  *
- * @param key a dummy json_object with the right key
+ * @param key a dummy fjson_object with the right key
  * @param jso the array object we're searching
  * @param sort_fn the sort/compare function
  *
- * @return the wanted json_object instance
+ * @return the wanted fjson_object instance
  */
-extern struct json_object* json_object_array_bsearch(
-		const struct json_object *key,
-		const struct json_object *jso,
+extern struct fjson_object* fjson_object_array_bsearch(
+		const struct fjson_object *key,
+		const struct fjson_object *jso,
 		int (*sort_fn)(const void *, const void *));
 
-/** Add an element to the end of a json_object of type json_type_array
+/** Add an element to the end of a fjson_object of type fjson_type_array
  *
  * The reference count will *not* be incremented. This is to make adding
  * fields to objects in code more compact. If you want to retain a reference
- * to an added object you must wrap the passed object with json_object_get
+ * to an added object you must wrap the passed object with fjson_object_get
  *
- * @param obj the json_object instance
- * @param val the json_object to be added
+ * @param obj the fjson_object instance
+ * @param val the fjson_object to be added
  */
-extern int json_object_array_add(struct json_object *obj,
-				 struct json_object *val);
+extern int fjson_object_array_add(struct fjson_object *obj,
+				 struct fjson_object *val);
 
-/** Insert or replace an element at a specified index in an array (a json_object of type json_type_array)
+/** Insert or replace an element at a specified index in an array (a fjson_object of type fjson_type_array)
  *
  * The reference count will *not* be incremented. This is to make adding
  * fields to objects in code more compact. If you want to retain a reference
- * to an added object you must wrap the passed object with json_object_get
+ * to an added object you must wrap the passed object with fjson_object_get
  *
  * The reference count of a replaced object will be decremented.
  *
  * The array size will be automatically be expanded to the size of the
  * index if the index is larger than the current size.
  *
- * @param obj the json_object instance
+ * @param obj the fjson_object instance
  * @param idx the index to insert the element at
- * @param val the json_object to be added
+ * @param val the fjson_object to be added
  */
-extern int json_object_array_put_idx(struct json_object *obj, int idx,
-				     struct json_object *val);
+extern int fjson_object_array_put_idx(struct fjson_object *obj, int idx,
+				     struct fjson_object *val);
 
-/** Get the element at specificed index of the array (a json_object of type json_type_array)
- * @param obj the json_object instance
+/** Get the element at specificed index of the array (a fjson_object of type fjson_type_array)
+ * @param obj the fjson_object instance
  * @param idx the index to get the element at
- * @returns the json_object at the specified index (or NULL)
+ * @returns the fjson_object at the specified index (or NULL)
  */
-extern struct json_object* json_object_array_get_idx(struct json_object *obj,
+extern struct fjson_object* fjson_object_array_get_idx(struct fjson_object *obj,
 						     int idx);
 
-/* json_bool type methods */
+/* fjson_bool type methods */
 
-/** Create a new empty json_object of type json_type_boolean
- * @param b a json_bool TRUE or FALSE (1 or 0)
- * @returns a json_object of type json_type_boolean
+/** Create a new empty fjson_object of type fjson_type_boolean
+ * @param b a fjson_bool TRUE or FALSE (1 or 0)
+ * @returns a fjson_object of type fjson_type_boolean
  */
-extern struct json_object* json_object_new_boolean(json_bool b);
+extern struct fjson_object* fjson_object_new_boolean(fjson_bool b);
 
-/** Get the json_bool value of a json_object
+/** Get the fjson_bool value of a fjson_object
  *
- * The type is coerced to a json_bool if the passed object is not a json_bool.
+ * The type is coerced to a fjson_bool if the passed object is not a fjson_bool.
  * integer and double objects will return FALSE if there value is zero
  * or TRUE otherwise. If the passed object is a string it will return
  * TRUE if it has a non zero length. If any other object type is passed
  * TRUE will be returned if the object is not NULL.
  *
- * @param obj the json_object instance
- * @returns a json_bool
+ * @param obj the fjson_object instance
+ * @returns a fjson_bool
  */
-extern json_bool json_object_get_boolean(struct json_object *obj);
+extern fjson_bool fjson_object_get_boolean(struct fjson_object *obj);
 
 
 /* int type methods */
 
-/** Create a new empty json_object of type json_type_int
+/** Create a new empty fjson_object of type fjson_type_int
  * Note that values are stored as 64-bit values internally.
- * To ensure the full range is maintained, use json_object_new_int64 instead.
+ * To ensure the full range is maintained, use fjson_object_new_int64 instead.
  * @param i the integer
- * @returns a json_object of type json_type_int
+ * @returns a fjson_object of type fjson_type_int
  */
-extern struct json_object* json_object_new_int(int32_t i);
+extern struct fjson_object* fjson_object_new_int(int32_t i);
 
 
-/** Create a new empty json_object of type json_type_int
+/** Create a new empty fjson_object of type fjson_type_int
  * @param i the integer
- * @returns a json_object of type json_type_int
+ * @returns a fjson_object of type fjson_type_int
  */
-extern struct json_object* json_object_new_int64(int64_t i);
+extern struct fjson_object* fjson_object_new_int64(int64_t i);
 
 
-/** Get the int value of a json_object
+/** Get the int value of a fjson_object
  *
  * The type is coerced to a int if the passed object is not a int.
  * double objects will return their integer conversion. Strings will be
@@ -570,12 +570,12 @@ extern struct json_object* json_object_new_int64(int64_t i);
  * If the value of too big or too small to fit into 32-bit, INT32_MAX or
  * INT32_MIN are returned, respectively.
  *
- * @param obj the json_object instance
+ * @param obj the fjson_object instance
  * @returns an int
  */
-extern int32_t json_object_get_int(struct json_object *obj);
+extern int32_t fjson_object_get_int(struct fjson_object *obj);
 
-/** Get the int value of a json_object
+/** Get the int value of a fjson_object
  *
  * The type is coerced to a int64 if the passed object is not a int64.
  * double objects will return their int64 conversion. Strings will be
@@ -585,44 +585,44 @@ extern int32_t json_object_get_int(struct json_object *obj);
  * whether or not conversion was successful (it does not clear the value for
  * you).
  *
- * @param obj the json_object instance
+ * @param obj the fjson_object instance
  * @returns an int64
  */
-extern int64_t json_object_get_int64(struct json_object *obj);
+extern int64_t fjson_object_get_int64(struct fjson_object *obj);
 
 
 /* double type methods */
 
-/** Create a new empty json_object of type json_type_double
+/** Create a new empty fjson_object of type fjson_type_double
  * @param d the double
- * @returns a json_object of type json_type_double
+ * @returns a fjson_object of type fjson_type_double
  */
-extern struct json_object* json_object_new_double(double d);
+extern struct fjson_object* fjson_object_new_double(double d);
 
 /**
- * Create a new json_object of type json_type_double, using
+ * Create a new fjson_object of type fjson_type_double, using
  * the exact serialized representation of the value.
  *
  * This allows for numbers that would otherwise get displayed
  * inefficiently (e.g. 12.3 => "12.300000000000001") to be
  * serialized with the more convenient form.
  *
- * Note: this is used by json_tokener_parse_ex() to allow for
+ * Note: this is used by fjson_tokener_parse_ex() to allow for
  *   an exact re-serialization of a parsed object.
  *
  * An equivalent sequence of calls is:
  * @code
- *   jso = json_object_new_double(d);
- *   json_object_set_serializer(d, json_object_userdata_to_json_string,
- *       strdup(ds), json_object_free_userdata)
+ *   jso = fjson_object_new_double(d);
+ *   fjson_object_set_serializer(d, fjson_object_userdata_to_json_string,
+ *       strdup(ds), fjson_object_free_userdata)
  * @endcode
  *
  * @param d the numeric value of the double.
  * @param ds the string representation of the double.  This will be copied.
  */
-extern struct json_object* json_object_new_double_s(double d, const char *ds);
+extern struct fjson_object* fjson_object_new_double_s(double d, const char *ds);
 
-/** Get the double floating point value of a json_object
+/** Get the double floating point value of a fjson_object
  *
  * The type is coerced to a double if the passed object is not a double.
  * integer objects will return their double conversion. Strings will be
@@ -642,55 +642,55 @@ extern struct json_object* json_object_new_double_s(double d, const char *ds);
  * determine whether or not conversion was successful (it does not clear
  * the value for you).
  *
- * @param obj the json_object instance
+ * @param obj the fjson_object instance
  * @returns a double floating point number
  */
-extern double json_object_get_double(struct json_object *obj);
+extern double fjson_object_get_double(struct fjson_object *obj);
 
 
 /* string type methods */
 
-/** Create a new empty json_object of type json_type_string
+/** Create a new empty fjson_object of type fjson_type_string
  *
- * A copy of the string is made and the memory is managed by the json_object
+ * A copy of the string is made and the memory is managed by the fjson_object
  *
  * @param s the string
- * @returns a json_object of type json_type_string
+ * @returns a fjson_object of type fjson_type_string
  */
-extern struct json_object* json_object_new_string(const char *s);
+extern struct fjson_object* fjson_object_new_string(const char *s);
 
-extern struct json_object* json_object_new_string_len(const char *s, int len);
+extern struct fjson_object* fjson_object_new_string_len(const char *s, int len);
 
-/** Get the string value of a json_object
+/** Get the string value of a fjson_object
  *
- * If the passed object is not of type json_type_string then the JSON
+ * If the passed object is not of type fjson_type_string then the JSON
  * representation of the object is returned.
  *
- * The returned string memory is managed by the json_object and will
- * be freed when the reference count of the json_object drops to zero.
+ * The returned string memory is managed by the fjson_object and will
+ * be freed when the reference count of the fjson_object drops to zero.
  *
- * @param obj the json_object instance
+ * @param obj the fjson_object instance
  * @returns a string
  */
-extern const char* json_object_get_string(struct json_object *obj);
+extern const char* fjson_object_get_string(struct fjson_object *obj);
 
-/** Get the string length of a json_object
+/** Get the string length of a fjson_object
  *
- * If the passed object is not of type json_type_string then zero
+ * If the passed object is not of type fjson_type_string then zero
  * will be returned.
  *
- * @param obj the json_object instance
+ * @param obj the fjson_object instance
  * @returns int
  */
-extern int json_object_get_string_len(struct json_object *obj);
+extern int fjson_object_get_string_len(struct fjson_object *obj);
 
 
 /** Get the number of direct members inside a json object.
  *
- * @param obj the json_object instance
+ * @param obj the fjson_object instance
  * @returns int
  */
-int json_object_get_member_count(struct json_object *jso);
+int fjson_object_get_member_count(struct fjson_object *jso);
 #ifdef __cplusplus
 }
 #endif

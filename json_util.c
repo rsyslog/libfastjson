@@ -1,5 +1,5 @@
 /*
- * $Id: json_util.c,v 1.4 2006/01/30 23:07:57 mclark Exp $
+ * $Id: fjson_util.c,v 1.4 2006/01/30 23:07:57 mclark Exp $
  *
  * Copyright (c) 2004, 2005 Metaparadigm Pte. Ltd.
  * Michael Clark <michael@metaparadigm.com>
@@ -72,75 +72,75 @@ static void sscanf_is_broken_test(void);
  * Note, that the fd must be readable at the actual position, i.e.
  * use lseek(fd, 0, SEEK_SET) before.
  */
-struct json_object* json_object_from_fd(int fd)
+struct fjson_object* fjson_object_from_fd(int fd)
 {
   struct printbuf *pb;
-  struct json_object *obj;
-  char buf[JSON_FILE_BUF_SIZE];
+  struct fjson_object *obj;
+  char buf[FJSON_FILE_BUF_SIZE];
   int ret;
 
   if(!(pb = printbuf_new())) {
-    MC_ERROR("json_object_from_file: printbuf_new failed\n");
+    MC_ERROR("fjson_object_from_file: printbuf_new failed\n");
     return NULL;
   }
-  while((ret = read(fd, buf, JSON_FILE_BUF_SIZE)) > 0) {
+  while((ret = read(fd, buf, FJSON_FILE_BUF_SIZE)) > 0) {
     printbuf_memappend(pb, buf, ret);
   }
   if(ret < 0) {
-    MC_ERROR("json_object_from_fd: error reading fd %d: %s\n", fd, strerror(errno));
+    MC_ERROR("fjson_object_from_fd: error reading fd %d: %s\n", fd, strerror(errno));
     printbuf_free(pb);
     return NULL;
   }
-  obj = json_tokener_parse(pb->buf);
+  obj = fjson_tokener_parse(pb->buf);
   printbuf_free(pb);
   return obj;
 }
 
-struct json_object* json_object_from_file(const char *filename)
+struct fjson_object* fjson_object_from_file(const char *filename)
 {
-  struct json_object *obj;
+  struct fjson_object *obj;
   int fd;
 
   if((fd = open(filename, O_RDONLY)) < 0) {
-    MC_ERROR("json_object_from_file: error opening file %s: %s\n",
+    MC_ERROR("fjson_object_from_file: error opening file %s: %s\n",
 	     filename, strerror(errno));
     return NULL;
   }
-  obj = json_object_from_fd(fd);
+  obj = fjson_object_from_fd(fd);
   close(fd);
   return obj;
 }
 
 /* extended "format and write to file" function */
 
-int json_object_to_file_ext(const char *filename, struct json_object *obj, int flags)
+int fjson_object_to_file_ext(const char *filename, struct fjson_object *obj, int flags)
 {
-  const char *json_str;
+  const char *fjson_str;
   int fd, ret;
   unsigned int wpos, wsize;
 
   if(!obj) {
-    MC_ERROR("json_object_to_file: object is null\n");
+    MC_ERROR("fjson_object_to_file: object is null\n");
     return -1;
   }
 
   if((fd = open(filename, O_WRONLY | O_TRUNC | O_CREAT, 0644)) < 0) {
-    MC_ERROR("json_object_to_file: error opening file %s: %s\n",
+    MC_ERROR("fjson_object_to_file: error opening file %s: %s\n",
 	     filename, strerror(errno));
     return -1;
   }
 
-  if(!(json_str = json_object_to_json_string_ext(obj,flags))) {
+  if(!(fjson_str = fjson_object_to_json_string_ext(obj,flags))) {
     close(fd);
     return -1;
   }
 
-  wsize = (unsigned int)(strlen(json_str) & UINT_MAX); /* CAW: probably unnecessary, but the most 64bit safe */
+  wsize = (unsigned int)(strlen(fjson_str) & UINT_MAX); /* CAW: probably unnecessary, but the most 64bit safe */
   wpos = 0;
   while(wpos < wsize) {
-    if((ret = write(fd, json_str + wpos, wsize-wpos)) < 0) {
+    if((ret = write(fd, fjson_str + wpos, wsize-wpos)) < 0) {
       close(fd);
-      MC_ERROR("json_object_to_file: error writing file %s: %s\n",
+      MC_ERROR("fjson_object_to_file: error writing file %s: %s\n",
 	     filename, strerror(errno));
       return -1;
     }
@@ -155,12 +155,12 @@ int json_object_to_file_ext(const char *filename, struct json_object *obj, int f
 
 // backwards compatible "format and write to file" function
 
-int json_object_to_file(const char *filename, struct json_object *obj)
+int fjson_object_to_file(const char *filename, struct fjson_object *obj)
 {
-  return json_object_to_file_ext(filename, obj, JSON_C_TO_STRING_PLAIN);
+  return fjson_object_to_file_ext(filename, obj, FJSON_C_TO_STRING_PLAIN);
 }
 
-int json_parse_double(const char *buf, double *retval)
+int fjson_parse_double(const char *buf, double *retval)
 {
   return (sscanf(buf, "%lf", retval)==1 ? 0 : 1);
 }
@@ -191,7 +191,7 @@ static void sscanf_is_broken_test()
 	}
 }
 
-int json_parse_int64(const char *buf, int64_t *retval)
+int fjson_parse_int64(const char *buf, int64_t *retval)
 {
 	int64_t num64;
 	const char *buf_sig_digits;
@@ -290,8 +290,8 @@ void* rpl_realloc(void* p, size_t n)
 #endif
 
 #define NELEM(a)        (sizeof(a) / sizeof(a[0]))
-static const char* json_type_name[] = {
-  /* If you change this, be sure to update the enum json_type definition too */
+static const char* fjson_type_name[] = {
+  /* If you change this, be sure to update the enum fjson_type definition too */
   "null",
   "boolean",
   "double",
@@ -301,14 +301,14 @@ static const char* json_type_name[] = {
   "string",
 };
 
-const char *json_type_to_name(enum json_type o_type)
+const char *fjson_type_to_name(enum fjson_type o_type)
 {
 	int o_type_int = (int)o_type;
-	if (o_type_int < 0 || o_type_int >= (int)NELEM(json_type_name))
+	if (o_type_int < 0 || o_type_int >= (int)NELEM(fjson_type_name))
 	{
-		MC_ERROR("json_type_to_name: type %d is out of range [0,%d]\n", o_type, NELEM(json_type_name));
+		MC_ERROR("fjson_type_to_name: type %d is out of range [0,%d]\n", o_type, NELEM(fjson_type_name));
 		return NULL;
 	}
-	return json_type_name[o_type];
+	return fjson_type_name[o_type];
 }
 

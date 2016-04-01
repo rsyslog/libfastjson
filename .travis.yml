@@ -20,4 +20,5 @@ before_script:
 
 script:
   - make
+  - export VERBOSE=1
   - make check

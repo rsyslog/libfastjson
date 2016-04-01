@@ -1,6 +1,6 @@
 /**
 *******************************************************************************
-* @file json_object_iterator.h
+* @file fjson_object_iterator.h
 *
 * Copyright (c) 2009-2012 Hewlett-Packard Development Company, L.P.
 *
@@ -20,8 +20,8 @@
 */
 
 
-#ifndef JSON_OBJECT_ITERATOR_H
-#define JSON_OBJECT_ITERATOR_H
+#ifndef FJ_JSON_OBJECT_ITERATOR_H
+#define FJ_JSON_OBJECT_ITERATOR_H
 
 #include <stddef.h>
 
@@ -32,13 +32,13 @@ extern "C" {
 /**
  * Forward declaration for the opaque iterator information.
  */
-struct json_object_iter_info_;
+struct fjson_object_iter_info_;
 
 /**
  * The opaque iterator that references a name/value pair within
  * a JSON Object instance or the "end" iterator value.
  */
-struct json_object_iterator {
+struct fjson_object_iterator {
     const void* opaque_;
 };
 
@@ -46,7 +46,7 @@ struct json_object_iterator {
 /**
  * forward declaration of json-c's JSON value instance structure
  */
-struct json_object;
+struct fjson_object;
 
 
 /**
@@ -56,8 +56,8 @@ struct json_object;
  * constructor).
  *
  * @code
- * struct json_object_iterator iter = json_object_iter_init_default();
- * MyClass() : iter_(json_object_iter_init_default())
+ * struct fjson_object_iterator iter = fjson_object_iter_init_default();
+ * MyClass() : iter_(fjson_object_iter_init_default())
  * @endcode
  *
  * @note The initialized value doesn't reference any specific
@@ -69,19 +69,19 @@ struct json_object;
  *       about and dependencies on the value of the "default"
  *       iterator value.
  *
- * @return json_object_iterator
+ * @return fjson_object_iterator
  */
-struct json_object_iterator
-json_object_iter_init_default(void);
+struct fjson_object_iterator
+fjson_object_iter_init_default(void);
 
 /** Retrieves an iterator to the first pair of the JSON Object.
  *
  * @warning 	Any modification of the underlying pair invalidates all
  * 		iterators to that pair.
  *
- * @param obj	JSON Object instance (MUST be of type json_object)
+ * @param obj	JSON Object instance (MUST be of type fjson_object)
  *
- * @return json_object_iterator If the JSON Object has at
+ * @return fjson_object_iterator If the JSON Object has at
  *              least one pair, on return, the iterator refers
  *              to the first pair. If the JSON Object doesn't
  *              have any pairs, the returned iterator is
@@ -89,24 +89,24 @@ json_object_iter_init_default(void);
  *              JSON Object instance.
  *
  * @code
- * struct json_object_iterator it;
- * struct json_object_iterator itEnd;
- * struct json_object* obj;
+ * struct fjson_object_iterator it;
+ * struct fjson_object_iterator itEnd;
+ * struct fjson_object* obj;
  *
- * obj = json_tokener_parse("{'first':'george', 'age':100}");
- * it = json_object_iter_begin(obj);
- * itEnd = json_object_iter_end(obj);
+ * obj = fjson_tokener_parse("{'first':'george', 'age':100}");
+ * it = fjson_object_iter_begin(obj);
+ * itEnd = fjson_object_iter_end(obj);
  *
- * while (!json_object_iter_equal(&it, &itEnd)) {
+ * while (!fjson_object_iter_equal(&it, &itEnd)) {
  *     printf("%s\n",
- *            json_object_iter_peek_name(&it));
- *     json_object_iter_next(&it);
+ *            fjson_object_iter_peek_name(&it));
+ *     fjson_object_iter_next(&it);
  * }
  *
  * @endcode
  */
-struct json_object_iterator
-json_object_iter_begin(struct json_object* obj);
+struct fjson_object_iterator
+fjson_object_iter_begin(struct fjson_object* obj);
 
 /** Retrieves the iterator that represents the position beyond the
  *  last pair of the given JSON Object instance.
@@ -116,7 +116,7 @@ json_object_iter_begin(struct json_object* obj);
  *        particular instance of the implementation.
  *
  *  @note The reason we do not (and MUST NOT) provide
- *        "json_object_iter_is_end(json_object_iterator* iter)"
+ *        "fjson_object_iter_is_end(fjson_object_iterator* iter)"
  *        type of API is because it would limit the underlying
  *        representation of name/value containment (or force us
  *        to add additional, otherwise unnecessary, fields to
@@ -129,15 +129,15 @@ json_object_iter_begin(struct json_object* obj);
  *  @note For performance reasons, memorize the "end" iterator prior
  *        to any loop.
  *
- * @param obj JSON Object instance (MUST be of type json_object)
+ * @param obj JSON Object instance (MUST be of type fjson_object)
  *
- * @return json_object_iterator On return, the iterator refers
+ * @return fjson_object_iterator On return, the iterator refers
  *              to the "end" of the Object instance's pairs
  *              (i.e., NOT the last pair, but "beyond the last
  *              pair" value)
  */
-struct json_object_iterator
-json_object_iter_end(const struct json_object* obj);
+struct fjson_object_iterator
+fjson_object_iter_end(const struct fjson_object* obj);
 
 /** Returns an iterator to the next pair, if any
  *
@@ -151,11 +151,11 @@ json_object_iter_end(const struct json_object* obj);
  *         reference to the next pair if there is one; if there
  *         are no more pairs, will contain the "end" iterator
  *         value, which may be compared against the return value
- *         of json_object_iter_end() for the same JSON Object
+ *         of fjson_object_iter_end() for the same JSON Object
  *         instance.
  */
 void
-json_object_iter_next(struct json_object_iterator* iter);
+fjson_object_iter_next(struct fjson_object_iterator* iter);
 
 
 /** Returns a const pointer to the name of the pair referenced
@@ -174,7 +174,7 @@ json_object_iter_next(struct json_object_iterator* iter);
  *         freed by the user.
  */
 const char*
-json_object_iter_peek_name(const struct json_object_iterator* iter);
+fjson_object_iter_peek_name(const struct fjson_object_iterator* iter);
 
 
 /** Returns a pointer to the json-c instance representing the
@@ -187,17 +187,17 @@ json_object_iter_peek_name(const struct json_object_iterator* iter);
  * @warning	bad things will happen if invalid or
  *             "end" iterator is passed.
  *
- * @return struct json_object* Pointer to the json-c value
+ * @return struct fjson_object* Pointer to the json-c value
  *         instance of the referenced name/value pair;  the
  *         value's reference count is not changed by this
  *         function: if you plan to hold on to this json-c node,
- *         take a look at json_object_get() and
- *         json_object_put(). IMPORTANT: json-c API represents
- *         the JSON Null value as a NULL json_object instance
+ *         take a look at fjson_object_get() and
+ *         fjson_object_put(). IMPORTANT: json-c API represents
+ *         the JSON Null value as a NULL fjson_object instance
  *         pointer.
  */
-struct json_object*
-json_object_iter_peek_value(const struct json_object_iterator* iter);
+struct fjson_object*
+fjson_object_iter_peek_value(const struct fjson_object_iterator* iter);
 
 
 /** Tests two iterators for equality.  Typically used to test
@@ -206,7 +206,7 @@ json_object_iter_peek_value(const struct json_object_iterator* iter);
  *  JSON Object instance).
  *
  *  @note The reason we do not (and MUST NOT) provide
- *        "json_object_iter_is_end(json_object_iterator* iter)"
+ *        "fjson_object_iter_is_end(fjson_object_iterator* iter)"
  *        type of API is because it would limit the underlying
  *        representation of name/value containment (or force us
  *        to add additional, otherwise unnecessary, fields to
@@ -222,13 +222,13 @@ json_object_iter_peek_value(const struct json_object_iterator* iter);
  *       	different JSON Object instances are passed, bad things
  *       	will happen!
  *
- * @return json_bool non-zero if iterators are equal (i.e., both
+ * @return fjson_bool non-zero if iterators are equal (i.e., both
  *         reference the same name/value pair or are both at
  *         "end"); zero if they are not equal.
  */
-json_bool
-json_object_iter_equal(const struct json_object_iterator* iter1,
-                       const struct json_object_iterator* iter2);
+fjson_bool
+fjson_object_iter_equal(const struct fjson_object_iterator* iter1,
+                       const struct fjson_object_iterator* iter2);
 
 
 #ifdef __cplusplus
@@ -236,4 +236,4 @@ json_object_iter_equal(const struct json_object_iterator* iter1,
 #endif
 
 
-#endif /* JSON_OBJECT_ITERATOR_H */
+#endif /* FJSON_OBJECT_ITERATOR_H */

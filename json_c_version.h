@@ -5,18 +5,18 @@
  * it under the terms of the MIT license. See COPYING for details.
  */
 
-#ifndef _json_c_version_h_
-#define _json_c_version_h_
+#ifndef _fj_json_c_version_h_
+#define _fj_json_c_version_h_
 
-#define JSON_C_MAJOR_VERSION 0
-#define JSON_C_MINOR_VERSION 12
-#define JSON_C_MICRO_VERSION 99
-#define JSON_C_VERSION_NUM ((JSON_C_MAJOR_VERSION << 16) | \
-                            (JSON_C_MINOR_VERSION << 8) | \
-                            JSON_C_MICRO_VERSION)
-#define JSON_C_VERSION "0.12.99"
+#define FJSON_C_MAJOR_VERSION 0
+#define FJSON_C_MINOR_VERSION 12
+#define FJSON_C_MICRO_VERSION 99
+#define FJSON_C_VERSION_NUM ((FJSON_C_MAJOR_VERSION << 16) | \
+                            (FJSON_C_MINOR_VERSION << 8) | \
+                            FJSON_C_MICRO_VERSION)
+#define FJSON_C_VERSION "0.12.99"
 
-const char *json_c_version(void); /* Returns JSON_C_VERSION */
-int json_c_version_num(void);     /* Returns JSON_C_VERSION_NUM */
+const char *fjson_c_version(void); /* Returns FJSON_C_VERSION */
+int fjson_c_version_num(void);     /* Returns FJSON_C_VERSION_NUM */
 
 #endif

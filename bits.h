@@ -12,8 +12,8 @@
  *
  */
 
-#ifndef _bits_h_
-#define _bits_h_
+#ifndef _fj_bits_h_
+#define _fj_bits_h_
 
 /**
  * @deprecated
@@ -26,7 +26,7 @@
 /**
  * @deprecated
  */
-#define error_description(error)  (json_tokener_get_error(error))
+#define error_description(error)  (fjson_tokener_get_error(error))
 /**
  * @deprecated
  */

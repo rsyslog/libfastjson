@@ -9,12 +9,12 @@ void checkit(const char *buf)
 {
 	int64_t cint64 = -666;
 
-	int retval = json_parse_int64(buf, &cint64);
+	int retval = fjson_parse_int64(buf, &cint64);
 	printf("buf=%s parseit=%d, value=%" PRId64 " \n", buf, retval, cint64);
 }
 
 /**
- * This test calls json_parse_int64 with a variety of different strings.
+ * This test calls fjson_parse_int64 with a variety of different strings.
  * It's purpose is to ensure that the results are consistent across all
  * different environments that it might be executed in.
  *

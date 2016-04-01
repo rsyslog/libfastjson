@@ -13,8 +13,8 @@
  * (http://www.opensource.org/licenses/mit-license.php)
  */
 
-#ifndef _printbuf_h_
-#define _printbuf_h_
+#ifndef _fj_printbuf_h_
+#define _fj_printbuf_h_
 
 #ifdef __cplusplus
 extern "C" {

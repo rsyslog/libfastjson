@@ -1,6 +1,6 @@
 /**
 *******************************************************************************
-* @file json_object_iterator.c
+* @file fjson_object_iterator.c
 *
 * Copyright (c) 2009-2012 Hewlett-Packard Development Company, L.P.
 *
@@ -44,7 +44,7 @@
  *
  * A JSON Object without any pairs in it will have the "head"
  * field of its lh_table structure set to NULL.  For such an
- * object, json_object_iter_begin will return an iterator with
+ * object, fjson_object_iter_begin will return an iterator with
  * the opaque_ field set to NULL, which is equivalent to the
  * "end" iterator.
  *
@@ -63,15 +63,15 @@ static const void* kObjectEndIterValue = NULL;
 /**
  * ****************************************************************************
  */
-struct json_object_iterator
-json_object_iter_begin(struct json_object* obj)
+struct fjson_object_iterator
+fjson_object_iter_begin(struct fjson_object* obj)
 {
-    struct json_object_iterator iter;
+    struct fjson_object_iterator iter;
     struct lh_table* pTable;
 
-    /// @note json_object_get_object will return NULL if passed NULL
-    ///       or a non-json_type_object instance
-    pTable = json_object_get_object(obj);
+    /// @note fjson_object_get_object will return NULL if passed NULL
+    ///       or a non-fjson_type_object instance
+    pTable = fjson_object_get_object(obj);
     JASSERT(NULL != pTable);
 
     /// @note For a pair-less Object, head is NULL, which matches our
@@ -83,13 +83,13 @@ json_object_iter_begin(struct json_object* obj)
 /**
  * ****************************************************************************
  */
-struct json_object_iterator
-json_object_iter_end(const struct json_object* obj)
+struct fjson_object_iterator
+fjson_object_iter_end(const struct fjson_object* obj)
 {
-    struct json_object_iterator iter;
+    struct fjson_object_iterator iter;
 
     JASSERT(NULL != obj);
-    JASSERT(json_object_is_type(obj, json_type_object));
+    JASSERT(fjson_object_is_type(obj, fjson_type_object));
 
     iter.opaque_ = kObjectEndIterValue;
 
@@ -100,7 +100,7 @@ json_object_iter_end(const struct json_object* obj)
  * ****************************************************************************
  */
 void
-json_object_iter_next(struct json_object_iterator* iter)
+fjson_object_iter_next(struct fjson_object_iterator* iter)
 {
     JASSERT(NULL != iter);
     JASSERT(kObjectEndIterValue != iter->opaque_);
@@ -113,7 +113,7 @@ json_object_iter_next(struct json_object_iterator* iter)
  * ****************************************************************************
  */
 const char*
-json_object_iter_peek_name(const struct json_object_iterator* iter)
+fjson_object_iter_peek_name(const struct fjson_object_iterator* iter)
 {
     JASSERT(NULL != iter);
     JASSERT(kObjectEndIterValue != iter->opaque_);
@@ -125,22 +125,22 @@ json_object_iter_peek_name(const struct json_object_iterator* iter)
 /**
  * ****************************************************************************
  */
-struct json_object*
-json_object_iter_peek_value(const struct json_object_iterator* iter)
+struct fjson_object*
+fjson_object_iter_peek_value(const struct fjson_object_iterator* iter)
 {
     JASSERT(NULL != iter);
     JASSERT(kObjectEndIterValue != iter->opaque_);
 
-    return (struct json_object*)(((struct lh_entry *)iter->opaque_)->v);
+    return (struct fjson_object*)(((struct lh_entry *)iter->opaque_)->v);
 }
 
 
 /**
  * ****************************************************************************
  */
-json_bool
-json_object_iter_equal(const struct json_object_iterator* iter1,
-                       const struct json_object_iterator* iter2)
+fjson_bool
+fjson_object_iter_equal(const struct fjson_object_iterator* iter1,
+                       const struct fjson_object_iterator* iter2)
 {
     JASSERT(NULL != iter1);
     JASSERT(NULL != iter2);
@@ -152,10 +152,10 @@ json_object_iter_equal(const struct json_object_iterator* iter1,
 /**
  * ****************************************************************************
  */
-struct json_object_iterator
-json_object_iter_init_default(void)
+struct fjson_object_iterator
+fjson_object_iter_init_default(void)
 {
-    struct json_object_iterator iter;
+    struct fjson_object_iterator iter;
 
     /**
      * @note Make this a negative, invalid value, such that

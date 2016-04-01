@@ -14,21 +14,21 @@ int main(int argc, char **argv)
 	 * Check that replacing an existing object keeps the key valid,
 	 * and that it keeps the order the same.
 	 */
-	json_object *my_object = json_object_new_object();
-	json_object_object_add(my_object, "foo1", json_object_new_string("bar1"));
-	json_object_object_add(my_object, "foo2", json_object_new_string("bar2"));
-	json_object_object_add(my_object, "deleteme", json_object_new_string("bar2"));
-	json_object_object_add(my_object, "foo3", json_object_new_string("bar3"));
+	fjson_object *my_object = fjson_object_new_object();
+	fjson_object_object_add(my_object, "foo1", fjson_object_new_string("bar1"));
+	fjson_object_object_add(my_object, "foo2", fjson_object_new_string("bar2"));
+	fjson_object_object_add(my_object, "deleteme", fjson_object_new_string("bar2"));
+	fjson_object_object_add(my_object, "foo3", fjson_object_new_string("bar3"));
 
 	printf("==== delete-in-loop test starting ====\n");
 
 	int orig_count = 0;
-	json_object_object_foreach(my_object, key0, val0)
+	fjson_object_object_foreach(my_object, key0, val0)
 	{
 		printf("Key at index %d is [%s]", orig_count, key0);
 		if (strcmp(key0, "deleteme") == 0)
 		{
-			json_object_object_del(my_object, key0);
+			fjson_object_object_del(my_object, key0);
 			printf(" (deleted)\n");
 		}
 		else
@@ -40,7 +40,7 @@ int main(int argc, char **argv)
 
 	const char *original_key = NULL;
 	orig_count = 0;
-	json_object_object_foreach(my_object, key, val)
+	fjson_object_object_foreach(my_object, key, val)
 	{
 		printf("Key at index %d is [%s]\n", orig_count, key);
 		orig_count++;
@@ -48,14 +48,14 @@ int main(int argc, char **argv)
 			continue;
 		printf("replacing value for key [%s]\n", key);
 		original_key = key;
-		json_object_object_add(my_object, key, json_object_new_string("zzz"));
+		fjson_object_object_add(my_object, key, fjson_object_new_string("zzz"));
 	}
 
 	printf("==== second loop starting ====\n");
 
 	int new_count = 0;
 	int retval = 0;
-	json_object_object_foreach(my_object, key2, val2)
+	fjson_object_object_foreach(my_object, key2, val2)
 	{
 		printf("Key at index %d is [%s]\n", new_count, key2);
 		new_count++;
@@ -73,7 +73,7 @@ int main(int argc, char **argv)
 		retval = 1;
 	}
 
-	json_object_put( my_object );
+	fjson_object_put( my_object );
 
 	return retval;
 }

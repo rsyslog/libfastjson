@@ -1,5 +1,5 @@
 /*
- * $Id: json_util.h,v 1.4 2006/01/30 23:07:57 mclark Exp $
+ * $Id: fjson_util.h,v 1.4 2006/01/30 23:07:57 mclark Exp $
  *
  * Copyright (c) 2004, 2005 Metaparadigm Pte. Ltd.
  * Michael Clark <michael@metaparadigm.com>
@@ -9,17 +9,17 @@
  *
  */
 
-#ifndef _json_util_h_
-#define _json_util_h_
+#ifndef _fj_json_util_h_
+#define _fj_json_util_h_
 
 #include "json_object.h"
 
-#ifndef json_min
-#define json_min(a,b) ((a) < (b) ? (a) : (b))
+#ifndef fjson_min
+#define fjson_min(a,b) ((a) < (b) ? (a) : (b))
 #endif
 
-#ifndef json_max
-#define json_max(a,b) ((a) > (b) ? (a) : (b))
+#ifndef fjson_max
+#define fjson_max(a,b) ((a) > (b) ? (a) : (b))
 #endif
 
 
@@ -27,22 +27,22 @@
 extern "C" {
 #endif
 
-#define JSON_FILE_BUF_SIZE 4096
+#define FJSON_FILE_BUF_SIZE 4096
 
 /* utility functions */
-extern struct json_object* json_object_from_file(const char *filename);
-extern struct json_object* json_object_from_fd(int fd);
-extern int json_object_to_file(const char *filename, struct json_object *obj);
-extern int json_object_to_file_ext(const char *filename, struct json_object *obj, int flags);
-extern int json_parse_int64(const char *buf, int64_t *retval);
-extern int json_parse_double(const char *buf, double *retval);
+extern struct fjson_object* fjson_object_from_file(const char *filename);
+extern struct fjson_object* fjson_object_from_fd(int fd);
+extern int fjson_object_to_file(const char *filename, struct fjson_object *obj);
+extern int fjson_object_to_file_ext(const char *filename, struct fjson_object *obj, int flags);
+extern int fjson_parse_int64(const char *buf, int64_t *retval);
+extern int fjson_parse_double(const char *buf, double *retval);
 
 
 /**
  * Return a string describing the type of the object.
  * e.g. "int", or "object", etc...
  */
-extern const char *json_type_to_name(enum json_type o_type);
+extern const char *fjson_type_to_name(enum fjson_type o_type);
 
 #ifdef __cplusplus
 }

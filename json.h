@@ -10,8 +10,8 @@
  *
  */
 
-#ifndef _json_h_
-#define _json_h_
+#ifndef _fj_json_h_
+#define _fj_json_h_
 
 #ifdef __cplusplus
 extern "C" {
@@ -28,7 +28,7 @@ extern "C" {
 
 /**
  * Set initial size allocation for memory when creating strings,
- * as is done for example in json_object_to_json_string(). The
+ * as is done for example in fjson_object_to_json_string(). The
  * default size is 32, which is very conservative. If an app
  * knows it typically deals with larger strings, performance
  * can be improved by setting the initial size to a different
@@ -46,7 +46,7 @@ extern "C" {
  * @param size new initial size for printbuf (formatting buffer)
  */
 extern void
-json_global_set_printbuf_initial_size(int size);
+fjson_global_set_printbuf_initial_size(int size);
 #ifdef __cplusplus
 }
 #endif

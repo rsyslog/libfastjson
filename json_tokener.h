@@ -1,5 +1,5 @@
 /*
- * $Id: json_tokener.h,v 1.10 2006/07/25 03:24:50 mclark Exp $
+ * $Id: fjson_tokener.h,v 1.10 2006/07/25 03:24:50 mclark Exp $
  *
  * Copyright (c) 2004, 2005 Metaparadigm Pte. Ltd.
  * Michael Clark <michael@metaparadigm.com>
@@ -9,8 +9,8 @@
  *
  */
 
-#ifndef _json_tokener_h_
-#define _json_tokener_h_
+#ifndef _fj_json_tokener_h_
+#define _fj_json_tokener_h_
 
 #include <stddef.h>
 #include "json_object.h"
@@ -19,71 +19,71 @@
 extern "C" {
 #endif
 
-enum json_tokener_error {
-  json_tokener_success,
-  json_tokener_continue,
-  json_tokener_error_depth,
-  json_tokener_error_parse_eof,
-  json_tokener_error_parse_unexpected,
-  json_tokener_error_parse_null,
-  json_tokener_error_parse_boolean,
-  json_tokener_error_parse_number,
-  json_tokener_error_parse_array,
-  json_tokener_error_parse_object_key_name,
-  json_tokener_error_parse_object_key_sep,
-  json_tokener_error_parse_object_value_sep,
-  json_tokener_error_parse_string,
-  json_tokener_error_parse_comment,
-  json_tokener_error_size
+enum fjson_tokener_error {
+  fjson_tokener_success,
+  fjson_tokener_continue,
+  fjson_tokener_error_depth,
+  fjson_tokener_error_parse_eof,
+  fjson_tokener_error_parse_unexpected,
+  fjson_tokener_error_parse_null,
+  fjson_tokener_error_parse_boolean,
+  fjson_tokener_error_parse_number,
+  fjson_tokener_error_parse_array,
+  fjson_tokener_error_parse_object_key_name,
+  fjson_tokener_error_parse_object_key_sep,
+  fjson_tokener_error_parse_object_value_sep,
+  fjson_tokener_error_parse_string,
+  fjson_tokener_error_parse_comment,
+  fjson_tokener_error_size
 };
 
-enum json_tokener_state {
-  json_tokener_state_eatws,
-  json_tokener_state_start,
-  json_tokener_state_finish,
-  json_tokener_state_null,
-  json_tokener_state_comment_start,
-  json_tokener_state_comment,
-  json_tokener_state_comment_eol,
-  json_tokener_state_comment_end,
-  json_tokener_state_string,
-  json_tokener_state_string_escape,
-  json_tokener_state_escape_unicode,
-  json_tokener_state_boolean,
-  json_tokener_state_number,
-  json_tokener_state_array,
-  json_tokener_state_array_add,
-  json_tokener_state_array_sep,
-  json_tokener_state_object_field_start,
-  json_tokener_state_object_field,
-  json_tokener_state_object_field_end,
-  json_tokener_state_object_value,
-  json_tokener_state_object_value_add,
-  json_tokener_state_object_sep,
-  json_tokener_state_array_after_sep,
-  json_tokener_state_object_field_start_after_sep,
-  json_tokener_state_inf
+enum fjson_tokener_state {
+  fjson_tokener_state_eatws,
+  fjson_tokener_state_start,
+  fjson_tokener_state_finish,
+  fjson_tokener_state_null,
+  fjson_tokener_state_comment_start,
+  fjson_tokener_state_comment,
+  fjson_tokener_state_comment_eol,
+  fjson_tokener_state_comment_end,
+  fjson_tokener_state_string,
+  fjson_tokener_state_string_escape,
+  fjson_tokener_state_escape_unicode,
+  fjson_tokener_state_boolean,
+  fjson_tokener_state_number,
+  fjson_tokener_state_array,
+  fjson_tokener_state_array_add,
+  fjson_tokener_state_array_sep,
+  fjson_tokener_state_object_field_start,
+  fjson_tokener_state_object_field,
+  fjson_tokener_state_object_field_end,
+  fjson_tokener_state_object_value,
+  fjson_tokener_state_object_value_add,
+  fjson_tokener_state_object_sep,
+  fjson_tokener_state_array_after_sep,
+  fjson_tokener_state_object_field_start_after_sep,
+  fjson_tokener_state_inf
 };
 
-struct json_tokener_srec
+struct fjson_tokener_srec
 {
-  enum json_tokener_state state, saved_state;
-  struct json_object *obj;
-  struct json_object *current;
+  enum fjson_tokener_state state, saved_state;
+  struct fjson_object *obj;
+  struct fjson_object *current;
   char *obj_field_name;
 };
 
-#define JSON_TOKENER_DEFAULT_DEPTH 32
+#define FJSON_TOKENER_DEFAULT_DEPTH 32
 
-struct json_tokener
+struct fjson_tokener
 {
   char *str;
   struct printbuf *pb;
   int max_depth, depth, is_double, st_pos, char_offset;
-  enum json_tokener_error err;
+  enum fjson_tokener_error err;
   unsigned int ucs_char;
   char quote_char;
-  struct json_tokener_srec *stack;
+  struct fjson_tokener_srec *stack;
   int flags;
 };
 
@@ -95,61 +95,61 @@ struct json_tokener
  *
  * This flag is not set by default.
  *
- * @see json_tokener_set_flags()
+ * @see fjson_tokener_set_flags()
  */
-#define JSON_TOKENER_STRICT  0x01
+#define FJSON_TOKENER_STRICT  0x01
 
 /**
- * Given an error previously returned by json_tokener_get_error(),
+ * Given an error previously returned by fjson_tokener_get_error(),
  * return a human readable description of the error.
  *
  * @return a generic error message is returned if an invalid error value is provided.
  */
-const char *json_tokener_error_desc(enum json_tokener_error jerr);
+const char *fjson_tokener_error_desc(enum fjson_tokener_error jerr);
 
 /**
- * Retrieve the error caused by the last call to json_tokener_parse_ex(),
- * or json_tokener_success if there is no error.
+ * Retrieve the error caused by the last call to fjson_tokener_parse_ex(),
+ * or fjson_tokener_success if there is no error.
  *
  * When parsing a JSON string in pieces, if the tokener is in the middle
- * of parsing this will return json_tokener_continue.
+ * of parsing this will return fjson_tokener_continue.
  *
- * See also json_tokener_error_desc().
+ * See also fjson_tokener_error_desc().
  */
-enum json_tokener_error json_tokener_get_error(struct json_tokener *tok);
+enum fjson_tokener_error fjson_tokener_get_error(struct fjson_tokener *tok);
 
-extern struct json_tokener* json_tokener_new(void);
-extern struct json_tokener* json_tokener_new_ex(int depth);
-extern void json_tokener_free(struct json_tokener *tok);
-extern void json_tokener_reset(struct json_tokener *tok);
-extern struct json_object* json_tokener_parse(const char *str);
-extern struct json_object* json_tokener_parse_verbose(const char *str, enum json_tokener_error *error);
+extern struct fjson_tokener* fjson_tokener_new(void);
+extern struct fjson_tokener* fjson_tokener_new_ex(int depth);
+extern void fjson_tokener_free(struct fjson_tokener *tok);
+extern void fjson_tokener_reset(struct fjson_tokener *tok);
+extern struct fjson_object* fjson_tokener_parse(const char *str);
+extern struct fjson_object* fjson_tokener_parse_verbose(const char *str, enum fjson_tokener_error *error);
 
 /**
  * Set flags that control how parsing will be done.
  */
-extern void json_tokener_set_flags(struct json_tokener *tok, int flags);
+extern void fjson_tokener_set_flags(struct fjson_tokener *tok, int flags);
 
 /**
- * Parse a string and return a non-NULL json_object if a valid JSON value
+ * Parse a string and return a non-NULL fjson_object if a valid JSON value
  * is found.  The string does not need to be a JSON object or array;
  * it can also be a string, number or boolean value.
  *
  * A partial JSON string can be parsed.  If the parsing is incomplete,
- * NULL will be returned and json_tokener_get_error() will be return
- * json_tokener_continue.
- * json_tokener_parse_ex() can then be called with additional bytes in str
+ * NULL will be returned and fjson_tokener_get_error() will be return
+ * fjson_tokener_continue.
+ * fjson_tokener_parse_ex() can then be called with additional bytes in str
  * to continue the parsing.
  *
- * If json_tokener_parse_ex() returns NULL and the error anything other than
- * json_tokener_continue, a fatal error has occurred and parsing must be
- * halted.  Then tok object must not be re-used until json_tokener_reset() is
+ * If fjson_tokener_parse_ex() returns NULL and the error anything other than
+ * fjson_tokener_continue, a fatal error has occurred and parsing must be
+ * halted.  Then tok object must not be re-used until fjson_tokener_reset() is
  * called.
  *
- * When a valid JSON value is parsed, a non-NULL json_object will be
- * returned.  Also, json_tokener_get_error() will return json_tokener_success.
- * Be sure to check the type with json_object_is_type() or
- * json_object_get_type() before using the object.
+ * When a valid JSON value is parsed, a non-NULL fjson_object will be
+ * returned.  Also, fjson_tokener_get_error() will return fjson_tokener_success.
+ * Be sure to check the type with fjson_object_is_type() or
+ * fjson_object_get_type() before using the object.
  *
  * @b XXX this shouldn't use internal fields:
  * Trailing characters after the parsed value do not automatically cause an
@@ -161,7 +161,7 @@ extern void json_tokener_set_flags(struct json_tokener *tok, int flags);
  * the length of the last len parameter passed in.
  *
  * The tokener does \b not maintain an internal buffer so the caller is
- * responsible for calling json_tokener_parse_ex with an appropriate str
+ * responsible for calling fjson_tokener_parse_ex with an appropriate str
  * parameter starting with the extra characters.
  *
  * This interface is presently not 64-bit clean due to the int len argument
@@ -171,18 +171,18 @@ extern void json_tokener_set_flags(struct json_tokener *tok, int flags);
  *
  * Example:
  * @code
-json_object *jobj = NULL;
+fjson_object *jobj = NULL;
 const char *mystring = NULL;
 int stringlen = 0;
-enum json_tokener_error jerr;
+enum fjson_tokener_error jerr;
 do {
 	mystring = ...  // get JSON string, e.g. read from file, etc...
 	stringlen = strlen(mystring);
-	jobj = json_tokener_parse_ex(tok, mystring, stringlen);
-} while ((jerr = json_tokener_get_error(tok)) == json_tokener_continue);
-if (jerr != json_tokener_success)
+	jobj = fjson_tokener_parse_ex(tok, mystring, stringlen);
+} while ((jerr = fjson_tokener_get_error(tok)) == fjson_tokener_continue);
+if (jerr != fjson_tokener_success)
 {
-	fprintf(stderr, "Error: %s\n", json_tokener_error_desc(jerr));
+	fprintf(stderr, "Error: %s\n", fjson_tokener_error_desc(jerr));
 	// Handle errors, as appropriate for your application.
 }
 if (tok->char_offset < stringlen) // XXX shouldn't access internal fields
@@ -194,11 +194,11 @@ if (tok->char_offset < stringlen) // XXX shouldn't access internal fields
 
 @endcode
  *
- * @param tok a json_tokener previously allocated with json_tokener_new()
+ * @param tok a fjson_tokener previously allocated with fjson_tokener_new()
  * @param str an string with any valid JSON expression, or portion of.  This does not need to be null terminated.
  * @param len the length of str
  */
-extern struct json_object* json_tokener_parse_ex(struct json_tokener *tok,
+extern struct fjson_object* fjson_tokener_parse_ex(struct fjson_tokener *tok,
 						 const char *str, int len);
 
 #ifdef __cplusplus

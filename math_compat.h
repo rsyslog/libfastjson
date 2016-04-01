@@ -1,5 +1,5 @@
-#ifndef __math_compat_h
-#define __math_compat_h
+#ifndef __fj_math_compat_h
+#define __fj_math_compat_h
 
 /* Define isnan, isinf, infinity and nan on Windows/MSVC */
 

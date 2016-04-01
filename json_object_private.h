@@ -1,5 +1,5 @@
 /*
- * $Id: json_object_private.h,v 1.4 2006/01/26 02:16:28 mclark Exp $
+ * $Id: fjson_object_private.h,v 1.4 2006/01/26 02:16:28 mclark Exp $
  *
  * Copyright (c) 2004, 2005 Metaparadigm Pte. Ltd.
  * Michael Clark <michael@metaparadigm.com>
@@ -10,8 +10,8 @@
  *
  */
 
-#ifndef _json_object_private_h_
-#define _json_object_private_h_
+#ifndef _fj_json_object_private_h_
+#define _fj_json_object_private_h_
 
 #include "atomic.h"
 
@@ -19,19 +19,19 @@
 extern "C" {
 #endif
 
-#define LEN_DIRECT_STRING_DATA 32 /**< how many bytes are directly stored in json_object for strings? */
+#define LEN_DIRECT_STRING_DATA 32 /**< how many bytes are directly stored in fjson_object for strings? */
 
-typedef void (json_object_private_delete_fn)(struct json_object *o);
+typedef void (fjson_object_private_delete_fn)(struct fjson_object *o);
 
-struct json_object
+struct fjson_object
 {
-  enum json_type o_type;
-  json_object_private_delete_fn *_delete;
-  json_object_to_json_string_fn *_to_json_string;
+  enum fjson_type o_type;
+  fjson_object_private_delete_fn *_delete;
+  fjson_object_to_json_string_fn *_to_json_string;
   int _ref_count;
   struct printbuf *_pb;
   union data {
-    json_bool c_boolean;
+    fjson_bool c_boolean;
     double c_double;
     int64_t c_int64;
     struct lh_table *c_object;
@@ -47,7 +47,7 @@ struct json_object
         int len;
     } c_string;
   } o;
-  json_object_delete_fn *_user_delete;
+  fjson_object_delete_fn *_user_delete;
   void *_userdata;
   DEF_ATOMIC_HELPER_MUT(_mut_ref_count)
 };
