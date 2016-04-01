@@ -2,6 +2,7 @@
  * gcc -o utf8 utf8.c -I/home/y/include -L./.libs -ljson
  */
 
+#include "config.h"
 #include <stdio.h>
 #include <string.h>
 #include "config.h"

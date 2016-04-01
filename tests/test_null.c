@@ -2,9 +2,9 @@
 * Tests if binary strings are supported.
 */
 
+#include "config.h"
 #include <stdio.h>
 #include <string.h>
-#include "config.h"
 
 #include "json_inttypes.h"
 #include "json_object.h"

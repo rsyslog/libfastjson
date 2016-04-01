@@ -3,10 +3,10 @@
  * Also checks the json_object_get_type and json_object_is_type functions.
  */
 
+#include "config.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "config.h"
 
 #include "../json_inttypes.h"
 #include "../json_object.h"
