@@ -5,6 +5,7 @@ AC_INIT([libfastjson], 0.99.3, [rsyslog@lists.adiscon.com])
 
 AM_INIT_AUTOMAKE
 
+AC_PROG_CC_C99
 AC_PROG_MAKE_SET
 
 AC_ARG_ENABLE(rdrand,
