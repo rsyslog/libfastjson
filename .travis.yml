@@ -8,6 +8,9 @@ os:
   - linux
   - osx
 
+env:
+  - CFLAGS="-Wall -Wextra -Wformat-security -Wshadow -Wcast-align -Wpointer-arith -Wmissing-format-attribute"
+
 before_install:
   - echo $LANG
   - echo $LC_ALL
