@@ -8,8 +8,6 @@
  * it under the terms of the MIT license. See COPYING for details.
  *
  */
-
-#define _GNU_SOURCE
 #include <stdio.h>
 #include "config.h"
 #include "random_seed.h"
