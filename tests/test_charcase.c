@@ -10,7 +10,7 @@
 
 static void test_case_parse(void);
 
-int main(int argc, char **argv)
+int main(int __attribute__((unused)) argc, char __attribute__((unused)) **argv)
 {
 	MC_SET_DEBUG(1);
 

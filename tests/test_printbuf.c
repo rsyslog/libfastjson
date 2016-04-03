@@ -148,7 +148,7 @@ static void test_sprintbuf(int before_resize)
 	printf("%s: end test\n", __func__);
 }
 
-int main(int argc, char **argv)
+int main(int __attribute__((unused)) argc, char __attribute__((unused)) **argv)
 {
 	int before_resize = 0;
 

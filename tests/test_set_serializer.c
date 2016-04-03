@@ -27,7 +27,7 @@ static int custom_serializer(struct fjson_object *o,
 	return 0;
 }
 
-int main(int argc, char **argv)
+int main(int __attribute__((unused)) argc, char __attribute__((unused)) **argv)
 {
 	fjson_object *my_object;
 

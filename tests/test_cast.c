@@ -17,7 +17,7 @@ static void getit(struct fjson_object *new_obj, const char *field);
 static void checktype_header(void);
 static void checktype(struct fjson_object *new_obj, const char *field);
 
-int main(int argc, char **argv)
+int main(int __attribute__((unused)) argc, char __attribute__((unused)) **argv)
 {
 	const char *input = "{\n\
 		\"string_of_digits\": \"123\",\n\

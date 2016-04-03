@@ -34,7 +34,7 @@ static int sort_fn (const void *j1, const void *j2)
 /* no special define */
 #endif
 
-int main(int argc, char **argv)
+int main(int __attribute__((unused)) argc, char __attribute__((unused)) **argv)
 {
 	fjson_object *my_string, *my_int, *my_object, *my_array;
 	int i;

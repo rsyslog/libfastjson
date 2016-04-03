@@ -12,7 +12,7 @@ static void test_basic_parse(void);
 static void test_verbose_parse(void);
 static void test_incremental_parse(void);
 
-int main(int argc, char **argv)
+int main(int __attribute__((unused)) argc, char __attribute__((unused)) **argv)
 {
 	MC_SET_DEBUG(1);
 

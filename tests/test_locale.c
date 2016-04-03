@@ -12,7 +12,7 @@
 #include <locale.h>
 #endif /* HAVE_LOCALE_H */
 
-int main(int argc, char **argv)
+int main(int __attribute__((unused)) argc, char __attribute__((unused)) **argv)
 {
 	fjson_object *new_obj;
 #ifdef HAVE_SETLOCALE

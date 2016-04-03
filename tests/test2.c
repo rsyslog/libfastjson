@@ -14,7 +14,7 @@
 #endif
 
 
-int main(int argc, char **argv)
+int main(int __attribute__((unused)) argc, char __attribute__((unused)) **argv)
 {
 	fjson_object *new_obj;
 #ifdef TEST_FORMATTED
