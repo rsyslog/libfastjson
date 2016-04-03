@@ -8,8 +8,8 @@
  * it under the terms of the MIT license. See COPYING for details.
  *
  */
-#include <stdio.h>
 #include "config.h"
+#include <stdio.h>
 #include "random_seed.h"
 
 #define DEBUG_SEED(s)
