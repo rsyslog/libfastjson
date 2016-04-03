@@ -11,17 +11,17 @@ struct myinfo {
 };
 
 static int freeit_was_called = 0;
-static void freeit(fjson_object *jso, void *userdata)
+static void freeit(fjson_object __attribute__((unused)) *jso, void *userdata)
 {
 	struct myinfo *info = userdata;
 	printf("freeit, value=%d\n", info->value);
 	// Don't actually free anything here, the userdata is stack allocated.
 	freeit_was_called = 1;
 }
-static int custom_serializer(struct fjson_object *o,
+static int custom_serializer(struct fjson_object __attribute__((unused)) *o,
 					struct printbuf *pb,
-					int level,
-					int flags)
+					int __attribute__((unused)) level,
+					int __attribute__((unused)) flags)
 {
 	sprintbuf(pb, "Custom Output");
 	return 0;
