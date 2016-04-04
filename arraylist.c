@@ -3,6 +3,7 @@
  *
  * Copyright (c) 2004, 2005 Metaparadigm Pte. Ltd.
  * Michael Clark <michael@metaparadigm.com>
+ * Copyright (c) 2016 Rainer Gerhards
  *
  * This library is free software; you can redistribute it and/or modify
  * it under the terms of the MIT license. See COPYING for details.
@@ -88,18 +89,35 @@ array_list_add(struct array_list *arr, void *data)
   return array_list_put_idx(arr, arr->length, data);
 }
 
+/* work around wrong compiler message: GCC and clang do
+ * not handle sort_fn correctly if -Werror is given.
+ */
+#pragma GCC diagnostic push
+#ifdef __clang__
+#pragma GCC diagnostic ignored "-Wincompatible-pointer-types"
+#else
+#pragma GCC diagnostic ignored "-Werror"
+#endif
 void
 array_list_sort(struct array_list *arr, int(*sort_fn)(const void *, const void *))
 {
   qsort(arr->array, arr->length, sizeof(arr->array[0]), sort_fn);
 }
+#pragma GCC diagnostic pop
 
+#pragma GCC diagnostic push
+#ifdef __clang__
+#pragma GCC diagnostic ignored "-Wincompatible-pointer-types"
+#else
+#pragma GCC diagnostic ignored "-Werror"
+#endif
 void* array_list_bsearch(const void **key, struct array_list *arr,
 		int (*sort_fn)(const void *, const void *))
 {
 	return bsearch(key, arr->array, arr->length, sizeof(arr->array[0]),
 			sort_fn);
 }
+#pragma GCC diagnostic pop
 
 int
 array_list_length(struct array_list *arr)

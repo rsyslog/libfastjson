@@ -86,7 +86,7 @@ fjson_object_iter_begin(struct fjson_object* obj)
  * ****************************************************************************
  */
 struct fjson_object_iterator
-fjson_object_iter_end(const struct fjson_object* __attribute__((unused)) obj)
+fjson_object_iter_end(const struct fjson_object __attribute__((unused)) *obj)
 {
     struct fjson_object_iterator iter;
 

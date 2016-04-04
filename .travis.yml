@@ -9,7 +9,8 @@ os:
   - osx
 
 env:
-  - CFLAGS="-Werror -Wall -Wextra -Wformat-security -Wshadow -Wcast-align -Wpointer-arith -Wmissing-format-attribute -Wuninitialized"
+  # Note: we cannot give -Werror, as this confuses ./configure
+  - CFLAGS="-Wall -Wextra -Wformat-security -Wshadow -Wcast-align -Wpointer-arith -Wmissing-format-attribute -Wuninitialized"
 
 before_install:
   - echo $LANG

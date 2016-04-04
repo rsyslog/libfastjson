@@ -33,6 +33,7 @@ libfastjsoninclude_HEADERS = \
 #	json_config.h
 
 libfastjson_la_LDFLAGS = -version-info 3:0:0 -no-undefined @JSON_BSYMBOLIC_LDFLAGS@
+libfastjson_la_CPPFLAGS = -Werror
 
 libfastjson_la_SOURCES = \
 	arraylist.c \
