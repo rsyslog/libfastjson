@@ -3,6 +3,8 @@
 * @file fjson_object_iterator.c
 *
 * Copyright (c) 2009-2012 Hewlett-Packard Development Company, L.P.
+* Copyright (c) 2016 Adiscon GmbH
+* Rainer Gerhards <rgerhards@adiscon.com>
 *
 * This library is free software; you can redistribute it and/or modify
 * it under the terms of the MIT license. See COPYING for details.
@@ -84,7 +86,7 @@ fjson_object_iter_begin(struct fjson_object* obj)
  * ****************************************************************************
  */
 struct fjson_object_iterator
-fjson_object_iter_end(const struct fjson_object* obj)
+fjson_object_iter_end(const struct fjson_object* __attribute__((unused)) obj)
 {
     struct fjson_object_iterator iter;
 

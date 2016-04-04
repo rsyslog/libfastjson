@@ -555,8 +555,8 @@ void fjson_object_object_del(struct fjson_object* jso, const char *key)
 
 static int fjson_object_boolean_to_json_string(struct fjson_object* jso,
 					      struct printbuf *pb,
-					      int level,
-						  int flags)
+					      int __attribute__((unused)) level,
+						  int __attribute__((unused)) flags)
 {
 	if (jso->o.c_boolean)
 		printbuf_memappend_no_nul(pb, "true", 4);
@@ -599,8 +599,8 @@ fjson_bool fjson_object_get_boolean(struct fjson_object *jso)
 
 static int fjson_object_int_to_json_string(struct fjson_object* jso,
 					  struct printbuf *pb,
-					  int level,
-					  int flags)
+					  int __attribute__((unused)) level,
+					  int __attribute__((unused)) flags)
 {
 	sprintbuf(pb, "%" PRId64, jso->o.c_int64);
 	return 0; /* we need to keep compatible with the API */
@@ -692,8 +692,8 @@ int64_t fjson_object_get_int64(struct fjson_object *jso)
 
 static int fjson_object_double_to_json_string(struct fjson_object* jso,
 					     struct printbuf *pb,
-					     int level,
-						 int flags)
+					     int __attribute__((unused)) level,
+						 int __attribute__((unused)) flags)
 {
   char buf[128], *p, *q;
   int size;
@@ -760,14 +760,14 @@ struct fjson_object* fjson_object_new_double_s(double d, const char *ds)
 }
 
 int fjson_object_userdata_to_json_string(struct fjson_object *jso,
-	struct printbuf *pb, int level, int flags)
+	struct printbuf *pb, int __attribute__((unused)) level, int __attribute__((unused)) flags)
 {
 	int userdata_len = strlen((const char *)jso->_userdata);
 	printbuf_memappend_no_nul(pb, (const char *)jso->_userdata, userdata_len);
 	return 0; /* we need to keep compatible with the API */
 }
 
-void fjson_object_free_userdata(struct fjson_object *jso, void *userdata)
+void fjson_object_free_userdata(struct fjson_object __attribute__((unused)) *jso, void *userdata)
 {
 	free(userdata);
 }
@@ -826,8 +826,8 @@ double fjson_object_get_double(struct fjson_object *jso)
 
 static int fjson_object_string_to_json_string(struct fjson_object* jso,
 					     struct printbuf *pb,
-					     int level,
-						 int flags)
+					     int __attribute__((unused)) level,
+					     int __attribute__((unused)) flags)
 {
 	printbuf_memappend_char(pb, '\"');
 	fjson_escape_str(pb, get_string_component(jso));
