@@ -9,7 +9,7 @@ os:
   - osx
 
 env:
-  - CFLAGS="-Wall -Wextra -Wformat-security -Wshadow -Wcast-align -Wpointer-arith -Wmissing-format-attribute"
+  - CFLAGS="-Werror -Wall -Wextra -Wformat-security -Wshadow -Wcast-align -Wpointer-arith -Wmissing-format-attribute -Wuninitialized"
 
 before_install:
   - echo $LANG
