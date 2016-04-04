@@ -3,6 +3,8 @@
  *
  * Copyright (c) 2004, 2005 Metaparadigm Pte. Ltd.
  * Michael Clark <michael@metaparadigm.com>
+ * Copyright (c) 2016 Adiscon GmbH
+ * Rainer Gerhards <rgerhards@adiscon.com>
  *
  * This library is free software; you can redistribute it and/or modify
  * it under the terms of the MIT license. See COPYING for details.
@@ -306,7 +308,7 @@ const char *fjson_type_to_name(enum fjson_type o_type)
 	int o_type_int = (int)o_type;
 	if (o_type_int < 0 || o_type_int >= (int)NELEM(fjson_type_name))
 	{
-		MC_ERROR("fjson_type_to_name: type %d is out of range [0,%d]\n", o_type, NELEM(fjson_type_name));
+		MC_ERROR("fjson_type_to_name: type %d is out of range [0,%lu]\n", o_type, NELEM(fjson_type_name));
 		return NULL;
 	}
 	return fjson_type_name[o_type];
