@@ -8,6 +8,11 @@ os:
   - linux
   - osx
 
+addons:
+  apt:
+    packages:
+      - clang
+
 env:
   # Note: we cannot give -Werror, as this confuses ./configure
   - CFLAGS="-Wall -Wextra -Wformat-security -Wshadow -Wcast-align -Wpointer-arith -Wmissing-format-attribute -Wuninitialized"
@@ -23,6 +28,7 @@ before_script:
   - ./configure
 
 script:
+  - if [ "$CC" == "clang" ] && [ "$TRAVIS_OS_NAME" == "linux" ]; then  scan-build --status-bugs make check TESTS="" && make clean ; fi
   - make
   - export VERBOSE=1
   - make check
