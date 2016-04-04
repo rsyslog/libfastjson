@@ -72,7 +72,7 @@ extern int
 printbuf_memset(struct printbuf *pb, int offset, int charvalue, int len);
 
 extern int
-sprintbuf(struct printbuf *p, const char *msg, ...);
+sprintbuf(struct printbuf *p, const char *msg, ...) __attribute__((__format__(__printf__, 2, 3)));
 
 extern void
 printbuf_reset(struct printbuf *p);

@@ -4,6 +4,8 @@
  * Copyright (c) 2004, 2005 Metaparadigm Pte. Ltd.
  * Michael Clark <michael@metaparadigm.com>
  * Copyright (c) 2009 Hewlett-Packard Development Company, L.P.
+ * Copyright (c) 2016 Adiscon GmbH
+ * Rainer Gerhards <rgerhards@adiscon.com>
  *
  * This library is free software; you can redistribute it and/or modify
  * it under the terms of the MIT license. See COPYING for details.
@@ -24,9 +26,9 @@ extern int mc_get_debug(void);
 
 extern void mc_set_syslog(int syslog);
 
-extern void mc_debug(const char *msg, ...);
-extern void mc_error(const char *msg, ...);
-extern void mc_info(const char *msg, ...);
+extern void mc_debug(const char *msg, ...) __attribute__((format(printf, 1, 2)));
+extern void mc_error(const char *msg, ...) __attribute__((format(printf, 1, 2)));
+extern void mc_info(const char *msg, ...) __attribute__((format(printf, 1, 2)));
 
 #ifndef __STRING
 #define __STRING(x) #x
