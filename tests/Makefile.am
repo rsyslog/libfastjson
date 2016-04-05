@@ -23,6 +23,9 @@ TESTS+= test_set_serializer.test
 check_PROGRAMS=
 check_PROGRAMS += $(TESTS:.test=)
 
+test_printbuf_SOURCES = test_printbuf.c ../printbuf.c ../debug.c
+test_set_serializer_SOURCES = test_set_serializer.c ../printbuf.c
+
 # Note: handled by test1.test
 check_PROGRAMS += test1Formatted 
 test1Formatted_SOURCES = test1.c parse_flags.c parse_flags.h
