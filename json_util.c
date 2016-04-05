@@ -159,7 +159,7 @@ int fjson_object_to_file_ext(const char *filename, struct fjson_object *obj, int
 
 int fjson_object_to_file(const char *filename, struct fjson_object *obj)
 {
-  return fjson_object_to_file_ext(filename, obj, FJSON_C_TO_STRING_PLAIN);
+  return fjson_object_to_file_ext(filename, obj, FJSON_TO_STRING_PLAIN);
 }
 
 int fjson_parse_double(const char *buf, double *retval)

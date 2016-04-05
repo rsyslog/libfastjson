@@ -4,7 +4,7 @@
 
 #include "json_config.h"
 
-#ifdef FJSON_C_HAVE_INTTYPES_H
+#ifdef FJSON_HAVE_INTTYPES_H
 /* inttypes.h includes stdint.h */
 #include <inttypes.h>
 

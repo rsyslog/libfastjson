@@ -35,13 +35,13 @@ extern "C" {
  * fjson_object_to_file_ext() functions which causes the output
  * to have no extra whitespace or formatting applied.
  */
-#define FJSON_C_TO_STRING_PLAIN      0
+#define FJSON_TO_STRING_PLAIN      0
 /**
  * A flag for the fjson_object_to_json_string_ext() and
  * fjson_object_to_file_ext() functions which causes the output to have
  * minimal whitespace inserted to make things slightly more readable.
  */
-#define FJSON_C_TO_STRING_SPACED     (1<<0)
+#define FJSON_TO_STRING_SPACED     (1<<0)
 /**
  * A flag for the fjson_object_to_json_string_ext() and
  * fjson_object_to_file_ext() functions which causes
@@ -50,7 +50,7 @@ extern "C" {
  * See the "Two Space Tab" option at http://jsonformatter.curiousconcept.com/
  * for an example of the format.
  */
-#define FJSON_C_TO_STRING_PRETTY     (1<<1)
+#define FJSON_TO_STRING_PRETTY     (1<<1)
 /**
  * A flag for the fjson_object_to_json_string_ext() and
  * fjson_object_to_file_ext() functions which causes
@@ -58,11 +58,11 @@ extern "C" {
  *
  * Instead of a "Two Space Tab" this gives a single tab character.
  */
-#define FJSON_C_TO_STRING_PRETTY_TAB (1<<3)
+#define FJSON_TO_STRING_PRETTY_TAB (1<<3)
 /**
  * A flag to drop trailing zero for float values
  */
-#define FJSON_C_TO_STRING_NOZERO     (1<<2)
+#define FJSON_TO_STRING_NOZERO     (1<<2)
 
 /**
  * A flag for the fjson_object_object_add_ex function which
@@ -74,7 +74,7 @@ extern "C" {
  * knows for sure the key values are unique (e.g. because the
  * code adds a well-known set of constant key values).
  */
-#define FJSON_C_OBJECT_ADD_KEY_IS_NEW (1<<1)
+#define FJSON_OBJECT_ADD_KEY_IS_NEW (1<<1)
 /**
  * A flag for the fjson_object_object_add_ex function which
  * flags the key as being constant memory. This means that
@@ -90,9 +90,9 @@ extern "C" {
  * key is given as a real constant value in the function
  * call, e.g. as in
  *   fjson_object_object_add_ex(obj, "ip", json,
- *       FJSON_C_OBJECT_KEY_IS_CONSTANT);
+ *       FJSON_OBJECT_KEY_IS_CONSTANT);
  */
-#define FJSON_C_OBJECT_KEY_IS_CONSTANT (1<<2)
+#define FJSON_OBJECT_KEY_IS_CONSTANT (1<<2)
 
 #undef FALSE
 #define FALSE ((fjson_bool)0)
@@ -199,7 +199,7 @@ extern enum fjson_type fjson_object_get_type(struct fjson_object *obj);
 
 
 /** Stringify object to json format.
- * Equivalent to fjson_object_to_json_string_ext(obj, FJSON_C_TO_STRING_SPACED)
+ * Equivalent to fjson_object_to_json_string_ext(obj, FJSON_TO_STRING_SPACED)
  * The pointer you get is an internal of your json object. You don't
  * have to free it, later use of fjson_object_put() should be sufficient.
  * If you can not ensure there's no concurrent access to *obj use
@@ -212,7 +212,7 @@ extern const char* fjson_object_to_json_string(struct fjson_object *obj);
 /** Stringify object to json format
  * @see fjson_object_to_json_string() for details on how to free string.
  * @param obj the fjson_object instance
- * @param flags formatting options, see FJSON_C_TO_STRING_PRETTY and other constants
+ * @param flags formatting options, see FJSON_TO_STRING_PRETTY and other constants
  * @returns a string in JSON format
  */
 extern const char* fjson_object_to_json_string_ext(struct fjson_object *obj, int
@@ -318,7 +318,7 @@ extern void fjson_object_object_add(struct fjson_object* obj, const char *key,
  *
  * The semantics are identical to fjson_object_object_add, except that an
  * additional flag fields gives you more control over some detail aspects
- * of processing. See the description of FJSON_C_OBJECT_ADD_* flags for more
+ * of processing. See the description of FJSON_OBJECT_ADD_* flags for more
  * details.
  *
  * @param obj the fjson_object instance

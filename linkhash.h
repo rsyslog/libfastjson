@@ -48,16 +48,16 @@ extern "C" {
 /**
  * default string hash function
  */
-#define FJSON_C_STR_HASH_DFLT 0
+#define FJSON_STR_HASH_DFLT 0
 
 /**
  * perl-like string hash function
  */
-#define FJSON_C_STR_HASH_PERLLIKE 1
+#define FJSON_STR_HASH_PERLLIKE 1
 
 /**
  * This function sets the hash function to be used for strings.
- * Must be one of the FJSON_C_STR_HASH_* values.
+ * Must be one of the FJSON_STR_HASH_* values.
  * @returns 0 - ok, -1 if parameter was invalid
  */
 int fjson_global_set_string_hash(const int h);

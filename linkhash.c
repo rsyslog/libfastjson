@@ -40,10 +40,10 @@ int
 fjson_global_set_string_hash(const int h)
 {
 	switch(h) {
-	case FJSON_C_STR_HASH_DFLT:
+	case FJSON_STR_HASH_DFLT:
 		char_hash_fn = lh_char_hash;
 		break;
-	case FJSON_C_STR_HASH_PERLLIKE:
+	case FJSON_STR_HASH_PERLLIKE:
 		char_hash_fn = lh_perllike_str_hash;
 		break;
 	default:
@@ -519,7 +519,7 @@ void lh_table_resize(struct lh_table *t, int new_size)
 	while(ent) {
 		lh_table_insert_w_hash(new_t, ent->k, ent->v,
 			lh_get_hash(new_t, ent->k),
-			(ent->k_is_constant) ? FJSON_C_OBJECT_KEY_IS_CONSTANT : 0 );
+			(ent->k_is_constant) ? FJSON_OBJECT_KEY_IS_CONSTANT : 0 );
 		ent = ent->next;
 	}
 	if(t->table != t->dflt_table)
@@ -559,7 +559,7 @@ int lh_table_insert_w_hash(struct lh_table *t, void *k, const void *v, const uns
 	}
 
 	t->table[n].k = k;
-	t->table[n].k_is_constant = (opts & FJSON_C_OBJECT_KEY_IS_CONSTANT);
+	t->table[n].k_is_constant = (opts & FJSON_OBJECT_KEY_IS_CONSTANT);
 	t->table[n].v = v;
 	t->count++;
 

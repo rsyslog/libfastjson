@@ -16,9 +16,9 @@ static struct {
 	const char *arg;
 	int flag;
 } format_args[] = {
-	{ "plain", FJSON_C_TO_STRING_PLAIN },
-	{ "spaced", FJSON_C_TO_STRING_SPACED },
-	{ "pretty", FJSON_C_TO_STRING_PRETTY },
+	{ "plain", FJSON_TO_STRING_PLAIN },
+	{ "spaced", FJSON_TO_STRING_SPACED },
+	{ "pretty", FJSON_TO_STRING_PRETTY },
 };
 
 #ifndef NELEM

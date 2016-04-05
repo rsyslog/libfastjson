@@ -10,11 +10,11 @@
 
 const char *fjson_c_version(void)
 {
-	return FJSON_C_VERSION;
+	return FJSON_VERSION;
 }
 
 int fjson_c_version_num(void)
 {
-	return FJSON_C_VERSION_NUM;
+	return FJSON_VERSION_NUM;
 }
 

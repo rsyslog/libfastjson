@@ -356,14 +356,14 @@ const char* fjson_object_to_json_string_ext(struct fjson_object *jso, int flags)
 
 const char* fjson_object_to_json_string(struct fjson_object *jso)
 {
-	return fjson_object_to_json_string_ext(jso, FJSON_C_TO_STRING_SPACED);
+	return fjson_object_to_json_string_ext(jso, FJSON_TO_STRING_SPACED);
 }
 
 static void indent(struct printbuf *pb, int level, int flags)
 {
-	if (flags & FJSON_C_TO_STRING_PRETTY)
+	if (flags & FJSON_TO_STRING_PRETTY)
 	{
-		if (flags & FJSON_C_TO_STRING_PRETTY_TAB)
+		if (flags & FJSON_TO_STRING_PRETTY_TAB)
 		{
 			printbuf_memset(pb, -1, '\t', level);
 		}
@@ -385,23 +385,23 @@ static int fjson_object_object_to_json_string(struct fjson_object* jso,
 	struct fjson_object_iter iter;
 
 	printbuf_memappend_char(pb, '{' /*}*/);
-	if (flags & FJSON_C_TO_STRING_PRETTY)
+	if (flags & FJSON_TO_STRING_PRETTY)
 		printbuf_memappend_char(pb, '\n');
 	fjson_object_object_foreachC(jso, iter)
 	{
 		if (had_children)
 		{
 			printbuf_memappend_char(pb, ',');
-			if (flags & FJSON_C_TO_STRING_PRETTY)
+			if (flags & FJSON_TO_STRING_PRETTY)
 				printbuf_memappend_char(pb, '\n');
 		}
 		had_children = 1;
-		if (flags & FJSON_C_TO_STRING_SPACED)
+		if (flags & FJSON_TO_STRING_SPACED)
 			printbuf_memappend_char(pb, ' ');
 		indent(pb, level+1, flags);
 		printbuf_memappend_char(pb, '\"');
 		fjson_escape_str(pb, iter.key);
-		if (flags & FJSON_C_TO_STRING_SPACED)
+		if (flags & FJSON_TO_STRING_SPACED)
 			printbuf_memappend_no_nul(pb, "\": ", 3);
 		else
 			printbuf_memappend_no_nul(pb, "\":", 2);
@@ -410,13 +410,13 @@ static int fjson_object_object_to_json_string(struct fjson_object* jso,
 		else
 			iter.val->_to_json_string(iter.val, pb, level+1,flags);
 	}
-	if (flags & FJSON_C_TO_STRING_PRETTY)
+	if (flags & FJSON_TO_STRING_PRETTY)
 	{
 		if (had_children)
 			printbuf_memappend_no_nul(pb, "\n",1);
 		indent(pb,level,flags);
 	}
-	if (flags & FJSON_C_TO_STRING_SPACED)
+	if (flags & FJSON_TO_STRING_SPACED)
 		printbuf_memappend_no_nul(pb, /*{*/ " }", 2);
 	else
 		printbuf_memappend_char(pb, /*{*/ '}');
@@ -478,11 +478,11 @@ void fjson_object_object_add_ex(struct fjson_object* jso,
 	fjson_object *existing_value = NULL;
 	struct lh_entry *existing_entry;
 	const unsigned long hash = lh_get_hash(jso->o.c_object, (void*)key);
-	existing_entry = (opts & FJSON_C_OBJECT_ADD_KEY_IS_NEW) ? NULL : 
+	existing_entry = (opts & FJSON_OBJECT_ADD_KEY_IS_NEW) ? NULL : 
 			      lh_table_lookup_entry_w_hash(jso->o.c_object, (void*)key, hash);
 	if (!existing_entry)
 	{
-		void *const k = (opts & FJSON_C_OBJECT_KEY_IS_CONSTANT) ?
+		void *const k = (opts & FJSON_OBJECT_KEY_IS_CONSTANT) ?
 					(void*)key : strdup(key);
 		lh_table_insert_w_hash(jso->o.c_object, k, val, hash, opts);
 		return;
@@ -717,7 +717,7 @@ static int fjson_object_double_to_json_string(struct fjson_object* jso,
   } else {
     p = strchr(buf, '.');
   }
-  if (p && (flags & FJSON_C_TO_STRING_NOZERO)) {
+  if (p && (flags & FJSON_TO_STRING_NOZERO)) {
     /* last useful digit, always keep 1 zero */
     p++;
     for (q=p ; *q ; q++) {
@@ -927,7 +927,7 @@ static int fjson_object_array_to_json_string(struct fjson_object* jso,
 	int had_children = 0;
 	int ii;
 	printbuf_memappend_char(pb, '[');
-	if (flags & FJSON_C_TO_STRING_PRETTY)
+	if (flags & FJSON_TO_STRING_PRETTY)
 		printbuf_memappend_char(pb, '\n');
 	for(ii=0; ii < fjson_object_array_length(jso); ii++)
 	{
@@ -935,11 +935,11 @@ static int fjson_object_array_to_json_string(struct fjson_object* jso,
 		if (had_children)
 		{
 			printbuf_memappend_char(pb, ',');
-			if (flags & FJSON_C_TO_STRING_PRETTY)
+			if (flags & FJSON_TO_STRING_PRETTY)
 				printbuf_memappend_char(pb, '\n');
 		}
 		had_children = 1;
-		if (flags & FJSON_C_TO_STRING_SPACED)
+		if (flags & FJSON_TO_STRING_SPACED)
 			printbuf_memappend_char(pb, ' ');
 		indent(pb, level + 1, flags);
 		val = fjson_object_array_get_idx(jso, ii);
@@ -948,14 +948,14 @@ static int fjson_object_array_to_json_string(struct fjson_object* jso,
 		else
 			val->_to_json_string(val, pb, level+1, flags);
 	}
-	if (flags & FJSON_C_TO_STRING_PRETTY)
+	if (flags & FJSON_TO_STRING_PRETTY)
 	{
 		if (had_children)
 			printbuf_memappend_char(pb, '\n');
 		indent(pb,level,flags);
 	}
 
-	if (flags & FJSON_C_TO_STRING_SPACED)
+	if (flags & FJSON_TO_STRING_SPACED)
 		printbuf_memappend_no_nul(pb, " ]", 2);
 	else
 		printbuf_memappend_char(pb, ']');
