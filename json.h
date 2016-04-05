@@ -4,6 +4,8 @@
  * Copyright (c) 2004, 2005 Metaparadigm Pte. Ltd.
  * Michael Clark <michael@metaparadigm.com>
  * Copyright (c) 2009 Hewlett-Packard Development Company, L.P.
+ * Copyright (c) 2016 Adiscon GmbH
+ * Rainer Gerhards <rgerhards@adiscon.com>
  *
  * This library is free software; you can redistribute it and/or modify
  * it under the terms of the MIT license. See COPYING for details.

@@ -691,6 +691,89 @@ extern int fjson_object_get_string_len(struct fjson_object *obj);
  * @returns int
  */
 int fjson_object_get_member_count(struct fjson_object *jso);
+
+
+/* The following is a source code compatibility layer
+ * in regard to json-c.
+ * It currently is aimed at the rsyslog family of projects,
+ * we may extend or drop it later.
+ */
+#ifndef FJSON_NATIVE_API_ONLY
+
+#define JSON_C_TO_STRING_PLAIN      FJSON_TO_STRING_PLAIN
+#define JSON_C_TO_STRING_SPACED FJSON_TO_STRING_SPACED
+#define JSON_C_TO_STRING_PRETTY FJSON_TO_STRING_PRETTY
+#define JSON_C_TO_STRING_PRETTY_TAB FJSON_TO_STRING_PRETTY_TAB
+#define JSON_C_TO_STRING_NOZERO FJSON_TO_STRING_NOZERO
+#define JSON_C_OBJECT_ADD_KEY_IS_NEW FJSON_OBJECT_ADD_KEY_IS_NEW
+#define JSON_C_OBJECT_KEY_IS_CONSTANT FJSON_OBJECT_KEY_IS_CONSTANT
+
+
+/* forward structure definitions */
+
+#if 0
+typedef int fjson_bool;
+typedef struct printbuf printbuf;
+typedef struct lh_table lh_table;
+typedef struct array_list array_list;
+typedef struct fjson_object fjson_object;
+typedef struct fjson_tokener fjson_tokener;
+#endif
+
+#define json_bool fjson_bool
+#define json_type fjson_type
+#define json_type_null fjson_type_null
+#define json_type_boolean fjson_type_boolean
+#define json_type_double fjson_type_double
+#define json_type_int fjson_type_int
+#define json_type_object fjson_type_object
+#define json_type_array fjson_type_array
+#define json_type_string fjson_type_string
+#define json_object_iter fjson_object_iter
+
+#define json_object fjson_object
+
+#define json_object_get fjson_object_get
+#define json_object_put fjson_object_put
+#define json_object_is_type fjson_object_is_type
+#define json_object_get_type(x) fjson_object_get_type((x))
+#define json_object_to_json_string(x) fjson_object_to_json_string((x))
+#define json_object_to_json_string_ext(a, b) fjson_object_to_json_string_ext((a), (b))
+#define json_object_new_object() fjson_object_new_object()
+#define json_object_object_length(a) fjson_object_object_length((a))
+#define json_object_object_add(a, b, c) fjson_object_object_add((a), (b), (c))
+#define json_object_object_add_ex fjson_object_object_add_ex
+#define json_object_object_get_ex fjson_object_object_get_ex
+#define json_object_object_foreach fjson_object_object_foreach
+#define json_object_object_foreachC fjson_object_object_foreachC
+#define json_object_object_get fjson_object_object_get
+#define json_object_object_del fjson_object_object_del
+#define json_object_get_object fjson_object_get_object
+#define json_object_new_array fjson_object_new_array
+#define json_object_get_array fjson_object_get_array
+#define json_object_array_length fjson_object_array_length
+#define json_object_array_sort fjson_object_array_sort
+#define json_object_array_bsearch fjson_object_array_bsearch
+#define json_object_array_add fjson_object_array_add
+#define json_object_array_put_idx fjson_object_array_put_idx
+#define json_object_array_get_idx fjson_object_array_get_idx
+#define json_object_new_boolean fjson_object_new_boolean
+#define json_object_get_boolean fjson_object_get_boolean
+#define json_object_new_int fjson_object_new_int
+#define json_object_new_int64 fjson_object_new_int64
+#define json_object_new_double fjson_object_new_double
+#define json_object_new_double_s fjson_object_new_double_s
+#define json_object_get_double fjson_object_get_double
+#define json_object_new_string fjson_object_new_string
+#define json_object_new_string_len fjson_object_new_string_len
+#define json_object_get_string fjson_object_get_string
+#define json_object_get_int fjson_object_get_int
+#define json_object_get_int64 fjson_object_get_int64
+#define json_object_get_string_len fjson_object_get_string_len
+#define json_object_get_member_count fjson_object_get_member_count
+
+
+#endif
 #ifdef __cplusplus
 }
 #endif

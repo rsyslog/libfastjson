@@ -1,3 +1,10 @@
+Compatibility Layer
+libfastjson offers some limited source code compatiblity to
+json-c via preprocessor macros. They are currently primarily
+targeted at what the rsyslog family of projects need.
+Also, they do not work work properly with ./configure checks.
+This is due to the way autotools checks for functions.
+
 Differences to json-c
 
 * we do NOT handle NUL characters inside strings or names
