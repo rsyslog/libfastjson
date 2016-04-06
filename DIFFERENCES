@@ -1,5 +1,9 @@
 Differences to json-c
 
+* hash tables are no longer part of the API; we may use them
+  internally, but we may also use any other data structure. This
+  is not of concern for the caller.
+
 * we do NOT handle NUL characters inside strings or names
   At the time of fork, json-c did not properly handle this, but
   could at least, with tricks, generate outbound json with NUL
@@ -8,3 +12,8 @@ Differences to json-c
   for that, but we try to keep things working great in the C
   spirit, and that JSON feature simply doesn't play well here.
   If you need 100% JSON compliance, look for another library.
+
+* Windows and Android are not supported. If you want to actively
+  maintain libfastjson on those platforms, please let us know
+  and we can work together (a long term commitment) to get this
+  going again.

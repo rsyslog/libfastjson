@@ -2,6 +2,22 @@ libfastjson
 ===========
 **NOTE: libfastjson is a fork from json-c, and is currently under development.**
 
+The aim of this project is **not** to provide a slightly modified clone
+of json-c. It's aim is to provide
+
+* a **small** library with essential json handling functions
+* sufficiently good json support (not 100% standards compliant)
+* be very fast in processing
+
+In order to reach these goals, we reduce the features of json-c. For
+similarities and differences, see the file DIFFERENCES.
+ 
+**IMPORTANT**
+The current API is **not** stable and will change until version 1.0.0 is
+reached. We plan to reach it by summer 2016 at latest. With 1.0.0, the API
+will be stable. Until then, everything may change. Of course, we will not
+deliberatly break things but we need freedom to restructure.
+
 
 Building on Unix with `git`, `gcc` and `autotools`
 --------------------------------------------------
@@ -54,7 +70,7 @@ LDFLAGS += $(shell pkg-config --libs libfastjson)
 Without `pkgconfig`, you would do something like this:
 
 ```make
-JSON_C_DIR=/path/to/json_c/install
-CFLAGS += -I$(JSON_C_DIR)/include/libfastjson
-LDFLAGS+= -L$(JSON_C_DIR)/lib -llibfastjson
+LIBFASTJSON_DIR=/path/to/json_c/install
+CFLAGS += -I$(LIBFASTJSON_DIR)/include/libfastjson
+LDFLAGS+= -L$(LIBFASTJSON_DIR)/lib -llibfastjson
 ```
