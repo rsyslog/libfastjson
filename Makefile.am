@@ -1,6 +1,6 @@
 
-EXTRA_DIST = README.html \
-	atomic.h
+EXTRA_DIST = README.html
+
 SUBDIRS = . tests
 
 lib_LTLIBRARIES = libfastjson.la 
@@ -10,6 +10,7 @@ pkgconfig_DATA = libfastjson.pc
 
 libfastjsonincludedir = $(includedir)/libfastjson
 libfastjsoninclude_HEADERS = \
+	atomic.h \
 	arraylist.h \
 	debug.h \
 	json.h \
