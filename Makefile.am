@@ -49,17 +49,8 @@ libfastjson_la_SOURCES = \
 	random_seed.c
 
 
-distclean-local:
-	-rm -rf $(testsubdir)
-	-rm -rf config.h.in~ Makefile.in aclocal.m4 autom4te.cache/ config.guess config.sub depcomp install-sh ltmain.sh missing
-	-rm -f INSTALL test-driver tests/Makefile.in compile
-
-maintainer-clean-local:
-	-rm -rf configure
-
 uninstall-local:
 	rm -rf "$(DESTDIR)@includedir@/libfastjson"
-	rm -f "$(DESTDIR)@includedir@/json"
 
 ANDROID_CFLAGS = -I$(top_srcdir) -DHAVE_CONFIG_H
 
