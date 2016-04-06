@@ -23,6 +23,12 @@ TESTS+= test_set_serializer.test
 check_PROGRAMS=
 check_PROGRAMS += $(TESTS:.test=)
 
+# some programs that do internal checking
+TESTS += chk_version
+
+check_PROGRAMS += chk_version
+chk_version_SOURCES = chk_version.c
+
 test_printbuf_SOURCES = test_printbuf.c ../printbuf.c ../debug.c
 test_set_serializer_SOURCES = test_set_serializer.c ../printbuf.c
 
