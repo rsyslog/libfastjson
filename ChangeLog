@@ -1,4 +1,6 @@
 0.99.3 2016-0?-??
+- fjson_version now returns configure VERSION
+  This avoid inconsistency.
 - removal of Windows and Android bits
   Thanks to Michael Biebl for the patch.
 - fixes of the build system

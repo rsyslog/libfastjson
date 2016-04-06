@@ -4,6 +4,8 @@
  * Copyright (c) 2004, 2005 Metaparadigm Pte. Ltd.
  * Michael Clark <michael@metaparadigm.com>
  * Copyright (c) 2009 Hewlett-Packard Development Company, L.P.
+ * Copyright (c) 2016 Adiscon GmbH
+ * Rainer Gerhards <rgerhards@adiscon.com>
  *
  * This library is free software; you can redistribute it and/or modify
  * it under the terms of the MIT license. See COPYING for details.
@@ -24,7 +26,6 @@ extern "C" {
 #include "json_object.h"
 #include "json_tokener.h"
 #include "json_object_iterator.h"
-#include "json_c_version.h"
 
 /**
  * Set initial size allocation for memory when creating strings,
@@ -45,8 +46,11 @@ extern "C" {
  *
  * @param size new initial size for printbuf (formatting buffer)
  */
-extern void
-fjson_global_set_printbuf_initial_size(int size);
+extern void fjson_global_set_printbuf_initial_size(int size);
+/**
+ * report the current libfastjson version
+ */
+extern const char *fjson_version(void);
 #ifdef __cplusplus
 }
 #endif

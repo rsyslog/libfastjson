@@ -15,7 +15,6 @@ libfastjsoninclude_HEADERS = \
 	debug.h \
 	json.h \
 	json_config.h \
-	json_c_version.h \
 	json_inttypes.h \
 	json_object.h \
 	json_object_iterator.h \
@@ -38,7 +37,7 @@ libfastjson_la_CPPFLAGS = -Werror
 libfastjson_la_SOURCES = \
 	arraylist.c \
 	debug.c \
-	json_c_version.c \
+	json_version.c \
 	json_object.c \
 	json_object_iterator.c \
 	json_tokener.c \

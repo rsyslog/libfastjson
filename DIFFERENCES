@@ -1,4 +1,5 @@
 Differences to json-c
+---------------------
 
 * hash tables are no longer part of the API; we may use them
   internally, but we may also use any other data structure. This
@@ -17,3 +18,17 @@ Differences to json-c
   maintain libfastjson on those platforms, please let us know
   and we can work together (a long term commitment) to get this
   going again.
+
+* removed API calls:
+  If you need any of this API calls urgently, please let us know
+  why you consider it important enough to become re-added;
+  especially let us know why you think this is important to the
+  community at large. Thanks.
+  * [f]json_c_version_num()
+
+* renamed API calls:
+  * all calls have been added an "f" in the front
+  json_* --> fjson_*
+  * the same holds true for preprocessor defines,
+    JSON_C_* --> FJSON_* (note removal of "_C")
+  * json_c_version() -> fjson_version()
