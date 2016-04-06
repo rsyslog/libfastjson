@@ -16,8 +16,6 @@
 
 #ifdef __GNUC__
 #define THIS_FUNCTION_IS_DEPRECATED(func) func __attribute__ ((deprecated))
-#elif defined(_MSC_VER)
-#define THIS_FUNCTION_IS_DEPRECATED(func) __declspec(deprecated) func
 #else
 #define THIS_FUNCTION_IS_DEPRECATED(func) func
 #endif

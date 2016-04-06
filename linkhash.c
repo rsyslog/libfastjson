@@ -23,11 +23,6 @@
 # include <endian.h>    /* attempt to define endianness */
 #endif
 
-#ifdef _MSC_VER
-# define WIN32_LEAN_AND_MEAN
-# include <windows.h>   /* Get InterlockedCompareExchange */
-#endif
-
 #include "random_seed.h"
 #include "linkhash.h"
 
@@ -449,8 +444,6 @@ static unsigned long lh_char_hash(const void *k)
 		while ((seed = fjson_c_get_random_seed()) == -1);
 #if defined __GNUC__
 		(void)__sync_val_compare_and_swap(&random_seed, -1, seed);
-#elif defined _MSC_VER
-		InterlockedCompareExchange((LONG *)&random_seed, seed, -1);
 #else
 #warning "racy random seed initializtion if used by multiple threads"
 		random_seed = seed; /* potentially racy */

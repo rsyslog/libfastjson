@@ -1,5 +1,5 @@
 
-EXTRA_DIST = README.html README-WIN32.html config.h.win32 json-c.vcproj \
+EXTRA_DIST = README.html \
 	atomic.h
 SUBDIRS = . tests
 
@@ -11,7 +11,6 @@ pkgconfig_DATA = libfastjson.pc
 libfastjsonincludedir = $(includedir)/libfastjson
 libfastjsoninclude_HEADERS = \
 	arraylist.h \
-	math_compat.h \
 	bits.h \
 	debug.h \
 	json.h \
@@ -60,20 +59,5 @@ maintainer-clean-local:
 uninstall-local:
 	rm -rf "$(DESTDIR)@includedir@/libfastjson"
 	rm -f "$(DESTDIR)@includedir@/json"
-
-ANDROID_CFLAGS = -I$(top_srcdir) -DHAVE_CONFIG_H
-
-Android.mk: Makefile.am
-	androgenizer -:PROJECT libfastjson \
-		-:SHARED libfastjson \
-		-:TAGS eng debug \
-		-:REL_TOP $(top_srcdir) -:ABS_TOP $(abs_top_srcdir) \
-		-:SOURCES $(libfastjson_la_SOURCES) $(nodist_libfastjson_la_SOURCES) \
-		-:CFLAGS $(DEFS) $(ANDROID_CFLAGS) $(libfastjson_la_CFLAGS) \
-		-:LDFLAGS $(libfastjson_la_LDFLAGS) $(libfastjson_la_LIBADD) \
-		-:HEADER_TARGET libfastjson \
-		-:HEADERS $(libfastjsoninclude_HEADERS) \
-		-:PASSTHROUGH LOCAL_ARM_MODE:=arm \
-	> $@
 
 ACLOCAL_AMFLAGS = -I m4
