@@ -40,11 +40,6 @@ static void do_cpuid(int regs[], int h)
                          : "a"(h));
 }
 
-#elif defined _MSC_VER
-
-#define HAS_X86_CPUID 1
-#define do_cpuid __cpuid
-
 #endif
 
 /* has_rdrand */
@@ -80,41 +75,6 @@ static int get_rdrand_seed()
     return _eax;
 }
 
-#endif
-
-#if defined _MSC_VER
-
-#if _MSC_VER >= 1700
-#define HAVE_RDRAND 1
-
-/* get_rdrand_seed - Visual Studio 2012 and above */
-
-static int get_rdrand_seed()
-{
-    DEBUG_SEED("get_rdrand_seed");
-    int r;
-    while (_rdrand32_step(&r) == 0);
-    return r;
-}
-
-#elif defined _M_IX86
-#define HAVE_RDRAND 1
-
-/* get_rdrand_seed - Visual Studio 2010 and below - x86 only */
-
-static int get_rdrand_seed()
-{
-	DEBUG_SEED("get_rdrand_seed");
-	int _eax;
-retry:
-	// rdrand eax
-	__asm _emit 0x0F __asm _emit 0xC7 __asm _emit 0xF0
-	__asm jnc retry
-	__asm mov _eax, eax
-	return _eax;
-}
-
-#endif
 #endif
 
 #endif /* defined ENABLE_RDRAND */
@@ -165,43 +125,6 @@ static int get_dev_random_seed()
     }
 
     close(fd);
-    return r;
-}
-
-#endif
-
-
-/* get_cryptgenrandom_seed */
-
-#ifdef WIN32
-
-#define HAVE_CRYPTGENRANDOM 1
-
-#include <windows.h>
-#include <wincrypt.h>
-#ifndef __GNUC__
-#pragma comment(lib, "advapi32.lib")
-#endif
-
-static int get_cryptgenrandom_seed()
-{
-    DEBUG_SEED("get_cryptgenrandom_seed");
-
-    HCRYPTPROV hProvider = 0;
-    int r;
-
-    if (!CryptAcquireContextW(&hProvider, 0, 0, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT | CRYPT_SILENT)) {
-        fprintf(stderr, "error CryptAcquireContextW");
-        exit(1);
-    }
-
-    if (!CryptGenRandom(hProvider, sizeof(r), (BYTE*)&r)) {
-        fprintf(stderr, "error CryptGenRandom");
-        exit(1);
-    }
-
-    CryptReleaseContext(hProvider, 0);
-
     return r;
 }
 

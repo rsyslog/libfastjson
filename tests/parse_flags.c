@@ -6,9 +6,7 @@
 #include "../json.h"
 #include "parse_flags.h"
 
-#if !defined(HAVE_STRCASECMP) && defined(_MSC_VER)
-# define strcasecmp _stricmp
-#elif !defined(HAVE_STRCASECMP)
+#if !defined(HAVE_STRCASECMP)
 # error You do not have strcasecmp on your system.
 #endif /* HAVE_STRNCASECMP */
 
