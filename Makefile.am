@@ -24,8 +24,11 @@ libfastjsoninclude_HEADERS = \
 	printbuf.h \
 	random_seed.h
 
-libfastjson_la_LDFLAGS = -version-info 3:0:0 -no-undefined @JSON_BSYMBOLIC_LDFLAGS@ \
-	-export-symbols-regex '^fjson_.*'
+libfastjson_la_LDFLAGS = \
+	-version-info 3:0:0 \
+	-export-symbols-regex '^fjson_.*' \
+	-no-undefined \
+	@JSON_BSYMBOLIC_LDFLAGS@
 
 libfastjson_la_SOURCES = \
 	arraylist.c \
