@@ -333,6 +333,12 @@ static inline unsigned long lh_get_hash(const struct lh_table *t, const void *k)
 	return t->hash_fn(k);
 }
 
+#ifndef FJSON_NATIVE_API_ONLY
+#define JSON_C_STR_HASH_PERLLIKE FJSON_STR_HASH_PERLLIKE
+#define json_global_set_string_hash fjson_global_set_string_hash
+#endif
+
+
 #ifdef __cplusplus
 }
 #endif

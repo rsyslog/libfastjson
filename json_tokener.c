@@ -61,7 +61,7 @@ static const int fjson_true_str_len = sizeof(fjson_true_str) - 1;
 static const char fjson_false_str[] = "false";
 static const int fjson_false_str_len = sizeof(fjson_false_str) - 1;
 
-static const char* fjson_tokener_errors[] = {
+const char* fjson_tokener_errors[15] = {
   "success",
   "continue",
   "nesting too deep",

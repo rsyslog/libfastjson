@@ -37,12 +37,15 @@ extern int fjson_object_to_file_ext(const char *filename, struct fjson_object *o
 extern int fjson_parse_int64(const char *buf, int64_t *retval);
 extern int fjson_parse_double(const char *buf, double *retval);
 
-
 /**
  * Return a string describing the type of the object.
  * e.g. "int", or "object", etc...
  */
 extern const char *fjson_type_to_name(enum fjson_type o_type);
+
+#ifndef FJSON_NATIVE_API_ONLY
+#define json_type_to_name fjson_type_to_name
+#endif
 
 #ifdef __cplusplus
 }

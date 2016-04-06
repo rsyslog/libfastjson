@@ -201,6 +201,21 @@ if (tok->char_offset < stringlen) // XXX shouldn't access internal fields
 extern struct fjson_object* fjson_tokener_parse_ex(struct fjson_tokener *tok,
 						 const char *str, int len);
 
+#ifndef FJSON_NATIVE_API_ONLY
+#define json_tokener fjson_tokener
+#define json_tokener_error fjson_tokener_error
+extern const char* fjson_tokener_errors[15];
+#define json_tokener_errors fjson_tokener_errors
+#define json_tokener_continue fjson_tokener_continue
+#define json_tokener_reset fjson_tokener_reset
+
+#define json_tokener_new() fjson_tokener_new()
+#define json_tokener_parse fjson_tokener_parse
+#define json_tokener_parse_ex(a, b, c) fjson_tokener_parse_ex((a), (b), (c))
+#define json_tokener_free(a) fjson_tokener_free((a))
+#define json_tokener_error_desc(a) fjson_tokener_error_desc((a))
+#endif
+
 #ifdef __cplusplus
 }
 #endif
