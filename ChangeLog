@@ -5,6 +5,8 @@
   Thanks to Michael Biebl for the patch.
 - fixes of the build system
   Thanks to Michael Biebl for the patch.
+- dropped support for Windows and Android as we do not target
+  these platforms
 
 0.99.2 2016-03-07
 - new API: json_object_get_member_count()
