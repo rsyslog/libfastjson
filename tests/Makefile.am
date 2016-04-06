@@ -25,9 +25,15 @@ check_PROGRAMS=
 check_PROGRAMS += $(TESTS:.test=)
 
 # some programs that do internal checking
+check_PROGRAMS += chk_version \
+	cr_obj_multi
+
 TESTS += chk_version
 
-check_PROGRAMS += chk_version
+check_PROGRAMS += chk_version \
+	cr_obj_multi
+
+cr_obj_multi_SOURCES = cr_obj_multi.c
 chk_version_SOURCES = chk_version.c
 
 test_printbuf_SOURCES = test_printbuf.c
