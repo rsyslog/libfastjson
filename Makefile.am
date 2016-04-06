@@ -25,7 +25,6 @@ libfastjsoninclude_HEADERS = \
 
 libfastjson_la_LDFLAGS = -version-info 3:0:0 -no-undefined @JSON_BSYMBOLIC_LDFLAGS@ \
 	-export-symbols-regex '^fjson_.*'
-libfastjson_la_CPPFLAGS = -Werror
 
 libfastjson_la_SOURCES = \
 	arraylist.c \
