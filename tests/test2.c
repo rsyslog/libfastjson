@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "../json.h"
+#include "../debug.h"
 #include "parse_flags.h"
 
 #ifdef TEST_FORMATTED

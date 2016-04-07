@@ -7,6 +7,7 @@
 
 #include "../json.h"
 #include "../json_tokener.h"
+#include "../debug.h"
 
 static void test_case_parse(void);
 
