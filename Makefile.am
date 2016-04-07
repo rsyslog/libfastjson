@@ -40,7 +40,4 @@ libfastjson_la_SOURCES = \
 	random_seed.c
 
 
-uninstall-local:
-	rm -rf "$(DESTDIR)@includedir@/libfastjson"
-
 ACLOCAL_AMFLAGS = -I m4
