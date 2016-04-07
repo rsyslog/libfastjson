@@ -53,7 +53,6 @@ RS_ATOMIC_OPERATIONS_64BIT
 # Checks for library functions.
 AC_FUNC_VPRINTF
 AC_FUNC_MEMCMP
-AC_FUNC_REALLOC
 AC_CHECK_FUNCS(strcasecmp strdup strerror snprintf vsnprintf vasprintf open vsyslog strncasecmp setlocale)
 
 if test "$ac_cv_have_decl_isnan" = "yes" ; then
