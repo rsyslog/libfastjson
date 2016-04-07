@@ -11,7 +11,6 @@ pkgconfig_DATA = libfastjson.pc
 libfastjsonincludedir = $(includedir)/libfastjson
 libfastjsoninclude_HEADERS = \
 	arraylist.h \
-	bits.h \
 	debug.h \
 	json.h \
 	json_config.h \
