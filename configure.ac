@@ -55,12 +55,6 @@ AC_FUNC_VPRINTF
 AC_FUNC_MEMCMP
 AC_FUNC_REALLOC
 AC_CHECK_FUNCS(strcasecmp strdup strerror snprintf vsnprintf vasprintf open vsyslog strncasecmp setlocale)
-AC_CHECK_DECLS([INFINITY], [], [], [[#include <math.h>]])
-AC_CHECK_DECLS([nan], [], [], [[#include <math.h>]])
-AC_CHECK_DECLS([isnan], [], [], [[#include <math.h>]])
-AC_CHECK_DECLS([isinf], [], [], [[#include <math.h>]])
-AC_CHECK_DECLS([_isnan], [], [], [[#include <float.h>]])
-AC_CHECK_DECLS([_finite], [], [], [[#include <float.h>]])
 
 if test "$ac_cv_have_decl_isnan" = "yes" ; then
    AC_TRY_LINK([#include <math.h>], [float f = 0.0; return isnan(f)], [], [LIBS="$LIBS -lm"])
