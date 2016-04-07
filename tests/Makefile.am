@@ -1,7 +1,6 @@
 
-LDADD= $(LIBJSON_LA)
-
-LIBJSON_LA=$(top_builddir)/libfastjson.la
+LDADD = $(top_builddir)/libfastjson.la \
+        $(top_builddir)/libfastjson-internal.la
 
 TESTS=
 TESTS+= test1.test
@@ -29,8 +28,8 @@ TESTS += chk_version
 check_PROGRAMS += chk_version
 chk_version_SOURCES = chk_version.c
 
-test_printbuf_SOURCES = test_printbuf.c ../printbuf.c ../debug.c
-test_set_serializer_SOURCES = test_set_serializer.c ../printbuf.c
+test_printbuf_SOURCES = test_printbuf.c
+test_set_serializer_SOURCES = test_set_serializer.c
 
 # Note: handled by test1.test
 check_PROGRAMS += test1Formatted 
