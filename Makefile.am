@@ -12,18 +12,13 @@ pkgconfig_DATA = libfastjson.pc
 libfastjsonincludedir = $(includedir)/libfastjson
 libfastjsoninclude_HEADERS = \
 	atomic.h \
-	arraylist.h \
-	debug.h \
 	json.h \
 	json_inttypes.h \
 	json_object.h \
 	json_object_iterator.h \
 	json_object_private.h \
 	json_tokener.h \
-	json_util.h \
-	linkhash.h \
-	printbuf.h \
-	random_seed.h
+	json_util.h
 
 libfastjson_la_LDFLAGS = \
 	-version-info 3:0:0 \
@@ -40,10 +35,15 @@ libfastjson_la_SOURCES = \
 	json_util.c
 
 libfastjson_internal_la_SOURCES = \
+	arraylist.h \
 	arraylist.c \
+	debug.h \
 	debug.c \
+	linkhash.h \
 	linkhash.c \
+	printbuf.h \
 	printbuf.c \
+	random_seed.h \
 	random_seed.c
 
 ACLOCAL_AMFLAGS = -I m4

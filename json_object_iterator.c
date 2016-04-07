@@ -24,6 +24,9 @@
 
 #include "json_object_iterator.h"
 
+#include "debug.h"
+#include "linkhash.h"
+
 /**
  * How It Works
  *
