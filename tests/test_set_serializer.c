@@ -5,6 +5,7 @@
 
 #include "../json.h"
 #include "../printbuf.h"
+#include "../debug.h"
 
 struct myinfo {
 	int value;

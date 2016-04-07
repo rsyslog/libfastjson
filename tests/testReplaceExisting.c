@@ -5,6 +5,8 @@
 #include <string.h>
 
 #include "../json.h"
+#include "../debug.h"
+#include "../linkhash.h"
 
 int main(int __attribute__((unused)) argc, char __attribute__((unused)) **argv)
 {

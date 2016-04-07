@@ -7,6 +7,7 @@
 
 #include "../json.h"
 #include "../json_tokener.h"
+#include "../debug.h"
 
 #ifdef HAVE_LOCALE_H
 #include <locale.h>
