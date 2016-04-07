@@ -3,7 +3,8 @@ EXTRA_DIST = README.html
 
 SUBDIRS = . tests
 
-lib_LTLIBRARIES = libfastjson.la 
+lib_LTLIBRARIES = libfastjson.la
+noinst_LTLIBRARIES = libfastjson-internal.la
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libfastjson.pc
@@ -29,19 +30,21 @@ libfastjson_la_LDFLAGS = \
 	-export-symbols-regex '^fjson_.*' \
 	-no-undefined \
 	@JSON_BSYMBOLIC_LDFLAGS@
+libfastjson_la_LIBADD = libfastjson-internal.la
 
 libfastjson_la_SOURCES = \
-	arraylist.c \
-	debug.c \
 	json_version.c \
 	json_object.c \
 	json_object_iterator.c \
 	json_tokener.c \
-	json_util.c \
+	json_util.c
+
+libfastjson_internal_la_SOURCES = \
+	arraylist.c \
+	debug.c \
 	linkhash.c \
 	printbuf.c \
 	random_seed.c
-
 
 uninstall-local:
 	rm -rf "$(DESTDIR)@includedir@/libfastjson"
