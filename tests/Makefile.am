@@ -2,6 +2,8 @@
 LDADD = $(top_builddir)/libfastjson.la \
         $(top_builddir)/libfastjson-internal.la
 
+AM_CFLAGS = $(WARN_CFLAGS)
+
 TESTS=
 TESTS+= test1.test
 TESTS+= test2.test

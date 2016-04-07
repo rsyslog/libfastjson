@@ -20,6 +20,7 @@ libfastjsoninclude_HEADERS = \
 	json_tokener.h \
 	json_util.h
 
+libfastjson_la_CFLAGS = $(WARN_CFLAGS)
 libfastjson_la_LDFLAGS = \
 	-version-info 3:0:0 \
 	-export-symbols-regex '^fjson_.*' \
@@ -34,6 +35,7 @@ libfastjson_la_SOURCES = \
 	json_tokener.c \
 	json_util.c
 
+libfastjson_internal_la_CFLAGS = $(WARN_CFLAGS)
 libfastjson_internal_la_SOURCES = \
 	arraylist.h \
 	arraylist.c \
