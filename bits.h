@@ -2,8 +2,6 @@
  * @file
  * @deprecated Use json_util.h instead.
  *
- * $Id: bits.h,v 1.10 2006/01/30 23:07:57 mclark Exp $
- *
  * Copyright (c) 2004, 2005 Metaparadigm Pte. Ltd.
  * Michael Clark <michael@metaparadigm.com>
  *

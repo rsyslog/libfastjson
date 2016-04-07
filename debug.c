@@ -1,6 +1,4 @@
 /*
- * $Id: debug.c,v 1.5 2006/01/26 02:16:28 mclark Exp $
- *
  * Copyright (c) 2004, 2005 Metaparadigm Pte. Ltd.
  * Michael Clark <michael@metaparadigm.com>
  * Copyright (c) 2016 Adiscon GmbH

@@ -1,6 +1,4 @@
 /*
- * $Id: linkhash.c,v 1.4 2006/01/26 02:16:28 mclark Exp $
- *
  * Copyright (c) 2004, 2005 Metaparadigm Pte. Ltd.
  * Michael Clark <michael@metaparadigm.com>
  * Copyright (c) 2009 Hewlett-Packard Development Company, L.P.
