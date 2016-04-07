@@ -1,10 +1,20 @@
 *~
 *.swp
+*.swo
+*.tar.gz
+callgrind.out.*
+tmp
 /INSTALL
+.dirstamp
 .deps/
 .libs/
 /aclocal.m4
 /autom4te.cache
+m4/libtool.m4
+m4/ltoptions.m4
+m4/ltsugar.m4
+m4/ltversion.m4
+m4/lt~obsolete.m4
 /config.guess
 /json_config.h
 /compile
@@ -16,9 +26,8 @@
 /depcomp
 /doc
 /install-sh
-/json.pc
-/json-c.pc
-/json-c-uninstalled.pc
+/libfastjson.pc
+/libfastjson-uninstalled.pc
 /libtool
 /ltmain.sh
 /Makefile
@@ -44,6 +53,7 @@
 /tests/test_null
 /tests/test_printbuf
 /tests/test_set_serializer
+/tests/chk_version
 /tests/*.vg.out
 /tests/*.log
 /tests/*.trs
@@ -53,5 +63,5 @@
 /*/Release
 *.lo
 *.o
-/libjson-c.la
+/libfastjson.la
 /libjson.la
