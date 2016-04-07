@@ -8,6 +8,9 @@
 
 int main(int __attribute__((unused)) argc, char __attribute__((unused)) **argv)
 {
+	struct fjson_object_iterator it;
+	struct fjson_object_iterator itEnd;
+	const char *key;
 	MC_SET_DEBUG(1);
 
 	/*
@@ -23,16 +26,19 @@ int main(int __attribute__((unused)) argc, char __attribute__((unused)) **argv)
 	printf("==== delete-in-loop test starting ====\n");
 
 	int orig_count = 0;
-	fjson_object_object_foreach(my_object, key0, val0)
-	{
-		printf("Key at index %d is [%s]", orig_count, key0);
-		if (strcmp(key0, "deleteme") == 0)
-		{
-			fjson_object_object_del(my_object, key0);
+	itEnd = fjson_object_iter_end(my_object);
+	it = fjson_object_iter_begin(my_object);
+	while (!fjson_object_iter_equal(&it, &itEnd)) {
+		key = fjson_object_iter_peek_name(&it);
+		printf("Key at index %d is [%s]", orig_count, key);
+		/* need to advance now, as del invalidates "it" */
+		fjson_object_iter_next(&it);
+		if (strcmp(key, "deleteme") == 0) {
+			fjson_object_object_del(my_object, key);
 			printf(" (deleted)\n");
-		}
-		else
+		} else {
 			printf(" (kept)\n");
+		}
 		orig_count++;
 	}
 
@@ -40,8 +46,12 @@ int main(int __attribute__((unused)) argc, char __attribute__((unused)) **argv)
 
 	const char *original_key = NULL;
 	orig_count = 0;
-	fjson_object_object_foreach(my_object, key, val)
-	{
+	itEnd = fjson_object_iter_end(my_object);
+	it = fjson_object_iter_begin(my_object);
+	while (!fjson_object_iter_equal(&it, &itEnd)) {
+		key = fjson_object_iter_peek_name(&it);
+		/* need to advance now, as modify invalidates "it" */
+		fjson_object_iter_next(&it);
 		printf("Key at index %d is [%s]\n", orig_count, key);
 		orig_count++;
 		if (strcmp(key, "foo2") != 0)
@@ -55,15 +65,19 @@ int main(int __attribute__((unused)) argc, char __attribute__((unused)) **argv)
 
 	int new_count = 0;
 	int retval = 0;
-	fjson_object_object_foreach(my_object, key2, val2)
-	{
-		printf("Key at index %d is [%s]\n", new_count, key2);
+	itEnd = fjson_object_iter_end(my_object);
+	it = fjson_object_iter_begin(my_object);
+	while (!fjson_object_iter_equal(&it, &itEnd)) {
+		key = fjson_object_iter_peek_name(&it);
+		/* need to advance now, as modify invalidates "it" */
+		fjson_object_iter_next(&it);
+		printf("Key at index %d is [%s]\n", new_count, key);
 		new_count++;
-		if (strcmp(key2, "foo2") != 0)
+		if (strcmp(key, "foo2") != 0)
 			continue;
-		printf("pointer for key [%s] does %smatch\n", key2,
-		       (key2 == original_key) ? "" : "NOT ");
-		if (key2 != original_key)
+		printf("pointer for key [%s] does %smatch\n", key,
+		       (key == original_key) ? "" : "NOT ");
+		if (key != original_key)
 			retval = 1;
 	}
 	if (new_count != orig_count)

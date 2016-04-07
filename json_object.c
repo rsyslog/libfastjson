@@ -26,6 +26,7 @@
 #include "json_inttypes.h"
 #include "json_object.h"
 #include "json_object_private.h"
+#include "json_object_iterator.h"
 #include "json_util.h"
 
 #if !defined(HAVE_STRDUP)
@@ -372,14 +373,15 @@ static int fjson_object_object_to_json_string(struct fjson_object* jso,
 					     int level,
 						 int flags)
 {
+	struct fjson_object *val;
 	int had_children = 0;
-	struct fjson_object_iter iter;
 
 	printbuf_memappend_char(pb, '{' /*}*/);
 	if (flags & FJSON_TO_STRING_PRETTY)
 		printbuf_memappend_char(pb, '\n');
-	fjson_object_object_foreachC(jso, iter)
-	{
+	struct fjson_object_iterator it = fjson_object_iter_begin(jso);
+	struct fjson_object_iterator itEnd = fjson_object_iter_end(jso);
+	while (!fjson_object_iter_equal(&it, &itEnd)) {
 		if (had_children)
 		{
 			printbuf_memappend_char(pb, ',');
@@ -391,15 +393,17 @@ static int fjson_object_object_to_json_string(struct fjson_object* jso,
 			printbuf_memappend_char(pb, ' ');
 		indent(pb, level+1, flags);
 		printbuf_memappend_char(pb, '\"');
-		fjson_escape_str(pb, iter.key);
+		fjson_escape_str(pb, fjson_object_iter_peek_name(&it));
 		if (flags & FJSON_TO_STRING_SPACED)
 			printbuf_memappend_no_nul(pb, "\": ", 3);
 		else
 			printbuf_memappend_no_nul(pb, "\":", 2);
-		if(iter.val == NULL)
+		val = fjson_object_iter_peek_value(&it);
+		if(val == NULL)
 			printbuf_memappend_no_nul(pb, "null", 4);
 		else
-			iter.val->_to_json_string(iter.val, pb, level+1,flags);
+			val->_to_json_string(val, pb, level+1,flags);
+		fjson_object_iter_next(&it);
 	}
 	if (flags & FJSON_TO_STRING_PRETTY)
 	{

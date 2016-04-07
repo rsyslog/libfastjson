@@ -120,10 +120,15 @@ int main(int __attribute__((unused)) argc, char __attribute__((unused)) **argv)
 
 	/*fjson_object_object_add(my_object, "arr", my_array);*/
 	printf("my_object=\n");
-	fjson_object_object_foreach(my_object, key, val)
-	{
-		printf("\t%s: %s\n", key, fjson_object_to_json_string(val));
+	struct fjson_object_iterator it = fjson_object_iter_begin(my_object);
+	struct fjson_object_iterator itEnd = fjson_object_iter_end(my_object);
+	while (!fjson_object_iter_equal(&it, &itEnd)) {
+		printf("\t%s: %s\n",
+			fjson_object_iter_peek_name(&it),
+			fjson_object_to_json_string(fjson_object_iter_peek_value(&it)));
+		fjson_object_iter_next(&it);
 	}
+
 	printf("my_object.to_string()=%s\n", fjson_object_to_json_string(my_object));
 
 	fjson_object_put(my_string);
