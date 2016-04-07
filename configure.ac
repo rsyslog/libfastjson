@@ -2,8 +2,9 @@ AC_PREREQ(2.52)
 
 # Process this file with autoconf to produce a configure script.
 AC_INIT([libfastjson], 0.99.3, [rsyslog@lists.adiscon.com])
+AC_CONFIG_HEADER(config.h)
 
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([subdir-objects])
 
 AC_PROG_CC_C99
 AC_PROG_MAKE_SET
@@ -34,8 +35,6 @@ AC_CONFIG_MACRO_DIR([m4])
 
 # Checks for header files.
 AM_PROG_CC_C_O
-AC_CONFIG_HEADER(config.h)
-AC_CONFIG_HEADER(json_config.h)
 AC_HEADER_STDC
 AC_CHECK_HEADERS(fcntl.h limits.h strings.h syslog.h unistd.h [sys/cdefs.h] [sys/param.h] stdarg.h locale.h endian.h)
 AC_CHECK_HEADER(inttypes.h,[AC_DEFINE([FJSON_HAVE_INTTYPES_H],[1],[Public define for json_inttypes.h])])

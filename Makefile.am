@@ -13,7 +13,6 @@ libfastjsoninclude_HEADERS = \
 	arraylist.h \
 	debug.h \
 	json.h \
-	json_config.h \
 	json_inttypes.h \
 	json_object.h \
 	json_object_iterator.h \
