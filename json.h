@@ -17,9 +17,6 @@
 extern "C" {
 #endif
 
-#include "debug.h"
-#include "linkhash.h"
-#include "arraylist.h"
 #include "json_util.h"
 #include "json_object.h"
 #include "json_tokener.h"
