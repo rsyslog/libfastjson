@@ -379,55 +379,6 @@ extern fjson_bool fjson_object_object_get_ex(struct fjson_object* obj,
  */
 extern void fjson_object_object_del(struct fjson_object* obj, const char *key);
 
-/**
- * Iterate through all keys and values of an object.
- *
- * Adding keys to the object while iterating is NOT allowed.
- *
- * Deleting an existing key, or replacing an existing key with a
- * new value IS allowed.
- *
- * @param obj the fjson_object instance
- * @param key the local name for the char* key variable defined in the body
- * @param val the local name for the fjson_object* object variable defined in
- *            the body
- */
-#if defined(__GNUC__) && !defined(__STRICT_ANSI__) && __STDC_VERSION__ >= 199901L
-
-# define fjson_object_object_foreach(obj,key,val) \
-	char *key = NULL; \
-	struct fjson_object *val __attribute__((__unused__)) = NULL; \
-	for(struct lh_entry *entry ## key = fjson_object_get_object(obj)->head, *entry_next ## key = NULL; \
-		({ if(entry ## key) { \
-			key = (char*)entry ## key->k; \
-			val = (struct fjson_object*)entry ## key->v; \
-			entry_next ## key = entry ## key->next; \
-		} ; entry ## key; }); \
-		entry ## key = entry_next ## key )
-
-#else /* ANSI C or MSC */
-
-# define fjson_object_object_foreach(obj,key,val) \
-	char *key;\
-	struct fjson_object *val; \
-	struct lh_entry *entry ## key; \
-	struct lh_entry *entry_next ## key = NULL; \
-	for(entry ## key = fjson_object_get_object(obj)->head; \
-		(entry ## key ? ( \
-			key = (char*)entry ## key->k, \
-			val = (struct fjson_object*)entry ## key->v, \
-			entry_next ## key = entry ## key->next, \
-			entry ## key) : 0); \
-		entry ## key = entry_next ## key)
-
-#endif /* defined(__GNUC__) && !defined(__STRICT_ANSI__) && __STDC_VERSION__ >= 199901L */
-
-/** Iterate through all keys and values of an object (ANSI C Safe)
- * @param obj the fjson_object instance
- * @param iter the object iterator
- */
-#define fjson_object_object_foreachC(obj,iter) \
- for(iter.entry = fjson_object_get_object(obj)->head; (iter.entry ? (iter.key = (char*)iter.entry->k, iter.val = (struct fjson_object*)iter.entry->v, iter.entry) : 0); iter.entry = iter.entry->next)
 
 /* Array type methods */
 
