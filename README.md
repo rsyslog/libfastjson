@@ -37,7 +37,7 @@ Make sure you have a complete `libtool` install, including `libtoolize`.
 `libfastjson` GitHub repo: https://github.com/rsyslog/libfastjson
 
 ```bash
-$ git clone https://github.com/libfastjson/libfastjson.git
+$ git clone https://github.com/rsyslog/libfastjson.git
 $ cd libfastjson
 $ sh autogen.sh
 ```
