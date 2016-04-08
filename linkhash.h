@@ -43,22 +43,6 @@ extern "C" {
  */
 #define LH_FREED (void*)-2
 
-/**
- * default string hash function
- */
-#define FJSON_STR_HASH_DFLT 0
-
-/**
- * perl-like string hash function
- */
-#define FJSON_STR_HASH_PERLLIKE 1
-
-/**
- * This function sets the hash function to be used for strings.
- * Must be one of the FJSON_STR_HASH_* values.
- * @returns 0 - ok, -1 if parameter was invalid
- */
-int fjson_global_set_string_hash(const int h);
 
 struct lh_entry;
 
@@ -330,11 +314,6 @@ static inline unsigned long lh_get_hash(const struct lh_table *t, const void *k)
 {
 	return t->hash_fn(k);
 }
-
-#ifndef FJSON_NATIVE_API_ONLY
-#define JSON_C_STR_HASH_PERLLIKE FJSON_STR_HASH_PERLLIKE
-#define json_global_set_string_hash fjson_global_set_string_hash
-#endif
 
 
 #ifdef __cplusplus
