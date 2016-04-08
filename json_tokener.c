@@ -543,6 +543,12 @@ struct fjson_object* fjson_tokener_parse_ex(struct fjson_tokener *tok,
 		    printbuf_memappend_fast(tok->pb, (char*)utf8_replacement_char, 3);
                   }
                   got_hi_surrogate = 0;
+                  /* clang static analyzer thins that got_hi_surrogate is never read,
+		   * however, it is read on each iteration. So I assume clang has a false
+		   * positive. We use the otherwise nonsense statement below to make it
+		   * happy.
+		   */
+		  if(got_hi_surrogate) {};
                 }
 
 		if (tok->ucs_char < 0x80) {
