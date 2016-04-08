@@ -12,6 +12,11 @@ Differences to json-c
   internally, but we may also use any other data structure. This
   is not of concern for the caller.
 
+* we removed the json_object_object_foreach[C] macros, which
+  required the caller to known library implementation details.
+  The same functionality is provided in a clean way via
+  fjson_object_iter_*()
+
 * we do NOT handle NUL characters inside strings or names
   At the time of fork, json-c did not properly handle this, but
   could at least, with tricks, generate outbound json with NUL
