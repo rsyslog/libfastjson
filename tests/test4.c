@@ -11,7 +11,7 @@
 #include "../json_object.h"
 #include "../json_tokener.h"
 
-void print_hex( const char* s)
+static void print_hex( const char* s)
 {
 	const char *iter = s;
 	unsigned char ch;

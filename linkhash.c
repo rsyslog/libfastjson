@@ -46,7 +46,7 @@ fjson_global_set_string_hash(const int h)
 	return 0;
 }
 
-void lh_abort(const char *msg, ...)
+void __attribute__((noreturn)) lh_abort(const char *msg, ...) 
 {
 	va_list ap;
 	va_start(ap, msg);
@@ -61,7 +61,7 @@ static unsigned long lh_ptr_hash(const void *k)
 	return (unsigned long)((((ptrdiff_t)k * LH_PRIME) >> 4) & ULONG_MAX);
 }
 
-int lh_ptr_equal(const void *k1, const void *k2)
+static int lh_ptr_equal(const void *k1, const void *k2)
 {
 	return (k1 == k2);
 }
@@ -452,7 +452,7 @@ static unsigned long lh_char_hash(const void *k)
 	return hashlittle((const char*)k, strlen((const char*)k), random_seed);
 }
 
-int lh_char_equal(const void *k1, const void *k2)
+static int lh_char_equal(const void *k1, const void *k2)
 {
 	return (strcmp((const char*)k1, (const char*)k2) == 0);
 }

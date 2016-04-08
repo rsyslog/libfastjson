@@ -5,7 +5,7 @@
 #include "../json_inttypes.h"
 #include "../json_util.h"
 
-void checkit(const char *buf)
+static void checkit(const char *buf)
 {
 	int64_t cint64 = -666;
 

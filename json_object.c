@@ -454,13 +454,10 @@ struct lh_table* fjson_object_get_object(struct fjson_object *jso)
 {
 	if (!jso)
 		return NULL;
-	switch(jso->o_type)
-	{
-	case fjson_type_object:
+	if(jso->o_type == fjson_type_object)
 		return jso->o.c_object;
-	default:
+	else
 		return NULL;
-	}
 }
 
 void fjson_object_object_add_ex(struct fjson_object* jso,
@@ -529,15 +526,13 @@ fjson_bool fjson_object_object_get_ex(struct fjson_object* jso, const char *key,
 	if (NULL == jso)
 		return FALSE;
 
-	switch(jso->o_type)
-	{
-	case fjson_type_object:
+	if(jso->o_type == fjson_type_object)
 		return lh_table_lookup_ex(jso->o.c_object, (void*)key, (void**)value);
-	default:
+	else {
 		if (value != NULL)
 			*value = NULL;
 		return FALSE;
-	}
+		}
 }
 
 void fjson_object_object_del(struct fjson_object* jso, const char *key)
@@ -584,6 +579,9 @@ fjson_bool fjson_object_get_boolean(struct fjson_object *jso)
 		return (jso->o.c_double != 0);
 	case fjson_type_string:
 		return (jso->o.c_string.len != 0);
+	case fjson_type_null:
+	case fjson_type_object:
+	case fjson_type_array:
 	default:
 		return FALSE;
 	}
@@ -645,6 +643,10 @@ int32_t fjson_object_get_int(struct fjson_object *jso)
     return (int32_t)jso->o.c_double;
   case fjson_type_boolean:
     return jso->o.c_boolean;
+  case fjson_type_null:
+  case fjson_type_object:
+  case fjson_type_array:
+  case fjson_type_string:
   default:
     return 0;
   }
@@ -677,6 +679,9 @@ int64_t fjson_object_get_int64(struct fjson_object *jso)
 	case fjson_type_string:
 		if (fjson_parse_int64(get_string_component(jso), &cint) == 0)
 			return cint;
+	case fjson_type_null:
+	case fjson_type_object:
+	case fjson_type_array:
 	default:
 		return 0;
 	}
@@ -811,6 +816,9 @@ double fjson_object_get_double(struct fjson_object *jso)
         (ERANGE == errno))
             cdouble = 0.0;
     return cdouble;
+  case fjson_type_null:
+  case fjson_type_object:
+  case fjson_type_array:
   default:
     return 0.0;
   }
@@ -889,26 +897,20 @@ const char* fjson_object_get_string(struct fjson_object *jso)
 {
 	if (!jso)
 		return NULL;
-	switch(jso->o_type)
-	{
-	case fjson_type_string:
+	if(jso->o_type == fjson_type_string)
 		return get_string_component(jso);
-	default:
+	else
 		return fjson_object_to_json_string(jso);
-	}
 }
 
 int fjson_object_get_string_len(struct fjson_object *jso)
 {
 	if (!jso)
 		return 0;
-	switch(jso->o_type)
-	{
-	case fjson_type_string:
+	if(jso->o_type == fjson_type_string)
 		return jso->o.c_string.len;
-	default:
+	else
 		return 0;
-	}
 }
 
 
@@ -983,13 +985,10 @@ struct array_list* fjson_object_get_array(struct fjson_object *jso)
 {
 	if (!jso)
 		return NULL;
-	switch(jso->o_type)
-	{
-	case fjson_type_array:
+	if(jso->o_type == fjson_type_array)
 		return jso->o.c_array;
-	default:
+	else
 		return NULL;
-	}
 }
 
 void fjson_object_array_sort(struct fjson_object *jso, int(*sort_fn)(const void *, const void *))

@@ -145,15 +145,15 @@ static int get_time_seed()
 
 /* fjson_c_get_random_seed */
 
-int fjson_c_get_random_seed()
+int fjson_c_get_random_seed(void)
 {
-#if HAVE_RDRAND
+#ifdef HAVE_RDRAND
     if (has_rdrand()) return get_rdrand_seed();
 #endif
 #if HAVE_DEV_RANDOM
     if (has_dev_urandom()) return get_dev_random_seed();
 #endif
-#if HAVE_CRYPTGENRANDOM
+#ifdef HAVE_CRYPTGENRANDOM
     return get_cryptgenrandom_seed();
 #endif
     return get_time_seed();

@@ -7,6 +7,7 @@
  * it under the terms of the MIT license. See COPYING for details.
  */
 #include "config.h"
+#include "json.h"
 
 const char *fjson_version(void)
 {

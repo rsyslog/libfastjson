@@ -16,7 +16,7 @@
 extern "C" {
 #endif
 
-extern int fjson_c_get_random_seed();
+extern int fjson_c_get_random_seed(void);
 
 #ifdef __cplusplus
 }
