@@ -230,6 +230,17 @@ fjson_bool
 fjson_object_iter_equal(const struct fjson_object_iterator* iter1,
                        const struct fjson_object_iterator* iter2);
 
+#ifndef FJSON_NATIVE_API_ONLY
+#define json_object_iter_info_ fjson_object_iter_info_
+#define json_object_iterator fjson_object_iterator
+#define json_object_iter_init_default fjson_object_iter_init_default
+#define json_object_iter_begin fjson_object_iter_begin
+#define json_object_iter_end fjson_object_iter_end
+#define json_object_iter_next fjson_object_iter_next
+#define json_object_iter_peek_name fjson_object_iter_peek_name
+#define json_object_iter_peek_value fjson_object_iter_peek_value
+#define json_object_iter_equal fjson_object_iter_equal
+#endif
 
 #ifdef __cplusplus
 }
