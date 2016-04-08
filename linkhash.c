@@ -21,6 +21,7 @@
 # include <endian.h>    /* attempt to define endianness */
 #endif
 
+#include "json.h"
 #include "random_seed.h"
 #include "linkhash.h"
 
