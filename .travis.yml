@@ -13,7 +13,7 @@ os:
 addons:
   apt:
     packages:
-      - clang
+      - clang-3.6
 
 env:
   # Note: we cannot give -Werror, as this confuses ./configure
@@ -30,7 +30,7 @@ before_script:
   - ./configure
 
 script:
-  - if [ "$CC" == "clang" ] && [ "$TRAVIS_OS_NAME" == "linux" ]; then  scan-build --status-bugs make check TESTS="" && make clean ; fi
+  - if [ "$CC" == "clang" ] && [ "$TRAVIS_OS_NAME" == "linux" ]; then  scan-build-3.6 --status-bugs make check TESTS="" && make clean ; fi
   - make
   - export VERBOSE=1
   - make check
