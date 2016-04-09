@@ -457,6 +457,10 @@ struct fjson_object* fjson_object_new_object(void)
 	return jso;
 }
 
+/* the protope silences a compiler warning. This is not really clean,
+ * but we will remove this function shortly, so we just need a work-around.
+ */
+struct lh_table* _fjson_object_get_object(struct fjson_object *jso);
 struct lh_table* _fjson_object_get_object(struct fjson_object *jso)
 {
 	if (!jso)
