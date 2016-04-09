@@ -22,7 +22,7 @@ libfastjsoninclude_HEADERS = \
 
 libfastjson_la_CFLAGS = $(WARN_CFLAGS)
 libfastjson_la_LDFLAGS = \
-	-version-info 3:0:0 \
+	-version-info 4:0:0 \
 	-export-symbols-regex '^fjson_.*' \
 	-no-undefined \
 	@JSON_BSYMBOLIC_LDFLAGS@
