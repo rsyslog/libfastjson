@@ -7,11 +7,16 @@
 #include <string.h>
 #include "config.h"
 
+/* this is a work-around until we manage to fix configure.ac */
+#pragma GCC diagnostic ignored "-Wdeclaration-after-statement"
+
+#define DEBUG_SEED(s)
+
 #include "../json_inttypes.h"
 #include "../json_object.h"
 #include "../json_tokener.h"
 
-void print_hex( const char* s)
+static void print_hex( const char* s)
 {
 	const char *iter = s;
 	unsigned char ch;
@@ -25,7 +30,7 @@ void print_hex( const char* s)
 	printf("\n");
 }
 
-int main()
+int main(int __attribute__((unused)) argc, char __attribute__((unused)) **argv)
 {
 	const char *input = "\"\\ud840\\udd26,\\ud840\\udd27,\\ud800\\udd26,\\ud800\\udd27\"";
 	const char *expected = "\xF0\xA0\x84\xA6,\xF0\xA0\x84\xA7,\xF0\x90\x84\xA6,\xF0\x90\x84\xA7";

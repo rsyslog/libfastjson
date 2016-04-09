@@ -5,6 +5,11 @@
 #include <string.h>
 
 #include "../json.h"
+#include "../debug.h"
+#include "../linkhash.h"
+
+/* this is a work-around until we manage to fix configure.ac */
+#pragma GCC diagnostic ignored "-Wdeclaration-after-statement"
 
 int main(int __attribute__((unused)) argc, char __attribute__((unused)) **argv)
 {

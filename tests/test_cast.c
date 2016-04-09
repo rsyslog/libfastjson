@@ -13,6 +13,9 @@
 #include "../json_tokener.h"
 #include "../json_util.h"
 
+/* this is a work-around until we manage to fix configure.ac */
+#pragma GCC diagnostic ignored "-Wdeclaration-after-statement"
+
 static void getit(struct fjson_object *new_obj, const char *field);
 static void checktype_header(void);
 static void checktype(struct fjson_object *new_obj, const char *field);
@@ -82,7 +85,7 @@ static void getit(struct fjson_object *new_obj, const char *field)
 	       fjson_object_get_double(o));
 }
 
-static void checktype_header()
+static void checktype_header(void)
 {
 	printf("fjson_object_is_type: %s,%s,%s,%s,%s,%s,%s\n",
 		fjson_type_to_name(fjson_type_null),

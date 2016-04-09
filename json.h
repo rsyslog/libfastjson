@@ -17,9 +17,6 @@
 extern "C" {
 #endif
 
-#include "debug.h"
-#include "linkhash.h"
-#include "arraylist.h"
 #include "json_util.h"
 #include "json_object.h"
 #include "json_tokener.h"
@@ -49,6 +46,29 @@ extern void fjson_global_set_printbuf_initial_size(int size);
  * report the current libfastjson version
  */
 extern const char *fjson_version(void);
+
+/**
+ * default string hash function
+ */
+#define FJSON_STR_HASH_DFLT 0
+
+/**
+ * perl-like string hash function
+ */
+#define FJSON_STR_HASH_PERLLIKE 1
+
+/**
+ * This function sets the hash function to be used for strings.
+ * Must be one of the FJSON_STR_HASH_* values.
+ * @returns 0 - ok, -1 if parameter was invalid
+ */
+int fjson_global_set_string_hash(const int h);
+
+#ifndef FJSON_NATIVE_API_ONLY
+#define JSON_C_STR_HASH_PERLLIKE FJSON_STR_HASH_PERLLIKE
+#define json_global_set_string_hash fjson_global_set_string_hash
+#endif
+
 #ifdef __cplusplus
 }
 #endif

@@ -12,6 +12,9 @@
 #include <stdio.h>
 #include "random_seed.h"
 
+/* this is a work-around until we manage to fix configure.ac */
+#pragma GCC diagnostic ignored "-Wdeclaration-after-statement"
+
 #define DEBUG_SEED(s)
 
 
@@ -95,7 +98,7 @@ static int get_rdrand_seed()
 
 static const char *dev_random_file = "/dev/urandom";
 
-static int has_dev_urandom()
+static int has_dev_urandom(void)
 {
     struct stat buf;
     if (stat(dev_random_file, &buf)) {
@@ -107,7 +110,7 @@ static int has_dev_urandom()
 
 /* get_dev_random_seed */
 
-static int get_dev_random_seed()
+static int get_dev_random_seed(void)
 {
     DEBUG_SEED("get_dev_random_seed");
 
@@ -135,7 +138,7 @@ static int get_dev_random_seed()
 
 #include <time.h>
 
-static int get_time_seed()
+static int get_time_seed(void)
 {
     DEBUG_SEED("get_time_seed");
 
@@ -145,15 +148,15 @@ static int get_time_seed()
 
 /* fjson_c_get_random_seed */
 
-int fjson_c_get_random_seed()
+int fjson_c_get_random_seed(void)
 {
-#if HAVE_RDRAND
+#ifdef HAVE_RDRAND
     if (has_rdrand()) return get_rdrand_seed();
 #endif
 #if HAVE_DEV_RANDOM
     if (has_dev_urandom()) return get_dev_random_seed();
 #endif
-#if HAVE_CRYPTGENRANDOM
+#ifdef HAVE_CRYPTGENRANDOM
     return get_cryptgenrandom_seed();
 #endif
     return get_time_seed();

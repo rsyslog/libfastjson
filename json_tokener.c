@@ -13,6 +13,9 @@
 
 #include "config.h"
 
+/* this is a work-around until we manage to fix configure.ac */
+#pragma GCC diagnostic ignored "-Wdeclaration-after-statement"
+
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -874,6 +877,9 @@ struct fjson_object* fjson_tokener_parse_ex(struct fjson_tokener *tok,
       }
       break;
 
+    default:
+    	/* TODO: this should not happen, emit error msg? */
+	break;
     }
     if (!ADVANCE_CHAR(str, tok))
       goto out;

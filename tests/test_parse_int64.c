@@ -5,7 +5,7 @@
 #include "../json_inttypes.h"
 #include "../json_util.h"
 
-void checkit(const char *buf)
+static void checkit(const char *buf)
 {
 	int64_t cint64 = -666;
 
@@ -21,7 +21,7 @@ void checkit(const char *buf)
  * This always exits with a 0 exit value.  The output should be compared
  * against previously saved expected output.
  */
-int main()
+int main(int __attribute__((unused)) argc, char __attribute__((unused)) **argv)
 {
 	char buf[100];
 

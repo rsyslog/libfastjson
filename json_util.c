@@ -157,7 +157,7 @@ int fjson_parse_double(const char *buf, double *retval)
  * Check whether the one we're currently using does, and if
  * it's broken, enable the workaround code.
  */
-static void sscanf_is_broken_test()
+static void sscanf_is_broken_test(void)
 {
 	int64_t num64;
 	int ret_errno, is_int64_min, ret_errno2, is_int64_max;
@@ -265,17 +265,6 @@ int fjson_parse_int64(const char *buf, int64_t *retval)
 	return 0;
 }
 
-#ifndef HAVE_REALLOC
-void* rpl_realloc(void* p, size_t n)
-{
-	if (n == 0)
-		n = 1;
-	if (p == 0)
-		return malloc(n);
-	return realloc(p, n);
-}
-#endif
-
 #define NELEM(a)        (sizeof(a) / sizeof(a[0]))
 static const char* fjson_type_name[] = {
   /* If you change this, be sure to update the enum fjson_type definition too */
@@ -293,7 +282,7 @@ const char *fjson_type_to_name(enum fjson_type o_type)
 	int o_type_int = (int)o_type;
 	if (o_type_int < 0 || o_type_int >= (int)NELEM(fjson_type_name))
 	{
-		MC_ERROR("fjson_type_to_name: type %d is out of range [0,%lu]\n", o_type, NELEM(fjson_type_name));
+		MC_ERROR("fjson_type_to_name: type %d is out of range [0,%zu]\n", o_type, NELEM(fjson_type_name));
 		return NULL;
 	}
 	return fjson_type_name[o_type];

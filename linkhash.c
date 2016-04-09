@@ -21,6 +21,7 @@
 # include <endian.h>    /* attempt to define endianness */
 #endif
 
+#include "json.h"
 #include "random_seed.h"
 #include "linkhash.h"
 
@@ -45,7 +46,7 @@ fjson_global_set_string_hash(const int h)
 	return 0;
 }
 
-void lh_abort(const char *msg, ...)
+void __attribute__((noreturn)) lh_abort(const char *msg, ...) 
 {
 	va_list ap;
 	va_start(ap, msg);
@@ -60,7 +61,7 @@ static unsigned long lh_ptr_hash(const void *k)
 	return (unsigned long)((((ptrdiff_t)k * LH_PRIME) >> 4) & ULONG_MAX);
 }
 
-int lh_ptr_equal(const void *k1, const void *k2)
+static int lh_ptr_equal(const void *k1, const void *k2)
 {
 	return (k1 == k2);
 }
@@ -300,6 +301,10 @@ static uint32_t hashlittle( const void *key, size_t length, uint32_t initval)
     case 2 : a+=k[0]&0xffff; break;
     case 1 : a+=k[0]&0xff; break;
     case 0 : return c;              /* zero length strings require no mixing */
+    default: /* TODO: yet-unhandled program error (stems back to json-c)
+    	      * we integrate this case to make the compiler happy.
+	      */
+	      break;
     }
 
 #else /* make valgrind happy */
@@ -320,6 +325,9 @@ static uint32_t hashlittle( const void *key, size_t length, uint32_t initval)
     case 2 : a+=((uint32_t)k8[1])<<8;    /* fall through */
     case 1 : a+=k8[0]; break;
     case 0 : return c;
+    default: /* TODO: yet-unhandled program error (stems back to json-c)
+    	      * we integrate this case to make the compiler happy.
+	      */
     }
 
 #endif /* !valgrind */
@@ -369,6 +377,10 @@ static uint32_t hashlittle( const void *key, size_t length, uint32_t initval)
     case 1 : a+=k8[0];
              break;
     case 0 : return c;                     /* zero length requires no mixing */
+    default: /* TODO: yet-unhandled program error (stems back to json-c)
+    	      * we integrate this case to make the compiler happy.
+	      */
+	      break;
     }
 
   } else {                        /* need to read the key one byte at a time */
@@ -411,6 +423,10 @@ static uint32_t hashlittle( const void *key, size_t length, uint32_t initval)
     case 1 : a+=k[0];
              break;
     case 0 : return c;
+    default: /* TODO: yet-unhandled program error (stems back to json-c)
+    	      * we integrate this case to make the compiler happy.
+	      */
+	      break;
     }
   }
 
@@ -451,7 +467,7 @@ static unsigned long lh_char_hash(const void *k)
 	return hashlittle((const char*)k, strlen((const char*)k), random_seed);
 }
 
-int lh_char_equal(const void *k1, const void *k2)
+static int lh_char_equal(const void *k1, const void *k2)
 {
 	return (strcmp((const char*)k1, (const char*)k2) == 0);
 }
