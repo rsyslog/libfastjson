@@ -12,10 +12,7 @@
 /* this is a work-around until we manage to fix configure.ac */
 #pragma GCC diagnostic ignored "-Wdeclaration-after-statement"
 
-static void test_basic_printbuf_memset(void);
-static void test_printbuf_memset_length(void);
-
-static void test_basic_printbuf_memset()
+static void test_basic_printbuf_memset(void)
 {
 	struct printbuf *pb;
 
@@ -28,7 +25,7 @@ static void test_basic_printbuf_memset()
 	printf("%s: end test\n", __func__);
 }
 
-static void test_printbuf_memset_length()
+static void test_printbuf_memset_length(void)
 {
 	struct printbuf *pb;
 

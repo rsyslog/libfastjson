@@ -26,7 +26,7 @@ int main(int __attribute__((unused)) argc, char __attribute__((unused)) **argv)
 	return 0;
 }
 
-static void test_basic_parse()
+static void test_basic_parse(void)
 {
 	fjson_object *new_obj;
 
@@ -156,7 +156,7 @@ static void test_basic_parse()
 	fjson_object_put(new_obj);
 }
 
-static void test_verbose_parse()
+static void test_verbose_parse(void)
 {
 	fjson_object *new_obj;
 	enum fjson_tokener_error error = fjson_tokener_success;
@@ -244,7 +244,7 @@ struct incremental_step {
 	{ NULL, -1, -1, fjson_tokener_success, 0 },
 };
 
-static void test_incremental_parse()
+static void test_incremental_parse(void)
 {
 	fjson_object *new_obj;
 	enum fjson_tokener_error jerr;

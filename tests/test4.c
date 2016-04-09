@@ -30,7 +30,7 @@ static void print_hex( const char* s)
 	printf("\n");
 }
 
-int main()
+int main(int __attribute__((unused)) argc, char __attribute__((unused)) **argv)
 {
 	const char *input = "\"\\ud840\\udd26,\\ud840\\udd27,\\ud800\\udd26,\\ud800\\udd27\"";
 	const char *expected = "\xF0\xA0\x84\xA6,\xF0\xA0\x84\xA7,\xF0\x90\x84\xA6,\xF0\x90\x84\xA7";

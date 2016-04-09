@@ -20,7 +20,7 @@ int main(int __attribute__((unused)) argc, char __attribute__((unused)) **argv)
 }
 
 /* make sure only lowercase forms are parsed in strict mode */
-static void test_case_parse()
+static void test_case_parse(void)
 {
 	struct fjson_tokener *tok;
 	fjson_object *new_obj;

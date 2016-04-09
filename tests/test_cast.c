@@ -85,7 +85,7 @@ static void getit(struct fjson_object *new_obj, const char *field)
 	       fjson_object_get_double(o));
 }
 
-static void checktype_header()
+static void checktype_header(void)
 {
 	printf("fjson_object_is_type: %s,%s,%s,%s,%s,%s,%s\n",
 		fjson_type_to_name(fjson_type_null),

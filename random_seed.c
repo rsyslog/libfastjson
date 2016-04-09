@@ -98,7 +98,7 @@ static int get_rdrand_seed()
 
 static const char *dev_random_file = "/dev/urandom";
 
-static int has_dev_urandom()
+static int has_dev_urandom(void)
 {
     struct stat buf;
     if (stat(dev_random_file, &buf)) {
@@ -110,7 +110,7 @@ static int has_dev_urandom()
 
 /* get_dev_random_seed */
 
-static int get_dev_random_seed()
+static int get_dev_random_seed(void)
 {
     DEBUG_SEED("get_dev_random_seed");
 
@@ -138,7 +138,7 @@ static int get_dev_random_seed()
 
 #include <time.h>
 
-static int get_time_seed()
+static int get_time_seed(void)
 {
     DEBUG_SEED("get_time_seed");
 
