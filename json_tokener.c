@@ -877,6 +877,9 @@ struct fjson_object* fjson_tokener_parse_ex(struct fjson_tokener *tok,
       }
       break;
 
+    default:
+    	/* TODO: this should not happen, emit error msg? */
+	break;
     }
     if (!ADVANCE_CHAR(str, tok))
       goto out;

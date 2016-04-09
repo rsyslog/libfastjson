@@ -319,6 +319,10 @@ void fjson_object_set_serializer(fjson_object *jso,
 		case fjson_type_string:
 			jso->_to_json_string = &fjson_object_string_to_json_string;
 			break;
+		default:
+			/* this should NOT HAPPEN! */
+			jso->_to_json_string = NULL;
+			break;
 		}
 		return;
 	}

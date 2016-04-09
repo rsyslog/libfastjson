@@ -301,6 +301,10 @@ static uint32_t hashlittle( const void *key, size_t length, uint32_t initval)
     case 2 : a+=k[0]&0xffff; break;
     case 1 : a+=k[0]&0xff; break;
     case 0 : return c;              /* zero length strings require no mixing */
+    default: /* TODO: yet-unhandled program error (stems back to json-c)
+    	      * we integrate this case to make the compiler happy.
+	      */
+	      break;
     }
 
 #else /* make valgrind happy */
@@ -321,6 +325,9 @@ static uint32_t hashlittle( const void *key, size_t length, uint32_t initval)
     case 2 : a+=((uint32_t)k8[1])<<8;    /* fall through */
     case 1 : a+=k8[0]; break;
     case 0 : return c;
+    default: /* TODO: yet-unhandled program error (stems back to json-c)
+    	      * we integrate this case to make the compiler happy.
+	      */
     }
 
 #endif /* !valgrind */
@@ -370,6 +377,10 @@ static uint32_t hashlittle( const void *key, size_t length, uint32_t initval)
     case 1 : a+=k8[0];
              break;
     case 0 : return c;                     /* zero length requires no mixing */
+    default: /* TODO: yet-unhandled program error (stems back to json-c)
+    	      * we integrate this case to make the compiler happy.
+	      */
+	      break;
     }
 
   } else {                        /* need to read the key one byte at a time */
@@ -412,6 +423,10 @@ static uint32_t hashlittle( const void *key, size_t length, uint32_t initval)
     case 1 : a+=k[0];
              break;
     case 0 : return c;
+    default: /* TODO: yet-unhandled program error (stems back to json-c)
+    	      * we integrate this case to make the compiler happy.
+	      */
+	      break;
     }
   }
 
