@@ -47,6 +47,3 @@ EXTRA_DIST += $(TESTS)
 
 testsubdir=testSubDir
 TESTS_ENVIRONMENT       = top_builddir=$(top_builddir)
-
-distclean-local:
-	-rm -rf $(testsubdir)
