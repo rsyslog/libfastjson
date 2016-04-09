@@ -37,6 +37,10 @@ Differences to json-c
   especially let us know why you think this is important to the
   community at large. Thanks.
   * [f]json_c_version_num()
+  * [f]json_object_get_object()
+    It returns a hash table, which exposes an implementation detail
+    that a caller should never know about. Most often, this can cleanly
+    be replaced by the regular json_object_iter_* API.
 
 * renamed API calls:
   * all calls have been added an "f" in the front

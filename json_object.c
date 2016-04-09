@@ -450,7 +450,7 @@ struct fjson_object* fjson_object_new_object(void)
 	return jso;
 }
 
-struct lh_table* fjson_object_get_object(struct fjson_object *jso)
+struct lh_table* _fjson_object_get_object(struct fjson_object *jso)
 {
 	if (!jso)
 		return NULL;

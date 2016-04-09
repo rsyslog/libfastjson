@@ -62,6 +62,9 @@
 /// @note May not always be NULL
 static const void* kObjectEndIterValue = NULL;
 
+/* need access to internal object */
+extern struct lh_table* _fjson_object_get_object(struct fjson_object *obj);
+
 /**
  * ****************************************************************************
  */
@@ -73,7 +76,7 @@ fjson_object_iter_begin(struct fjson_object* obj)
 
     /// @note fjson_object_get_object will return NULL if passed NULL
     ///       or a non-fjson_type_object instance
-    pTable = fjson_object_get_object(obj);
+    pTable = _fjson_object_get_object(obj);
     JASSERT(NULL != pTable);
 
     /// @note For a pair-less Object, head is NULL, which matches our

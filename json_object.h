@@ -280,12 +280,6 @@ fjson_object_to_json_string_fn fjson_object_userdata_to_json_string;
  */
 extern struct fjson_object* fjson_object_new_object(void);
 
-/** Get the hashtable of a fjson_object of type fjson_type_object
- * @param obj the fjson_object instance
- * @returns a linkhash
- */
-extern struct lh_table* fjson_object_get_object(struct fjson_object *obj);
-
 /** Get the size of an object in terms of the number of fields it has.
  * @param obj the fjson_object whose length to return
  */
@@ -695,7 +689,6 @@ typedef struct fjson_tokener fjson_tokener;
 #define json_object_object_foreachC fjson_object_object_foreachC
 #define json_object_object_get fjson_object_object_get
 #define json_object_object_del fjson_object_object_del
-#define json_object_get_object fjson_object_get_object
 #define json_object_new_array fjson_object_new_array
 #define json_object_get_array fjson_object_get_array
 #define json_object_array_length fjson_object_array_length
