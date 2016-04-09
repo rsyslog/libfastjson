@@ -7,6 +7,11 @@
 #include <string.h>
 #include "config.h"
 
+/* this is a work-around until we manage to fix configure.ac */
+#pragma GCC diagnostic ignored "-Wdeclaration-after-statement"
+
+#define DEBUG_SEED(s)
+
 #include "../json_inttypes.h"
 #include "../json_object.h"
 #include "../json_tokener.h"

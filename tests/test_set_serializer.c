@@ -7,6 +7,9 @@
 #include "../printbuf.h"
 #include "../debug.h"
 
+/* this is a work-around until we manage to fix configure.ac */
+#pragma GCC diagnostic ignored "-Wdeclaration-after-statement"
+
 struct myinfo {
 	int value;
 };

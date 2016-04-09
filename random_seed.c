@@ -12,6 +12,9 @@
 #include <stdio.h>
 #include "random_seed.h"
 
+/* this is a work-around until we manage to fix configure.ac */
+#pragma GCC diagnostic ignored "-Wdeclaration-after-statement"
+
 #define DEBUG_SEED(s)
 
 

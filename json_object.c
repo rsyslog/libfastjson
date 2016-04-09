@@ -11,6 +11,9 @@
 
 #include "config.h"
 
+/* this is a work-around until we manage to fix configure.ac */
+#pragma GCC diagnostic ignored "-Wdeclaration-after-statement"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stddef.h>

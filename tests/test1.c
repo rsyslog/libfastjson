@@ -10,6 +10,11 @@
 #include "../linkhash.h"
 #include "parse_flags.h"
 
+/* this is a work-around until we manage to fix configure.ac */
+#pragma GCC diagnostic ignored "-Wdeclaration-after-statement"
+
+#define DEBUG_SEED(s)
+
 static int sort_fn (const void *j1, const void *j2)
 {
 	fjson_object * const *jso1, * const *jso2;
