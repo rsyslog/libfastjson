@@ -575,45 +575,44 @@ struct fjson_object* fjson_object_new_int(int32_t i)
 
 int32_t fjson_object_get_int(struct fjson_object *jso)
 {
-  int64_t cint64;
-  enum fjson_type o_type;
+	int64_t cint64;
+	enum fjson_type o_type;
 
-  if(!jso) return 0;
+	if(!jso) return 0;
 
-  o_type = jso->o_type;
-  cint64 = jso->o.c_int64;
+	o_type = jso->o_type;
+	cint64 = jso->o.c_int64;
 
-  if (o_type == fjson_type_string)
-  {
-	/*
-	 * Parse strings into 64-bit numbers, then use the
-	 * 64-to-32-bit number handling below.
-	 */
-	if (fjson_parse_int64(get_string_component(jso), &cint64) != 0)
-		return 0; /* whoops, it didn't work. */
-	o_type = fjson_type_int;
-  }
+	if (o_type == fjson_type_string) {
+		/*
+		 * Parse strings into 64-bit numbers, then use the
+		 * 64-to-32-bit number handling below.
+		 */
+		if (fjson_parse_int64(get_string_component(jso), &cint64) != 0)
+			return 0; /* whoops, it didn't work. */
+		o_type = fjson_type_int;
+	}
 
-  switch(o_type) {
-  case fjson_type_int:
-	/* Make sure we return the correct values for out of range numbers. */
-	if (cint64 <= INT32_MIN)
-		return INT32_MIN;
-	else if (cint64 >= INT32_MAX)
-		return INT32_MAX;
-	else
-		return (int32_t)cint64;
-  case fjson_type_double:
-    return (int32_t)jso->o.c_double;
-  case fjson_type_boolean:
-    return jso->o.c_boolean;
-  case fjson_type_null:
-  case fjson_type_object:
-  case fjson_type_array:
-  case fjson_type_string:
-  default:
-    return 0;
-  }
+	switch(o_type) {
+	case fjson_type_int:
+		/* Make sure we return the correct values for out of range numbers. */
+		if (cint64 <= INT32_MIN)
+			return INT32_MIN;
+		else if (cint64 >= INT32_MAX)
+			return INT32_MAX;
+		else
+			return (int32_t)cint64;
+	case fjson_type_double:
+		return (int32_t)jso->o.c_double;
+	case fjson_type_boolean:
+		return jso->o.c_boolean;
+	case fjson_type_null:
+	case fjson_type_object:
+	case fjson_type_array:
+	case fjson_type_string:
+	default:
+		return 0;
+	}
 }
 
 struct fjson_object* fjson_object_new_int64(int64_t i)
@@ -659,40 +658,41 @@ static int fjson_object_double_to_json_string(struct fjson_object* jso,
 					     int __attribute__((unused)) level,
 						 int __attribute__((unused)) flags)
 {
-  char buf[128], *p, *q;
-  int size;
-  /* Although JSON RFC does not support
-     NaN or Infinity as numeric values
-     ECMA 262 section 9.8.1 defines
-     how to handle these cases as strings */
-  if(isnan(jso->o.c_double))
-    size = snprintf(buf, sizeof(buf), "NaN");
-  else if(isinf(jso->o.c_double))
-    if(jso->o.c_double > 0)
-      size = snprintf(buf, sizeof(buf), "Infinity");
-    else
-      size = snprintf(buf, sizeof(buf), "-Infinity");
-  else
-    size = snprintf(buf, sizeof(buf), "%.17g", jso->o.c_double);
+	char buf[128], *p, *q;
+	int size;
+	/* Although JSON RFC does not support
+	 * NaN or Infinity as numeric values
+	 * ECMA 262 section 9.8.1 defines
+	 * how to handle these cases as strings
+	 */
+	if(isnan(jso->o.c_double))
+		size = snprintf(buf, sizeof(buf), "NaN");
+	else if(isinf(jso->o.c_double))
+		if(jso->o.c_double > 0)
+			size = snprintf(buf, sizeof(buf), "Infinity");
+		else
+			size = snprintf(buf, sizeof(buf), "-Infinity");
+	else
+		size = snprintf(buf, sizeof(buf), "%.17g", jso->o.c_double);
 
-  p = strchr(buf, ',');
-  if (p) {
-    *p = '.';
-  } else {
-    p = strchr(buf, '.');
-  }
-  if (p && (flags & FJSON_TO_STRING_NOZERO)) {
-    /* last useful digit, always keep 1 zero */
-    p++;
-    for (q=p ; *q ; q++) {
-      if (*q!='0') p=q;
-    }
-    /* drop trailing zeroes */
-    *(++p) = 0;
-    size = p-buf;
-  }
-  printbuf_memappend_no_nul(pb, buf, size);
-  return 0; /* we need to keep compatible with the API */
+	p = strchr(buf, ',');
+	if (p) {
+		*p = '.';
+	} else {
+		p = strchr(buf, '.');
+	}
+	if (p && (flags & FJSON_TO_STRING_NOZERO)) {
+		/* last useful digit, always keep 1 zero */
+		p++;
+		for (q=p ; *q ; q++) {
+			if (*q!='0') p=q;
+		}
+		/* drop trailing zeroes */
+		*(++p) = 0;
+		size = p-buf;
+	}
+	printbuf_memappend_no_nul(pb, buf, size);
+	return 0; /* we need to keep compatible with the API */
 }
 
 struct fjson_object* fjson_object_new_double(double d)
@@ -738,54 +738,54 @@ void fjson_object_free_userdata(struct fjson_object __attribute__((unused)) *jso
 
 double fjson_object_get_double(struct fjson_object *jso)
 {
-  double cdouble;
-  char *errPtr = NULL;
+	double cdouble;
+	char *errPtr = NULL;
 
-  if(!jso) return 0.0;
-  switch(jso->o_type) {
-  case fjson_type_double:
-    return jso->o.c_double;
-  case fjson_type_int:
-    return jso->o.c_int64;
-  case fjson_type_boolean:
-    return jso->o.c_boolean;
-  case fjson_type_string:
-    errno = 0;
-    cdouble = strtod(get_string_component(jso), &errPtr);
+	if(!jso) return 0.0;
+	switch(jso->o_type) {
+	case fjson_type_double:
+		return jso->o.c_double;
+	case fjson_type_int:
+		return jso->o.c_int64;
+	case fjson_type_boolean:
+		return jso->o.c_boolean;
+	case fjson_type_string:
+		errno = 0;
+		cdouble = strtod(get_string_component(jso), &errPtr);
 
-    /* if conversion stopped at the first character, return 0.0 */
-    if (errPtr == get_string_component(jso))
-        return 0.0;
+		/* if conversion stopped at the first character, return 0.0 */
+		if (errPtr == get_string_component(jso))
+			return 0.0;
 
-    /*
-     * Check that the conversion terminated on something sensible
-     *
-     * For example, { "pay" : 123AB } would parse as 123.
-     */
-    if (*errPtr != '\0')
-        return 0.0;
+		/*
+		* Check that the conversion terminated on something sensible
+		*
+		* For example, { "pay" : 123AB } would parse as 123.
+		*/
+		if (*errPtr != '\0')
+			return 0.0;
 
-    /*
-     * If strtod encounters a string which would exceed the
-     * capacity of a double, it returns +/- HUGE_VAL and sets
-     * errno to ERANGE. But +/- HUGE_VAL is also a valid result
-     * from a conversion, so we need to check errno.
-     *
-     * Underflow also sets errno to ERANGE, but it returns 0 in
-     * that case, which is what we will return anyway.
-     *
-     * See CERT guideline ERR30-C
-     */
-    if ((HUGE_VAL == cdouble || -HUGE_VAL == cdouble) &&
-        (ERANGE == errno))
-            cdouble = 0.0;
-    return cdouble;
-  case fjson_type_null:
-  case fjson_type_object:
-  case fjson_type_array:
-  default:
-    return 0.0;
-  }
+		/*
+		* If strtod encounters a string which would exceed the
+		* capacity of a double, it returns +/- HUGE_VAL and sets
+		* errno to ERANGE. But +/- HUGE_VAL is also a valid result
+		* from a conversion, so we need to check errno.
+		*
+		* Underflow also sets errno to ERANGE, but it returns 0 in
+		* that case, which is what we will return anyway.
+		*
+		* See CERT guideline ERR30-C
+		*/
+		if ((HUGE_VAL == cdouble || -HUGE_VAL == cdouble) &&
+			(ERANGE == errno))
+			cdouble = 0.0;
+		return cdouble;
+	case fjson_type_null:
+	case fjson_type_object:
+	case fjson_type_array:
+	default:
+		return 0.0;
+	}
 }
 
 

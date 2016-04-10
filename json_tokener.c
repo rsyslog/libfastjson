@@ -101,82 +101,82 @@ static unsigned char utf8_replacement_char[3] = { 0xEF, 0xBF, 0xBD };
 
 struct fjson_tokener* fjson_tokener_new_ex(int depth)
 {
-  struct fjson_tokener *tok;
+	struct fjson_tokener *tok;
 
-  tok = (struct fjson_tokener*)calloc(1, sizeof(struct fjson_tokener));
-  if (!tok) return NULL;
-  tok->stack = (struct fjson_tokener_srec *)calloc(depth, sizeof(struct fjson_tokener_srec));
-  if (!tok->stack) {
-    free(tok);
-    return NULL;
-  }
-  tok->pb = printbuf_new();
-  tok->max_depth = depth;
-  fjson_tokener_reset(tok);
-  return tok;
+	tok = (struct fjson_tokener*)calloc(1, sizeof(struct fjson_tokener));
+	if (!tok) return NULL;
+	tok->stack = (struct fjson_tokener_srec *)calloc(depth, sizeof(struct fjson_tokener_srec));
+	if (!tok->stack) {
+		free(tok);
+		return NULL;
+	}
+	tok->pb = printbuf_new();
+	tok->max_depth = depth;
+	fjson_tokener_reset(tok);
+	return tok;
 }
 
 struct fjson_tokener* fjson_tokener_new(void)
 {
-  return fjson_tokener_new_ex(FJSON_TOKENER_DEFAULT_DEPTH);
+	return fjson_tokener_new_ex(FJSON_TOKENER_DEFAULT_DEPTH);
 }
 
 void fjson_tokener_free(struct fjson_tokener *tok)
 {
-  fjson_tokener_reset(tok);
-  if (tok->pb) printbuf_free(tok->pb);
-  if (tok->stack) free(tok->stack);
-  free(tok);
+	fjson_tokener_reset(tok);
+	if (tok->pb) printbuf_free(tok->pb);
+	if (tok->stack) free(tok->stack);
+	free(tok);
 }
 
 static void fjson_tokener_reset_level(struct fjson_tokener *tok, int depth)
 {
-  tok->stack[depth].state = fjson_tokener_state_eatws;
-  tok->stack[depth].saved_state = fjson_tokener_state_start;
-  fjson_object_put(tok->stack[depth].current);
-  tok->stack[depth].current = NULL;
-  free(tok->stack[depth].obj_field_name);
-  tok->stack[depth].obj_field_name = NULL;
+	tok->stack[depth].state = fjson_tokener_state_eatws;
+	tok->stack[depth].saved_state = fjson_tokener_state_start;
+	fjson_object_put(tok->stack[depth].current);
+	tok->stack[depth].current = NULL;
+	free(tok->stack[depth].obj_field_name);
+	tok->stack[depth].obj_field_name = NULL;
 }
 
 void fjson_tokener_reset(struct fjson_tokener *tok)
 {
-  int i;
-  if (!tok)
-    return;
+	int i;
+	if (!tok)
+		return;
 
-  for(i = tok->depth; i >= 0; i--)
-    fjson_tokener_reset_level(tok, i);
-  tok->depth = 0;
-  tok->err = fjson_tokener_success;
+	for(i = tok->depth; i >= 0; i--)
+		fjson_tokener_reset_level(tok, i);
+	tok->depth = 0;
+	tok->err = fjson_tokener_success;
 }
 
 struct fjson_object* fjson_tokener_parse(const char *str)
 {
-    enum fjson_tokener_error jerr_ignored;
-    struct fjson_object* obj;
-    obj = fjson_tokener_parse_verbose(str, &jerr_ignored);
-    return obj;
+	enum fjson_tokener_error jerr_ignored;
+	struct fjson_object* obj;
+	obj = fjson_tokener_parse_verbose(str, &jerr_ignored);
+	return obj;
 }
 
 struct fjson_object* fjson_tokener_parse_verbose(const char *str, enum fjson_tokener_error *error)
 {
-    struct fjson_tokener* tok;
-    struct fjson_object* obj;
+	struct fjson_tokener* tok;
+	struct fjson_object* obj;
 
-    tok = fjson_tokener_new();
-    if (!tok)
-      return NULL;
-    obj = fjson_tokener_parse_ex(tok, str, -1);
-    *error = tok->err;
-    if(tok->err != fjson_tokener_success) {
+	tok = fjson_tokener_new();
+	if (!tok)
+		return NULL;
+	obj = fjson_tokener_parse_ex(tok, str, -1);
+	*error = tok->err;
+	if(tok->err != fjson_tokener_success) {
 		if (obj != NULL)
 			fjson_object_put(obj);
-        obj = NULL;
-    }
+		obj = NULL;
+	}
 
-    fjson_tokener_free(tok);
-    return obj;
+	fjson_tokener_free(tok);
+	return obj;
 }
 
 #define state  tok->stack[tok->depth].state

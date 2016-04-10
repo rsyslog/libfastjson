@@ -37,18 +37,18 @@ void fjson_global_set_printbuf_initial_size(int size)
 
 struct printbuf* printbuf_new(void)
 {
-  struct printbuf *p;
+	struct printbuf *p;
 
-  p = (struct printbuf*)malloc(sizeof(struct printbuf));
-  if(!p) return NULL;
-  /* note: *ALL* data items must be initialized! */
-  p->size = printbuf_initial_size;
-  p->bpos = 0;
-  if(!(p->buf = (char*)malloc(p->size))) {
-    free(p);
-    return NULL;
-  }
-  return p;
+	p = (struct printbuf*)malloc(sizeof(struct printbuf));
+	if(!p) return NULL;
+	/* note: *ALL* data items must be initialized! */
+	p->size = printbuf_initial_size;
+	p->bpos = 0;
+	if(!(p->buf = (char*)malloc(p->size))) {
+		free(p);
+		return NULL;
+	}
+	return p;
 }
 
 
@@ -85,49 +85,49 @@ static int printbuf_extend(struct printbuf *p, int min_size)
 
 int printbuf_memappend(struct printbuf *p, const char *buf, int size)
 {
-  if (p->size <= p->bpos + size + 1) {
-    if (printbuf_extend(p, p->bpos + size + 1) < 0)
-      return -1;
-  }
-  if(size > 1)
-    memcpy(p->buf + p->bpos, buf, size);
-  else
-    p->buf[p->bpos]= *buf;
-  p->bpos += size;
-  p->buf[p->bpos]= '\0';
-  return size;
+	if (p->size <= p->bpos + size + 1) {
+		if (printbuf_extend(p, p->bpos + size + 1) < 0)
+			return -1;
+	}
+	if(size > 1)
+		memcpy(p->buf + p->bpos, buf, size);
+	else
+		p->buf[p->bpos]= *buf;
+	p->bpos += size;
+	p->buf[p->bpos]= '\0';
+	return size;
 }
 
 /* same as printbuf_memappend(), but contains some performance enhancements */
 void printbuf_memappend_no_nul(struct printbuf *p, const char *buf, const int size)
 {
-  if (p->size <= p->bpos + size) {
-    if (printbuf_extend(p, p->bpos + size) < 0)
-       /* ignore new data, best we can do */
-       return;
-  }
-  memcpy(p->buf + p->bpos, buf, size);
-  p->bpos += size;
+	if (p->size <= p->bpos + size) {
+		if (printbuf_extend(p, p->bpos + size) < 0)
+			/* ignore new data, best we can do */
+			return;
+	}
+	memcpy(p->buf + p->bpos, buf, size);
+	p->bpos += size;
 }
 
 /* add a single character to printbuf */
 void printbuf_memappend_char(struct printbuf *p, const char c)
 {
-  if (p->size <= p->bpos + 1) {
-    if (printbuf_extend(p, p->bpos + 1) < 0)
-       /* ignore new data, best we can do */
-       return;
-  }
- p->buf[p->bpos++]= c;
+	if (p->size <= p->bpos + 1) {
+		if (printbuf_extend(p, p->bpos + 1) < 0)
+			/* ignore new data, best we can do */
+			return;
+	}
+	p->buf[p->bpos++]= c;
 }
 
 void printbuf_terminate_string(struct printbuf *const p)
 {
-  if (p->size <= p->bpos + 1) {
-    if (printbuf_extend(p, p->bpos + 1) < 0)
-      --p->bpos; /* overwrite last byte, best we can do */
-  }
-  p->buf[p->bpos]= '\0';
+	if (p->size <= p->bpos + 1) {
+		if (printbuf_extend(p, p->bpos + 1) < 0)
+			--p->bpos; /* overwrite last byte, best we can do */
+	}
+	p->buf[p->bpos]= '\0';
 }
 
 int printbuf_memset(struct printbuf *pb, int offset, int charvalue, int len)
@@ -171,8 +171,7 @@ static int vasprintf(char **buf, const char *fmt, va_list ap)
 	b = (char*)malloc(sizeof(char)*chars);
 	if(!b) { return -1; }
 
-	if((chars = vsprintf(b, fmt, ap)) < 0)
-	{
+	if((chars = vsprintf(b, fmt, ap)) < 0) {
 		free(b);
 	} else {
 		*buf = b;
@@ -184,42 +183,42 @@ static int vasprintf(char **buf, const char *fmt, va_list ap)
 
 int sprintbuf(struct printbuf *p, const char *msg, ...)
 {
-  va_list ap;
-  char *t;
-  int size;
-  char buf[128];
+	va_list ap;
+	char *t;
+	int size;
+	char buf[128];
 
-  /* user stack buffer first */
-  va_start(ap, msg);
-  size = vsnprintf(buf, 128, msg, ap);
-  va_end(ap);
-  /* if string is greater than stack buffer, then use dynamic string
-     with vasprintf.  Note: some implementation of vsnprintf return -1
-     if output is truncated whereas some return the number of bytes that
-     would have been written - this code handles both cases. */
-  if(size == -1 || size > 127) {
-    va_start(ap, msg);
-    if((size = vasprintf(&t, msg, ap)) < 0) { va_end(ap); return -1; }
-    va_end(ap);
-    printbuf_memappend(p, t, size);
-    free(t);
-    return size;
-  } else {
-    printbuf_memappend(p, buf, size);
-    return size;
-  }
+	/* user stack buffer first */
+	va_start(ap, msg);
+	size = vsnprintf(buf, 128, msg, ap);
+	va_end(ap);
+	/* if string is greater than stack buffer, then use dynamic string
+	with vasprintf.  Note: some implementation of vsnprintf return -1
+	if output is truncated whereas some return the number of bytes that
+	would have been written - this code handles both cases. */
+	if(size == -1 || size > 127) {
+		va_start(ap, msg);
+		if((size = vasprintf(&t, msg, ap)) < 0) { va_end(ap); return -1; }
+		va_end(ap);
+		printbuf_memappend(p, t, size);
+		free(t);
+		return size;
+	} else {
+		printbuf_memappend(p, buf, size);
+		return size;
+	}
 }
 
 void printbuf_reset(struct printbuf *p)
 {
-  p->buf[0] = '\0';
-  p->bpos = 0;
+	p->buf[0] = '\0';
+	p->bpos = 0;
 }
 
 void printbuf_free(struct printbuf *p)
 {
-  if(p) {
-    free(p->buf);
-    free(p);
-  }
+	if(p) {
+		free(p->buf);
+		free(p);
+	}
 }
