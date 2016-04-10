@@ -40,9 +40,6 @@
 # error You do not have snprintf on your system.
 #endif /* HAVE_SNPRINTF */
 
-// Don't define this.  It's not thread-safe.
-/* #define REFCOUNT_DEBUG 1 */
-
 const char *fjson_number_chars = "0123456789.+-eE";
 const char *fjson_hex_chars = "0123456789abcdefABCDEF";
 
@@ -55,41 +52,6 @@ static fjson_object_to_json_string_fn fjson_object_int_to_json_string;
 static fjson_object_to_json_string_fn fjson_object_double_to_json_string;
 static fjson_object_to_json_string_fn fjson_object_string_to_json_string;
 static fjson_object_to_json_string_fn fjson_object_array_to_json_string;
-
-
-/* ref count debugging */
-
-#ifdef REFCOUNT_DEBUG
-
-static struct lh_table *fjson_object_table;
-
-static void fjson_object_init(void) __attribute__ ((constructor));
-static void fjson_object_init(void) {
-	MC_DEBUG("fjson_object_init: creating object table\n");
-	fjson_object_table = lh_kptr_table_new(128, NULL);
-}
-
-static void fjson_object_fini(void) __attribute__ ((destructor));
-static void fjson_object_fini(void)
-{
-	struct lh_entry *ent;
-	if (MC_GET_DEBUG())
-	{
-		if (fjson_object_table->count)
-		{
-			MC_DEBUG("fjson_object_fini: %d referenced objects at exit\n",
-			   fjson_object_table->count);
-			lh_foreach(fjson_object_table, ent)
-			{
-				struct fjson_object* obj = (struct fjson_object*)ent->v;
-				MC_DEBUG("\t%s:%p\n", fjson_type_to_name(obj->o_type), obj);
-			}
-		}
-	}
-	MC_DEBUG("fjson_object_fini: freeing object table\n");
-	lh_table_free(fjson_object_table);
-}
-#endif /* REFCOUNT_DEBUG */
 
 
 /* helper for accessing the optimized string data component in fjson_object
@@ -233,11 +195,6 @@ int fjson_object_put(struct fjson_object *jso)
 
 static void fjson_object_generic_delete(struct fjson_object* jso)
 {
-#ifdef REFCOUNT_DEBUG
-	MC_DEBUG("fjson_object_delete_%s: %p\n",
-	   fjson_type_to_name(jso->o_type), jso);
-	lh_table_delete(fjson_object_table, jso);
-#endif /* REFCOUNT_DEBUG */
 	printbuf_free(jso->_pb);
 	DESTROY_ATOMIC_HELPER_MUT(jso->_mut_ref_count);
 	free(jso);
@@ -254,10 +211,6 @@ static struct fjson_object* fjson_object_new(enum fjson_type o_type)
 	jso->_ref_count = 1;
 	jso->_delete = &fjson_object_generic_delete;
 	INIT_ATOMIC_HELPER_MUT(jso->_mut_ref_count);
-#ifdef REFCOUNT_DEBUG
-	lh_table_insert(fjson_object_table, jso, jso);
-	MC_DEBUG("fjson_object_new_%s: %p\n", fjson_type_to_name(jso->o_type), jso);
-#endif /* REFCOUNT_DEBUG */
 	return jso;
 }
 
