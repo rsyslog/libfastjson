@@ -20,6 +20,7 @@
 #include <string.h>
 #include <math.h>
 #include <errno.h>
+#include <assert.h>
 
 #include "debug.h"
 #include "atomic.h"
@@ -200,17 +201,17 @@ static void fjson_object_generic_delete(struct fjson_object* jso)
 	free(jso);
 }
 
-static struct fjson_object* fjson_object_new(enum fjson_type o_type)
+static struct fjson_object* fjson_object_new(const enum fjson_type o_type)
 {
-	struct fjson_object *jso;
-
-	jso = (struct fjson_object*)calloc(sizeof(struct fjson_object), 1);
+	struct fjson_object *const jso = (struct fjson_object*)calloc(sizeof(struct fjson_object), 1);
+//fprintf(stderr, "new 1, jso %p\n", jso);
 	if (!jso)
 		return NULL;
 	jso->o_type = o_type;
 	jso->_ref_count = 1;
 	jso->_delete = &fjson_object_generic_delete;
 	INIT_ATOMIC_HELPER_MUT(jso->_mut_ref_count);
+//fprintf(stderr, "new ret, jso %p\n", jso);
 	return jso;
 }
 
@@ -379,16 +380,22 @@ static int fjson_object_object_to_json_string(struct fjson_object* jso,
 }
 
 
-static void fjson_object_lh_entry_free(struct lh_entry *ent)
+static void fjson_object_object_delete(struct fjson_object *const __restrict__ jso)
 {
-	if (!ent->k_is_constant)
-		free(ent->k);
-	fjson_object_put((struct fjson_object*)ent->v);
-}
-
-static void fjson_object_object_delete(struct fjson_object* jso)
-{
-	lh_table_free(jso->o.c_object);
+	struct _fjson_child_pg *pg = &jso->o.c_obj.pg;
+	struct _fjson_child_pg *del = NULL; /* do NOT delete first elt! */
+	while (pg != NULL) {
+		for (int i = 0 ; i < FJSON_OBJECT_CHLD_PG_SIZE ; ++i) {
+			if (pg->children[i].k == NULL)
+				continue; /* indicates empty slot */
+			if(!pg->children[i].k_is_constant)
+				free ((void*)pg->children[i].k);
+			fjson_object_put (pg->children[i].v);
+		}
+		pg = pg->next;
+		free(del);
+		del = pg;
+	}
 	fjson_object_generic_delete(jso);
 }
 
@@ -399,30 +406,29 @@ struct fjson_object* fjson_object_new_object(void)
 		return NULL;
 	jso->_delete = &fjson_object_object_delete;
 	jso->_to_json_string = &fjson_object_object_to_json_string;
-	jso->o.c_object = lh_kchar_table_new(FJSON_OBJECT_DEF_HASH_ENTRIES,
-					&fjson_object_lh_entry_free);
-	if (!jso->o.c_object)
-	{
-		fjson_object_generic_delete(jso);
-		errno = ENOMEM;
-		return NULL;
-	}
+	jso->o.c_obj.nelem = 0;
+	jso->o.c_obj.lastpg = &jso->o.c_obj.pg;
 	return jso;
 }
 
-/* the protope silences a compiler warning. This is not really clean,
- * but we will remove this function shortly, so we just need a work-around.
+
+/* finds the child with given key if it exists in a json object
+ * and returns a pointer to it. Returns NULL if not found.
  */
-struct lh_table* _fjson_object_get_object(struct fjson_object *jso);
-struct lh_table* _fjson_object_get_object(struct fjson_object *jso)
+static struct _fjson_child*
+_fjson_find_child(struct fjson_object *const __restrict__ jso,
+	const char *const key)
 {
-	if (!jso)
-		return NULL;
-	if(jso->o_type == fjson_type_object)
-		return jso->o.c_object;
-	else
-		return NULL;
+	struct fjson_object_iterator it = fjson_object_iter_begin(jso);
+	struct fjson_object_iterator itEnd = fjson_object_iter_end(jso);
+	while (!fjson_object_iter_equal(&it, &itEnd)) {
+		if (!strcmp (key, fjson_object_iter_peek_name(&it)))
+			return _fjson_object_iter_peek_child(&it);
+		fjson_object_iter_next(&it);
+	}
+	return NULL;
 }
+
 
 void fjson_object_object_add_ex(struct fjson_object* jso,
 	const char *const key,
@@ -431,48 +437,74 @@ void fjson_object_object_add_ex(struct fjson_object* jso,
 {
 	// We lookup the entry and replace the value, rather than just deleting
 	// and re-adding it, so the existing key remains valid.
-	fjson_object *existing_value = NULL;
-	struct lh_entry *existing_entry;
-	const unsigned long hash = lh_get_hash(jso->o.c_object, (void*)key);
-	existing_entry = (opts & FJSON_OBJECT_ADD_KEY_IS_NEW) ? NULL : 
-			      lh_table_lookup_entry_w_hash(jso->o.c_object, (void*)key, hash);
-	if (!existing_entry)
-	{
-		void *const k = (opts & FJSON_OBJECT_KEY_IS_CONSTANT) ?
-					(void*)key : strdup(key);
-		lh_table_insert_w_hash(jso->o.c_object, k, val, hash, opts);
-		return;
+	struct _fjson_child_pg *pg;
+	struct _fjson_child *chld;
+	chld = (opts & FJSON_OBJECT_ADD_KEY_IS_NEW) ? NULL : _fjson_find_child(jso, key);
+	if (chld != NULL) {
+		if (chld->v != NULL)
+			fjson_object_put(chld->v);
+		chld->v = val;
+		goto done;
 	}
-	existing_value = (fjson_object *)existing_entry->v;
-	if (existing_value)
-		fjson_object_put(existing_value);
-	existing_entry->v = val;
+
+	/* insert new entry */
+	pg = jso->o.c_obj.lastpg;
+	const int pg_idx = jso->o.c_obj.nelem;
+	if (pg_idx >= FJSON_OBJECT_CHLD_PG_SIZE) {
+		fprintf(stderr, "missing extend page\n");
+		abort();
+	}
+	if (pg->children[pg_idx].k == NULL) {
+		/* we can use this spot and save us search time */
+		chld = &(pg->children[pg_idx]);
+	}
+	chld->k = (opts & FJSON_OBJECT_KEY_IS_CONSTANT) ? key : strdup(key);
+	chld->k_is_constant = (opts & FJSON_OBJECT_KEY_IS_CONSTANT) != 0;
+	chld->v = val;
+	++jso->o.c_obj.nelem;
+
+done:
+	return;
 }
 
-void fjson_object_object_add(struct fjson_object* jso, const char *key,
-			    struct fjson_object *val)
+void fjson_object_object_add(struct fjson_object *const __restrict__ jso,
+	const char *const key,
+	struct fjson_object *const val)
 {
-	// We lookup the entry and replace the value, rather than just deleting
-	// and re-adding it, so the existing key remains valid.
-	fjson_object *existing_value = NULL;
-	struct lh_entry *existing_entry;
-	const unsigned long hash = lh_get_hash(jso->o.c_object, (void*)key);
-	existing_entry = lh_table_lookup_entry_w_hash(jso->o.c_object, (void*)key, hash);
-	if (!existing_entry)
-	{
-		lh_table_insert_w_hash(jso->o.c_object, strdup(key), val, hash, 0);
-		return;
+	struct _fjson_child *chld = NULL;
+	struct _fjson_child_pg *pg;
+
+	chld = _fjson_find_child(jso, key);
+	if (chld != NULL) {
+		struct fjson_object *const existing = chld->v;
+		if (existing != NULL)
+			fjson_object_put(existing);
+		chld->v = val;
+		goto done;
 	}
-	existing_value = (fjson_object  *)existing_entry->v;
-	if (existing_value)
-		fjson_object_put(existing_value);
-	existing_entry->v = val;
+
+	pg = jso->o.c_obj.lastpg;
+	const int pg_idx = jso->o.c_obj.nelem;
+	if (pg_idx >= FJSON_OBJECT_CHLD_PG_SIZE) {
+		fprintf(stderr, "missing extend page\n");
+		abort();
+	}
+	if (pg->children[pg_idx].k == NULL) {
+		/* we can use this spot and save us search time */
+		chld = &(pg->children[pg_idx]);
+	}
+	chld->k = strdup(key);
+	chld->v = val;
+	++jso->o.c_obj.nelem;
+
+done:
+	return;
 }
 
 
 int fjson_object_object_length(struct fjson_object *jso)
 {
-	return lh_table_length(jso->o.c_object);
+	return jso->o.c_obj.nelem;
 }
 
 struct fjson_object* fjson_object_object_get(struct fjson_object* jso, const char *key)
@@ -490,18 +522,31 @@ fjson_bool fjson_object_object_get_ex(struct fjson_object* jso, const char *key,
 	if (NULL == jso)
 		return FALSE;
 
-	if(jso->o_type == fjson_type_object)
-		return lh_table_lookup_ex(jso->o.c_object, (void*)key, (void**)value);
-	else {
+	if(jso->o_type == fjson_type_object) {
+		struct _fjson_child *const chld = _fjson_find_child(jso, key);
+		if (chld == 0) {
+			return FALSE;
+		} else {
+			*value = chld->v;
+			return TRUE;
+		}
+	} else {
 		if (value != NULL)
 			*value = NULL;
 		return FALSE;
-		}
+	}
 }
 
 void fjson_object_object_del(struct fjson_object* jso, const char *key)
 {
-	lh_table_delete(jso->o.c_object, key);
+	struct _fjson_child *const chld = _fjson_find_child(jso, key);
+	if (chld != NULL) {
+		free((void*)chld->k);
+		fjson_object_put(chld->v);
+		chld->k = NULL;
+		chld->v = NULL;
+		--jso->o.c_obj.nelem;
+	}
 }
 
 
@@ -999,5 +1044,5 @@ struct fjson_object* fjson_object_array_get_idx(struct fjson_object *jso,
 
 int fjson_object_get_member_count(struct fjson_object *jso)
 {
-	return jso->o.c_object->count;
+	return jso->o.c_obj.nelem;
 }

@@ -9,7 +9,7 @@
  */
 #include "config.h"
 
-#include "json.h"
+#include "../json.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -30,6 +30,7 @@ int main(int __attribute__((unused)) argc, char __attribute__((unused)) **argv)
 
 	for(i = 0 ; i < NUM_CREATIONS ; ++i) {
 		json[i] = fjson_object_new_object();
+//fprintf(stderr, "main: json[%d] %p\n", i, json[i]);
 		snprintf(pb, sizeof(pb), "%d", i);
 		fjson_object_object_add(json[i], pb, fjson_object_new_string(pb));
 		
