@@ -126,21 +126,6 @@ struct lh_table {
 };
 
 
-/**
- * Convenience list iterator.
- * internal functionality - NOT PART OF THE API
- */
-#define lh_foreach(table, entry) \
-for(entry = table->head; entry; entry = entry->next)
-
-/**
- * lh_foreach_safe allows calling of deletion routine while iterating.
- * internal functionality - NOT PART OF THE API
- */
-#define lh_foreach_safe(table, entry, tmp) \
-for(entry = table->head; entry && ((tmp = entry->next) || 1); entry = tmp)
-
-
 
 /**
  * Create a new linkhash table.
