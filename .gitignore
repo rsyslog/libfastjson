@@ -53,6 +53,8 @@ m4/lt~obsolete.m4
 /tests/test_null
 /tests/test_printbuf
 /tests/test_set_serializer
+/tests/test_object_object_add_ex
+/tests/test_object_object_add_exFormatted
 /tests/chk_version
 /tests/*.vg.out
 /tests/*.log

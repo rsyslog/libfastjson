@@ -16,6 +16,7 @@ TESTS+= test_locale.test
 TESTS+= test_charcase.test
 TESTS+= test_printbuf.test
 TESTS+= test_set_serializer.test
+TESTS+= test_object_object_add_ex.test
 # we officially do NOT support NUL bytes (however, we may
 # later add a workaround to at least transparently pass them
 # through, thus I keep this as reference).
@@ -48,6 +49,11 @@ test1Formatted_CPPFLAGS = -DTEST_FORMATTED
 check_PROGRAMS += test2Formatted
 test2Formatted_SOURCES = test2.c parse_flags.c parse_flags.h
 test2Formatted_CPPFLAGS = -DTEST_FORMATTED
+
+# Note: handled by object_object_add_ex.test
+check_PROGRAMS += test_object_object_add_exFormatted 
+test_object_object_add_exFormatted_SOURCES = test_object_object_add_ex.c parse_flags.c parse_flags.h
+test_object_object_add_exFormatted_CPPFLAGS = -DTEST_FORMATTED
 
 EXTRA_DIST=
 EXTRA_DIST += $(TESTS)
