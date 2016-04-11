@@ -20,10 +20,10 @@ typedef void (array_list_free_fn) (void *data);
 
 struct array_list
 {
-  void **array;
-  int length;
-  int size;
-  array_list_free_fn *free_fn;
+	void **array;
+	int length;
+	int size;
+	array_list_free_fn *free_fn;
 };
 
 extern struct array_list*

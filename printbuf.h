@@ -19,9 +19,9 @@ extern "C" {
 #endif
 
 struct printbuf {
-  char *buf;
-  int bpos;
-  int size;
+	char *buf;
+	int bpos;
+	int size;
 };
 
 extern struct printbuf*
@@ -39,11 +39,11 @@ printbuf_memappend(struct printbuf *p, const char *buf, int size);
 
 #define printbuf_memappend_fast(p, bufptr, bufsize)          \
 do {                                                         \
-  if ((p->size - p->bpos) > bufsize) {                       \
-    memcpy(p->buf + p->bpos, (bufptr), bufsize);             \
-    p->bpos += bufsize;                                      \
-    p->buf[p->bpos]= '\0';                                   \
-  } else {  printbuf_memappend(p, (bufptr), bufsize); }      \
+	if ((p->size - p->bpos) > bufsize) {                 \
+		memcpy(p->buf + p->bpos, (bufptr), bufsize); \
+		p->bpos += bufsize;                          \
+		p->buf[p->bpos]= '\0';                       \
+	} else {  printbuf_memappend(p, (bufptr), bufsize); }\
 } while (0)
 
 /* The following functions provide a printbuf interface where the

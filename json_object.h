@@ -133,14 +133,14 @@ typedef int (fjson_object_to_json_string_fn)(struct fjson_object *jso,
 /* supported object types */
 
 typedef enum fjson_type {
-  /* If you change this, be sure to update fjson_type_to_name() too */
-  fjson_type_null,
-  fjson_type_boolean,
-  fjson_type_double,
-  fjson_type_int,
-  fjson_type_object,
-  fjson_type_array,
-  fjson_type_string
+	/* If you change this, be sure to update fjson_type_to_name() too */
+	fjson_type_null,
+	fjson_type_boolean,
+	fjson_type_double,
+	fjson_type_int,
+	fjson_type_object,
+	fjson_type_array,
+	fjson_type_string
 } fjson_type;
 
 /* reference counting functions */
@@ -167,13 +167,13 @@ int fjson_object_put(struct fjson_object *obj);
  * Check if the fjson_object is of a given type
  * @param obj the fjson_object instance
  * @param type one of:
-     fjson_type_null (i.e. obj == NULL),
-     fjson_type_boolean,
-     fjson_type_double,
-     fjson_type_int,
-     fjson_type_object,
-     fjson_type_array,
-     fjson_type_string
+	fjson_type_null (i.e. obj == NULL),
+	fjson_type_boolean,
+	fjson_type_double,
+	fjson_type_int,
+	fjson_type_object,
+	fjson_type_array,
+	fjson_type_string
  */
 extern int fjson_object_is_type(struct fjson_object *obj, enum fjson_type type);
 
@@ -183,13 +183,13 @@ extern int fjson_object_is_type(struct fjson_object *obj, enum fjson_type type);
  *
  * @param obj the fjson_object instance
  * @returns type being one of:
-     fjson_type_null (i.e. obj == NULL),
-     fjson_type_boolean,
-     fjson_type_double,
-     fjson_type_int,
-     fjson_type_object,
-     fjson_type_array,
-     fjson_type_string
+	fjson_type_null (i.e. obj == NULL),
+	fjson_type_boolean,
+	fjson_type_double,
+	fjson_type_int,
+	fjson_type_object,
+	fjson_type_array,
+	fjson_type_string
  */
 extern enum fjson_type fjson_object_get_type(struct fjson_object *obj);
 
@@ -359,8 +359,8 @@ THIS_FUNCTION_IS_DEPRECATED(extern struct fjson_object* fjson_object_object_get(
  * @returns whether or not the key exists
  */
 extern fjson_bool fjson_object_object_get_ex(struct fjson_object* obj,
-						  const char *key,
-                                                  struct fjson_object **value);
+	const char *key,
+	struct fjson_object **value);
 
 /** Delete the given fjson_object field
  *
