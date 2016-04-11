@@ -61,95 +61,95 @@ static void sscanf_is_broken_test(void);
  */
 struct fjson_object* fjson_object_from_fd(int fd)
 {
-  struct printbuf *pb;
-  struct fjson_object *obj;
-  char buf[FJSON_FILE_BUF_SIZE];
-  int ret;
+	struct printbuf *pb;
+	struct fjson_object *obj;
+	char buf[FJSON_FILE_BUF_SIZE];
+	int ret;
 
-  if(!(pb = printbuf_new())) {
-    MC_ERROR("fjson_object_from_file: printbuf_new failed\n");
-    return NULL;
-  }
-  while((ret = read(fd, buf, FJSON_FILE_BUF_SIZE)) > 0) {
-    printbuf_memappend(pb, buf, ret);
-  }
-  if(ret < 0) {
-    MC_ERROR("fjson_object_from_fd: error reading fd %d: %s\n", fd, strerror(errno));
-    printbuf_free(pb);
-    return NULL;
-  }
-  obj = fjson_tokener_parse(pb->buf);
-  printbuf_free(pb);
-  return obj;
+	if(!(pb = printbuf_new())) {
+		MC_ERROR("fjson_object_from_file: printbuf_new failed\n");
+		return NULL;
+	}
+	while((ret = read(fd, buf, FJSON_FILE_BUF_SIZE)) > 0) {
+		printbuf_memappend(pb, buf, ret);
+	}
+	if(ret < 0) {
+		MC_ERROR("fjson_object_from_fd: error reading fd %d: %s\n", fd, strerror(errno));
+		printbuf_free(pb);
+		return NULL;
+	}
+	obj = fjson_tokener_parse(pb->buf);
+	printbuf_free(pb);
+	return obj;
 }
 
 struct fjson_object* fjson_object_from_file(const char *filename)
 {
-  struct fjson_object *obj;
-  int fd;
+	struct fjson_object *obj;
+	int fd;
 
-  if((fd = open(filename, O_RDONLY)) < 0) {
-    MC_ERROR("fjson_object_from_file: error opening file %s: %s\n",
-	     filename, strerror(errno));
-    return NULL;
-  }
-  obj = fjson_object_from_fd(fd);
-  close(fd);
-  return obj;
+	if((fd = open(filename, O_RDONLY)) < 0) {
+		MC_ERROR("fjson_object_from_file: error opening file %s: %s\n",
+		     filename, strerror(errno));
+		return NULL;
+	}
+	obj = fjson_object_from_fd(fd);
+	close(fd);
+	return obj;
 }
 
 /* extended "format and write to file" function */
 
 int fjson_object_to_file_ext(const char *filename, struct fjson_object *obj, int flags)
 {
-  const char *fjson_str;
-  int fd, ret;
-  unsigned int wpos, wsize;
+	const char *fjson_str;
+	int fd, ret;
+	unsigned int wpos, wsize;
 
-  if(!obj) {
-    MC_ERROR("fjson_object_to_file: object is null\n");
-    return -1;
-  }
+	if(!obj) {
+		MC_ERROR("fjson_object_to_file: object is null\n");
+		return -1;
+	}
 
-  if((fd = open(filename, O_WRONLY | O_TRUNC | O_CREAT, 0644)) < 0) {
-    MC_ERROR("fjson_object_to_file: error opening file %s: %s\n",
-	     filename, strerror(errno));
-    return -1;
-  }
+	if((fd = open(filename, O_WRONLY | O_TRUNC | O_CREAT, 0644)) < 0) {
+		MC_ERROR("fjson_object_to_file: error opening file %s: %s\n",
+		     filename, strerror(errno));
+		return -1;
+	}
 
-  if(!(fjson_str = fjson_object_to_json_string_ext(obj,flags))) {
-    close(fd);
-    return -1;
-  }
+	if(!(fjson_str = fjson_object_to_json_string_ext(obj,flags))) {
+		close(fd);
+		return -1;
+	}
 
-  wsize = (unsigned int)(strlen(fjson_str) & UINT_MAX); /* CAW: probably unnecessary, but the most 64bit safe */
-  wpos = 0;
-  while(wpos < wsize) {
-    if((ret = write(fd, fjson_str + wpos, wsize-wpos)) < 0) {
-      close(fd);
-      MC_ERROR("fjson_object_to_file: error writing file %s: %s\n",
-	     filename, strerror(errno));
-      return -1;
-    }
+	wsize = (unsigned int)(strlen(fjson_str) & UINT_MAX); /* CAW: probably unnecessary, but the most 64bit safe */
+	wpos = 0;
+	while(wpos < wsize) {
+		if((ret = write(fd, fjson_str + wpos, wsize-wpos)) < 0) {
+			close(fd);
+			MC_ERROR("fjson_object_to_file: error writing file %s: %s\n",
+			     filename, strerror(errno));
+			return -1;
+		}
 
-	/* because of the above check for ret < 0, we can safely cast and add */
-    wpos += (unsigned int)ret;
-  }
+		/* because of the above check for ret < 0, we can safely cast and add */
+		wpos += (unsigned int)ret;
+	}
 
-  close(fd);
-  return 0;
+	close(fd);
+	return 0;
 }
 
 // backwards compatible "format and write to file" function
 
 int fjson_object_to_file(const char *filename, struct fjson_object *obj)
 {
-  return fjson_object_to_file_ext(filename, obj, FJSON_TO_STRING_PLAIN);
+	return fjson_object_to_file_ext(filename, obj, FJSON_TO_STRING_PLAIN);
 }
 
 int fjson_parse_double(const char *buf, double *retval)
 {
-  return (sscanf(buf, "%lf", retval)==1 ? 0 : 1);
+	return (sscanf(buf, "%lf", retval)==1 ? 0 : 1);
 }
 
 /*
@@ -267,14 +267,14 @@ int fjson_parse_int64(const char *buf, int64_t *retval)
 
 #define NELEM(a)        (sizeof(a) / sizeof(a[0]))
 static const char* fjson_type_name[] = {
-  /* If you change this, be sure to update the enum fjson_type definition too */
-  "null",
-  "boolean",
-  "double",
-  "int",
-  "object",
-  "array",
-  "string",
+	/* If you change this, be sure to update the enum fjson_type definition too */
+	"null",
+	"boolean",
+	"double",
+	"int",
+	"object",
+	"array",
+	"string",
 };
 
 const char *fjson_type_to_name(enum fjson_type o_type)
