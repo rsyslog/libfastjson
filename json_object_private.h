@@ -54,6 +54,7 @@ struct fjson_object
 		int64_t c_int64;
 		struct {
 			int nelem;
+			int ndeleted;
 			struct _fjson_child_pg pg;
 			struct _fjson_child_pg *lastpg;
 		} c_obj;
