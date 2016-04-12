@@ -471,34 +471,7 @@ void fjson_object_object_add(struct fjson_object *const __restrict__ jso,
 	const char *const key,
 	struct fjson_object *const val)
 {
-	struct _fjson_child *chld = NULL;
-	struct _fjson_child_pg *pg;
-
-	chld = _fjson_find_child(jso, key);
-	if (chld != NULL) {
-		struct fjson_object *const existing = chld->v;
-		if (existing != NULL)
-			fjson_object_put(existing);
-		chld->v = val;
-		goto done;
-	}
-
-	pg = jso->o.c_obj.lastpg;
-	const int pg_idx = jso->o.c_obj.nelem;
-	if (pg_idx >= FJSON_OBJECT_CHLD_PG_SIZE) {
-		fprintf(stderr, "missing extend page\n");
-		abort();
-	}
-	if (pg->children[pg_idx].k == NULL) {
-		/* we can use this spot and save us search time */
-		chld = &(pg->children[pg_idx]);
-	}
-	chld->k = strdup(key);
-	chld->v = val;
-	++jso->o.c_obj.nelem;
-
-done:
-	return;
+	fjson_object_object_add_ex(jso, key, val, 0);
 }
 
 
