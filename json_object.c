@@ -422,6 +422,7 @@ _fjson_find_child(struct fjson_object *const __restrict__ jso,
 	struct fjson_object_iterator it = fjson_object_iter_begin(jso);
 	struct fjson_object_iterator itEnd = fjson_object_iter_end(jso);
 	while (!fjson_object_iter_equal(&it, &itEnd)) {
+fprintf(stderr, "base pg: %p --> pg: %p, curr_idx %d, remain %d\n", &jso->o.c_obj.pg, it.pg, it.curr_idx, it.objs_remain);
 		if (!strcmp (key, fjson_object_iter_peek_name(&it)))
 			return _fjson_object_iter_peek_child(&it);
 		fjson_object_iter_next(&it);
@@ -429,15 +430,43 @@ _fjson_find_child(struct fjson_object *const __restrict__ jso,
 	return NULL;
 }
 
+/* get an empty entry/slot for adding a new child. If the current data
+ * structure is full, alloc a new page. Returns NULL on (malloc) error.
+ */
+static struct _fjson_child *
+fjson_child_get_empty_etry(struct fjson_object *const __restrict__ jso)
+{
+	struct _fjson_child *chld = NULL;
+	struct _fjson_child_pg *pg;
+	const int pg_idx = jso->o.c_obj.nelem % FJSON_OBJECT_CHLD_PG_SIZE;
+//fprintf(stderr, "get_etry: pg_idx %d, nelem %d\n", pg_idx, jso->o.c_obj.nelem );
+	if (jso->o.c_obj.nelem > 0 && pg_idx == 0) {
+		if((pg = calloc(1, sizeof(struct _fjson_child_pg))) == NULL) {
+			errno = ENOMEM;
+			goto done;
+		}
+		jso->o.c_obj.lastpg->next = pg;
+		jso->o.c_obj.lastpg = pg;
+	}
+	pg = jso->o.c_obj.lastpg;
+//fprintf(stderr, "get_etry: existing chld, k %p\n", pg->children[pg_idx].k);
+	if (pg->children[pg_idx].k == NULL) {
+		/* we can use this spot and save us search time */
+		chld = &(pg->children[pg_idx]);
+//fprintf(stderr, "get_etry: existing chld pg %p, idx: %d\n", pg, pg_idx);
+		goto done;
+	}
+done:	return chld;
+}
 
-void fjson_object_object_add_ex(struct fjson_object* jso,
+void fjson_object_object_add_ex(struct fjson_object *const __restrict__ jso,
 	const char *const key,
 	struct fjson_object *const val,
 	const unsigned opts)
 {
+fprintf(stderr, "_add_ex, key %s\n", key);
 	// We lookup the entry and replace the value, rather than just deleting
 	// and re-adding it, so the existing key remains valid.
-	struct _fjson_child_pg *pg;
 	struct _fjson_child *chld;
 	chld = (opts & FJSON_OBJECT_ADD_KEY_IS_NEW) ? NULL : _fjson_find_child(jso, key);
 	if (chld != NULL) {
@@ -448,20 +477,13 @@ void fjson_object_object_add_ex(struct fjson_object* jso,
 	}
 
 	/* insert new entry */
-	pg = jso->o.c_obj.lastpg;
-	const int pg_idx = jso->o.c_obj.nelem;
-	if (pg_idx >= FJSON_OBJECT_CHLD_PG_SIZE) {
-		fprintf(stderr, "missing extend page\n");
-		abort();
-	}
-	if (pg->children[pg_idx].k == NULL) {
-		/* we can use this spot and save us search time */
-		chld = &(pg->children[pg_idx]);
-	}
+	if ((chld = fjson_child_get_empty_etry(jso)) == NULL)
+		goto done;
 	chld->k = (opts & FJSON_OBJECT_KEY_IS_CONSTANT) ? key : strdup(key);
 	chld->flags.k_is_constant = (opts & FJSON_OBJECT_KEY_IS_CONSTANT) != 0;
 	chld->v = val;
 	++jso->o.c_obj.nelem;
+//fprintf(stderr, "_add_ex, key %s added, nelem %d\n", key, jso->o.c_obj.nelem);
 
 done:
 	return;
