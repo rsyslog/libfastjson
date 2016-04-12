@@ -27,6 +27,9 @@ struct _fjson_child {
 	 */
 	const char *k;
 	int k_is_constant;
+	struct {
+		unsigned k_is_constant : 1;
+	} flags;
 	/**
 	 * The value.
 	 */

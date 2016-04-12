@@ -388,7 +388,7 @@ static void fjson_object_object_delete(struct fjson_object *const __restrict__ j
 		for (int i = 0 ; i < FJSON_OBJECT_CHLD_PG_SIZE ; ++i) {
 			if (pg->children[i].k == NULL)
 				continue; /* indicates empty slot */
-			if(!pg->children[i].k_is_constant)
+			if(!pg->children[i].flags.k_is_constant)
 				free ((void*)pg->children[i].k);
 			fjson_object_put (pg->children[i].v);
 		}
@@ -459,7 +459,7 @@ void fjson_object_object_add_ex(struct fjson_object* jso,
 		chld = &(pg->children[pg_idx]);
 	}
 	chld->k = (opts & FJSON_OBJECT_KEY_IS_CONSTANT) ? key : strdup(key);
-	chld->k_is_constant = (opts & FJSON_OBJECT_KEY_IS_CONSTANT) != 0;
+	chld->flags.k_is_constant = (opts & FJSON_OBJECT_KEY_IS_CONSTANT) != 0;
 	chld->v = val;
 	++jso->o.c_obj.nelem;
 
