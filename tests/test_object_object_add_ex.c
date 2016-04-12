@@ -16,7 +16,6 @@
 
 #include "../json.h"
 #include "../debug.h"
-#include "../linkhash.h"
 #include "parse_flags.h"
 
 /* this is a work-around until we manage to fix configure.ac */
