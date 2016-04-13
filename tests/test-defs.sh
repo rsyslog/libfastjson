@@ -122,6 +122,12 @@ run_output_test()
 		err=1
 	fi
 
+	# remove temp files for successful builds
+	# this clanup is required for "make distcheck"
+	if [ $err -eq 0 ] ; then
+	    rm -rfv ${CURDIR}/${testsubdir}/*
+	fi
+
 	return $err
 }
 
