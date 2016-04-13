@@ -35,6 +35,4 @@ script:
   - make
   - export VERBOSE=1
   - make check
-  # most tests currently fail under "make distcheck", but we enable those
-  # that work (see also https://github.com/rsyslog/libfastjson/issues/43 )
-  - make distcheck TESTS="chk_version"
+  - make distcheck
