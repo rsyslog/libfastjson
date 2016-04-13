@@ -1,6 +1,5 @@
 #!/bin/sh
 
-set -o xtrace
 # Make sure srcdir is an absolute path.  Supply the variable
 # if it does not exist.  We want to be able to run the tests
 # stand-alone!!
@@ -81,7 +80,6 @@ run_output_test()
 		REDIR_OUTPUT="| tee \"${TEST_OUTPUT}.out\""
 	fi
 
-	echo "VALGRIND: -$VALGRIND-"
 	if [ "$VALGRIND" = "valgrind" ] ; then
 		eval valgrind --tool=memcheck \
 			--trace-children=yes \
