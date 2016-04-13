@@ -328,6 +328,7 @@ static uint32_t hashlittle( const void *key, size_t length, uint32_t initval)
     default: /* TODO: yet-unhandled program error (stems back to json-c)
     	      * we integrate this case to make the compiler happy.
 	      */
+	      break;
     }
 
 #endif /* !valgrind */
