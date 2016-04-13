@@ -18,7 +18,7 @@ addons:
       - valgrind
 
 env:
-  - CFLAGS="-Wall -Wextra -Wformat-security -Wshadow -Wcast-align -Wpointer-arith -Wmissing-format-attribute -Wuninitialized"
+  - CFLAGS="-g"
 
 before_install:
   - echo $LANG
