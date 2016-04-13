@@ -21,6 +21,26 @@ extern "C" {
 
 typedef void (fjson_object_private_delete_fn)(struct fjson_object *o);
 
+struct _fjson_child {
+	/**
+	 * The key.
+	 */
+	const char *k;
+	int k_is_constant;
+	struct {
+		unsigned k_is_constant : 1;
+	} flags;
+	/**
+	 * The value.
+	 */
+	struct fjson_object *v;
+};
+
+struct _fjson_child_pg {
+	struct _fjson_child children[FJSON_OBJECT_CHLD_PG_SIZE];
+	struct _fjson_child_pg *next;
+};
+
 struct fjson_object
 {
 	enum fjson_type o_type;
@@ -32,13 +52,18 @@ struct fjson_object
 		fjson_bool c_boolean;
 		double c_double;
 		int64_t c_int64;
-		struct lh_table *c_object;
+		struct {
+			int nelem;
+			int ndeleted;
+			struct _fjson_child_pg pg;
+			struct _fjson_child_pg *lastpg;
+		} c_obj;
 		struct array_list *c_array;
 		struct {
 			union {
 			/* optimize: if we have small strings, we can store them
-			* directly. This saves considerable CPU cycles AND memory.
-			*/
+			 * directly. This saves considerable CPU cycles AND memory.
+			 */
 			char *ptr;
 			char data[LEN_DIRECT_STRING_DATA];
 			} str;

@@ -39,7 +39,9 @@ struct fjson_object_iter_info_;
  * a JSON Object instance or the "end" iterator value.
  */
 struct fjson_object_iterator {
-	const void* opaque_;
+	int objs_remain;
+	int curr_idx;
+	const struct _fjson_child_pg *pg;
 };
 
 
@@ -229,6 +231,11 @@ fjson_object_iter_peek_value(const struct fjson_object_iterator* iter);
 fjson_bool
 fjson_object_iter_equal(const struct fjson_object_iterator* iter1,
 			const struct fjson_object_iterator* iter2);
+
+/* some private functions -- TODO: move to their own header */
+struct _fjson_child*
+_fjson_object_iter_peek_child(const struct fjson_object_iterator *const __restrict__ iter);
+
 
 #ifndef FJSON_NATIVE_API_ONLY
 #define json_object_iter_info_ fjson_object_iter_info_

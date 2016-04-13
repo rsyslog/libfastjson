@@ -25,6 +25,14 @@ extern "C" {
 #endif
 
 #define FJSON_OBJECT_DEF_HASH_ENTRIES 16
+/* number of subjects within a children page. One page is allocated
+ * with each json object, and extensions are alwas done in page
+ * size increments. The size should be a compromise between not
+ * wasting too much space but also not doing too frequent mallocs.
+ * note: each page *entry* currently needs ~20 Bytes (x64). If this
+ * is important, check the actual number (sizeof(struct _fjson_child)).
+ */
+#define FJSON_OBJECT_CHLD_PG_SIZE 8
 
 /**
  * A flag for the fjson_object_to_json_string_ext() and

@@ -21,9 +21,7 @@
 
 #include "json.h"
 #include "json_object_private.h"
-
 #include "json_object_iterator.h"
-
 #include "debug.h"
 #include "linkhash.h"
 
@@ -60,31 +58,24 @@
  * iterator.
  */
 
-/// Our current representation of the "end" iterator;
-///
-/// @note May not always be NULL
-static const void* kObjectEndIterValue = NULL;
-
-/* need access to internal object */
-extern struct lh_table* _fjson_object_get_object(struct fjson_object *obj);
 
 /**
  * ****************************************************************************
  */
 struct fjson_object_iterator
-fjson_object_iter_begin(struct fjson_object* obj)
+fjson_object_iter_begin(struct fjson_object *const __restrict__ obj)
 {
 	struct fjson_object_iterator iter;
-	struct lh_table* pTable;
 
-	/// @note fjson_object_get_object will return NULL if passed NULL
-	///       or a non-fjson_type_object instance
-	pTable = _fjson_object_get_object(obj);
-	JASSERT(NULL != pTable);
-
-	/// @note For a pair-less Object, head is NULL, which matches our
-	///       definition of the "end" iterator
-	iter.opaque_ = pTable->head;
+	if(obj->o_type == fjson_type_object) {
+		iter.objs_remain = obj->o.c_obj.nelem;
+		if(iter.objs_remain > 0) {
+			iter.curr_idx = 0;
+			iter.pg = &obj->o.c_obj.pg;
+		}
+	} else { /* non-object */
+		iter.objs_remain = 0;
+	}
 	return iter;
 }
 
@@ -97,10 +88,10 @@ fjson_object_iter_end(const struct fjson_object __attribute__((unused)) *obj)
 	struct fjson_object_iterator iter;
 
 	JASSERT(NULL != obj);
-	JASSERT(fjson_object_is_type(obj, fjson_type_object));
 
-	iter.opaque_ = kObjectEndIterValue;
-
+	/// @note the end condition is actually that no more entries are
+	///       present, so only set that property.
+	iter.objs_remain = 0;
 	return iter;
 }
 
@@ -108,12 +99,25 @@ fjson_object_iter_end(const struct fjson_object __attribute__((unused)) *obj)
  * ****************************************************************************
  */
 void
-fjson_object_iter_next(struct fjson_object_iterator* iter)
+fjson_object_iter_next(struct fjson_object_iterator *const __restrict__ iter)
 {
 	JASSERT(NULL != iter);
-	JASSERT(kObjectEndIterValue != iter->opaque_);
 
-	iter->opaque_ = ((struct lh_entry *)iter->opaque_)->next;
+	if(iter->objs_remain > 0) {
+		--iter->objs_remain;
+		if(iter->objs_remain > 0) {
+			++iter->curr_idx;
+			if(iter->curr_idx == FJSON_OBJECT_CHLD_PG_SIZE) {
+				iter->pg = iter->pg->next;
+				iter->curr_idx = 0;
+			}
+			/* check empty slots; TODO: recurse or iterate? */
+			if(iter->pg->children[iter->curr_idx].k == NULL) {
+				++iter->objs_remain; /* correct */
+				fjson_object_iter_next(iter);
+			}
+		}
+	}
 }
 
 
@@ -121,12 +125,10 @@ fjson_object_iter_next(struct fjson_object_iterator* iter)
  * ****************************************************************************
  */
 const char*
-fjson_object_iter_peek_name(const struct fjson_object_iterator* iter)
+fjson_object_iter_peek_name(const struct fjson_object_iterator *const __restrict__ iter)
 {
 	JASSERT(NULL != iter);
-	JASSERT(kObjectEndIterValue != iter->opaque_);
-
-	return (const char*)(((struct lh_entry *)iter->opaque_)->k);
+	return iter->pg->children[iter->curr_idx].k;
 }
 
 
@@ -134,12 +136,20 @@ fjson_object_iter_peek_name(const struct fjson_object_iterator* iter)
  * ****************************************************************************
  */
 struct fjson_object*
-fjson_object_iter_peek_value(const struct fjson_object_iterator* iter)
+fjson_object_iter_peek_value(const struct fjson_object_iterator *const __restrict__ iter)
 {
 	JASSERT(NULL != iter);
-	JASSERT(kObjectEndIterValue != iter->opaque_);
+	return iter->pg->children[iter->curr_idx].v;
+}
 
-	return (struct fjson_object*)(((struct lh_entry *)iter->opaque_)->v);
+/**
+ * ****************************************************************************
+ */
+struct _fjson_child*
+_fjson_object_iter_peek_child(const struct fjson_object_iterator *const __restrict__ iter)
+{
+	JASSERT(NULL != iter);
+	return (struct _fjson_child*) &(iter->pg->children[iter->curr_idx]);
 }
 
 
@@ -150,10 +160,25 @@ fjson_bool
 fjson_object_iter_equal(const struct fjson_object_iterator* iter1,
                        const struct fjson_object_iterator* iter2)
 {
+	int is_eq;
 	JASSERT(NULL != iter1);
 	JASSERT(NULL != iter2);
 
-	return (iter1->opaque_ == iter2->opaque_);
+	if (iter1->objs_remain == iter2->objs_remain) {
+		if (iter1->objs_remain == 0) {
+			is_eq = 1;
+		} else {
+			if ( (iter1->curr_idx == iter2->curr_idx) &&
+			     (iter2->pg == iter2->pg)                ) {
+				is_eq = 1;
+			} else {
+				is_eq = 0;
+			}
+		}
+	} else {
+		is_eq= 0;
+	}
+	return is_eq;
 }
 
 
@@ -166,11 +191,13 @@ fjson_object_iter_init_default(void)
 	struct fjson_object_iterator iter;
 
 	/**
-	* @note Make this a negative, invalid value, such that
+	* @note Make this an invalid value, such that
 	*       accidental access to it would likely be trapped by the
 	*       hardware as an invalid address.
 	*/
-	iter.opaque_ = NULL;
+	iter.pg = NULL;
+	iter.curr_idx = 0;
+	iter.objs_remain = 1;
 
 	return iter;
 }
