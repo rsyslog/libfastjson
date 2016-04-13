@@ -5,6 +5,7 @@ AC_INIT([libfastjson], 0.99.3, [rsyslog@lists.adiscon.com])
 AC_CONFIG_HEADER(config.h)
 
 AM_INIT_AUTOMAKE([subdir-objects])
+AC_CONFIG_MACRO_DIR([m4])
 
 AC_PROG_CC_C99
 AC_PROG_MAKE_SET
@@ -27,7 +28,22 @@ fi
 # enable silent build by default
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
-AC_CONFIG_MACRO_DIR([m4])
+AC_ARG_ENABLE(valgrind,
+        [AS_HELP_STRING([--enable-valgrind],[enable running the testbench under valgrind memcheck tool @<:@default=no@:>@])],
+        [case "${enableval}" in
+         yes) enable_valgrind="yes" ;;
+          no) enable_valgrind="no" ;;
+           *) AC_MSG_ERROR(bad value ${enableval} for --enable-valgrind) ;;
+         esac],
+        [enable_valgrind="no"]
+)
+if test "$enable_valgrind" = "yes"; then
+        AC_CHECK_PROG(VALGRIND, [valgrind], [valgrind], [no])
+	if test "x$VALGRIND" = "xno"; then
+		AC_MSG_ERROR([--enable-valgrind given, but valgrind is not present on system])
+	AC_SUBST(VALGRIND)
+	fi
+fi
 
 # Checks for programs.
 

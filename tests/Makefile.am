@@ -1,4 +1,4 @@
-
+export VALGRIND=@VALGRIND@
 LDADD = $(top_builddir)/libfastjson.la \
         $(top_builddir)/libfastjson-internal.la
 

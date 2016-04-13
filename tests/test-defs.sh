@@ -1,5 +1,6 @@
 #!/bin/sh
 
+set -o xtrace
 # Make sure srcdir is an absolute path.  Supply the variable
 # if it does not exist.  We want to be able to run the tests
 # stand-alone!!
@@ -49,12 +50,6 @@ echo "=== Running test $progname"
 
 CMP="${CMP-cmp}"
 
-use_valgrind=${USE_VALGRIND-1}
-valgrind_path=$(which valgrind 2> /dev/null)
-if [ -z "${valgrind_path}" -o ! -x "${valgrind_path}" ] ; then
-	use_valgrind=0
-fi
-
 #
 # This is a common function to check the results of a test program
 # that is intended to generate consistent output across runs.
@@ -86,7 +81,8 @@ run_output_test()
 		REDIR_OUTPUT="| tee \"${TEST_OUTPUT}.out\""
 	fi
 
-	if [ $use_valgrind -eq 1 ] ; then
+	echo "VALGRIND: -$VALGRIND-"
+	if [ "$VALGRIND" = "valgrind" ] ; then
 		eval valgrind --tool=memcheck \
 			--trace-children=yes \
 			--demangle=yes \
@@ -106,7 +102,7 @@ run_output_test()
 		echo "ERROR: \"${TEST_COMMAND} $@\" exited with non-zero exit status: $err" 1>&2
 	fi
 
-	if [ $use_valgrind -eq 1 ] ; then
+	if [ "$VALGRIND" = "valgrind" ] ; then
 		if ! tail -1 "${TEST_OUTPUT}.vg.out" | grep -q "ERROR SUMMARY: 0 errors" ; then
 			echo "ERROR: valgrind found errors during execution:" 1>&2
 			cat "${TEST_OUTPUT}.vg.out"
