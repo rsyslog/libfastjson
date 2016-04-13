@@ -41,8 +41,9 @@ if test "$enable_valgrind" = "yes"; then
         AC_CHECK_PROG(VALGRIND, [valgrind], [valgrind], [no])
 	if test "x$VALGRIND" = "xno"; then
 		AC_MSG_ERROR([--enable-valgrind given, but valgrind is not present on system])
-	AC_SUBST(VALGRIND)
 	fi
+	AC_SUBST(VALGRIND)
+	AC_DEFINE(VALGRIND, 1, [valgrind enabled])
 fi
 
 # Checks for programs.
