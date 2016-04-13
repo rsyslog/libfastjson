@@ -15,9 +15,9 @@ addons:
     packages:
       - clang-3.6
       - autoconf-archive
+      - valgrind
 
 env:
-  # Note: we cannot give -Werror, as this confuses ./configure
   - CFLAGS="-Wall -Wextra -Wformat-security -Wshadow -Wcast-align -Wpointer-arith -Wmissing-format-attribute -Wuninitialized"
 
 before_install:
@@ -28,7 +28,9 @@ install:
   - sh autogen.sh
 
 before_script:
-  - ./configure
+  - # note: valgrind is only available on Linux
+  - if [ "$CC" == "gcc" ] && [ "$TRAVIS_OS_NAME" == "linux" ]; then export ENA_VG="--enable-valgrind"; fi
+  - ./configure $ENA_VG
 
 script:
   - if [ "$CC" == "clang" ] && [ "$TRAVIS_OS_NAME" == "linux" ]; then  scan-build-3.6 --status-bugs make check TESTS="" && make clean ; fi
