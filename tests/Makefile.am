@@ -45,6 +45,25 @@ test2Formatted_CPPFLAGS = -DTEST_FORMATTED
 
 EXTRA_DIST=
 EXTRA_DIST += $(TESTS)
+EXTRA_DIST += test-defs.sh
+EXTRA_DIST += test1.expected
+EXTRA_DIST += test1Formatted_plain.expected
+EXTRA_DIST += test1Formatted_pretty.expected
+EXTRA_DIST += test1Formatted_spaced.expected
+EXTRA_DIST += test2.expected
+EXTRA_DIST += test2Formatted_plain.expected
+EXTRA_DIST += test2Formatted_pretty.expected
+EXTRA_DIST += test2Formatted_spaced.expected
+EXTRA_DIST += test4.expected
+EXTRA_DIST += test_cast.expected
+EXTRA_DIST += test_charcase.expected
+EXTRA_DIST += test_locale.expected
+EXTRA_DIST += test_null.expected
+EXTRA_DIST += test_parse.expected
+EXTRA_DIST += test_parse_int64.expected
+EXTRA_DIST += test_printbuf.expected
+EXTRA_DIST += testReplaceExisting.expected
+EXTRA_DIST += test_set_serializer.expected
 
 testsubdir=testSubDir
 TESTS_ENVIRONMENT       = top_builddir=$(top_builddir)
