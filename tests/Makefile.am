@@ -77,6 +77,11 @@ EXTRA_DIST += test_parse_int64.expected
 EXTRA_DIST += test_printbuf.expected
 EXTRA_DIST += testReplaceExisting.expected
 EXTRA_DIST += test_set_serializer.expected
+EXTRA_DIST += test_object_object_add_ex.expected
+EXTRA_DIST += test_object_object_add_exFormatted_plain.expected
+EXTRA_DIST += test_object_object_add_exFormatted_pretty.expected
+EXTRA_DIST += test_object_object_add_exFormatted_spaced.expected
+EXTRA_DIST += test_many_subobj.expected
 
 testsubdir=testSubDir
 TESTS_ENVIRONMENT       = top_builddir=$(top_builddir)
