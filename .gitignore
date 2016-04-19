@@ -4,6 +4,7 @@
 *.tar.gz
 callgrind.out.*
 tmp
+libfastjson-internal.la
 /INSTALL
 .dirstamp
 .deps/
