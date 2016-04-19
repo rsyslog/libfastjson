@@ -16,6 +16,7 @@ TESTS+= test_locale.test
 TESTS+= test_charcase.test
 TESTS+= test_printbuf.test
 TESTS+= test_set_serializer.test
+TESTS+= test_obj_iter-del.test
 TESTS+= test_object_object_add_ex.test
 TESTS+= test_many_subobj.test
 # we officially do NOT support NUL bytes (however, we may
@@ -77,6 +78,7 @@ EXTRA_DIST += test_parse_int64.expected
 EXTRA_DIST += test_printbuf.expected
 EXTRA_DIST += testReplaceExisting.expected
 EXTRA_DIST += test_set_serializer.expected
+EXTRA_DIST += test_obj_iter-del.expected
 EXTRA_DIST += test_object_object_add_ex.expected
 EXTRA_DIST += test_object_object_add_exFormatted_plain.expected
 EXTRA_DIST += test_object_object_add_exFormatted_pretty.expected

@@ -56,6 +56,7 @@ m4/lt~obsolete.m4
 /tests/test_object_object_add_ex
 /tests/test_object_object_add_exFormatted
 /tests/test_many_subobj
+/tests/test_obj_iter-del
 /tests/chk_version
 /tests/*.vg.out
 /tests/*.log
