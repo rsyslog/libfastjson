@@ -17,8 +17,8 @@
 *******************************************************************************
 */
 
+#include "config.h"
 #include <stddef.h>
-
 #include "json.h"
 #include "json_object_private.h"
 #include "json_object_iterator.h"
@@ -72,6 +72,11 @@ fjson_object_iter_begin(struct fjson_object *const __restrict__ obj)
 		if(iter.objs_remain > 0) {
 			iter.curr_idx = 0;
 			iter.pg = &obj->o.c_obj.pg;
+			/* check if first slot is empty, if so, advance */
+			if(iter.pg->children[0].k == NULL) {
+				++iter.objs_remain; /* correct _iter_next decrement */
+				fjson_object_iter_next(&iter);
+			}
 		}
 	} else { /* non-object */
 		iter.objs_remain = 0;
@@ -178,6 +183,7 @@ fjson_object_iter_equal(const struct fjson_object_iterator* iter1,
 	} else {
 		is_eq= 0;
 	}
+
 	return is_eq;
 }
 
