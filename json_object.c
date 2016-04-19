@@ -534,7 +534,8 @@ fjson_bool fjson_object_object_get_ex(struct fjson_object* jso, const char *key,
 		if (chld == 0) {
 			return FALSE;
 		} else {
-			*value = chld->v;
+			if (value != NULL)
+				*value = chld->v;
 			return TRUE;
 		}
 	} else {
