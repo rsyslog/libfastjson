@@ -19,6 +19,7 @@ TESTS+= test_set_serializer.test
 TESTS+= test_obj_iter-del.test
 TESTS+= test_object_object_add_ex.test
 TESTS+= test_many_subobj.test
+TESTS+= test_obj_obj_get_ex-null.test
 # we officially do NOT support NUL bytes (however, we may
 # later add a workaround to at least transparently pass them
 # through, thus I keep this as reference).
