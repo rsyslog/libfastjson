@@ -29,11 +29,6 @@ echo "      two conflicting changes to the codebase."
 set -v
 set -e
 
-# TODO: the following should be moved to "post-merge" script
-./autogen.sh
-./configure
-make clean
-export VERBOSE=1
-make check
+CI/clang-check-sanitizer.sh
 
 git checkout ${oldbranch}
