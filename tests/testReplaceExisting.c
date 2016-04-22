@@ -6,7 +6,6 @@
 
 #include "../json.h"
 #include "../debug.h"
-#include "../linkhash.h"
 
 /* this is a work-around until we manage to fix configure.ac */
 #pragma GCC diagnostic ignored "-Wdeclaration-after-statement"

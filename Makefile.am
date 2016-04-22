@@ -41,11 +41,7 @@ libfastjson_internal_la_SOURCES = \
 	arraylist.c \
 	debug.h \
 	debug.c \
-	linkhash.h \
-	linkhash.c \
 	printbuf.h \
-	printbuf.c \
-	random_seed.h \
-	random_seed.c
+	printbuf.c
 
 ACLOCAL_AMFLAGS = -I m4
