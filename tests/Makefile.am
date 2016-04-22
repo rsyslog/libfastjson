@@ -85,6 +85,7 @@ EXTRA_DIST += test_object_object_add_exFormatted_plain.expected
 EXTRA_DIST += test_object_object_add_exFormatted_pretty.expected
 EXTRA_DIST += test_object_object_add_exFormatted_spaced.expected
 EXTRA_DIST += test_many_subobj.expected
+EXTRA_DIST += test_obj_obj_get_ex-null.expected
 
 testsubdir=testSubDir
 TESTS_ENVIRONMENT       = top_builddir=$(top_builddir)
