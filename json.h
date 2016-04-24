@@ -57,16 +57,9 @@ extern const char *fjson_version(void);
  */
 #define FJSON_STR_HASH_PERLLIKE 1
 
-/**
- * This function sets the hash function to be used for strings.
- * Must be one of the FJSON_STR_HASH_* values.
- * @returns 0 - ok, -1 if parameter was invalid
- */
-int fjson_global_set_string_hash(const int h);
-
 #ifndef FJSON_NATIVE_API_ONLY
 #define JSON_C_STR_HASH_PERLLIKE FJSON_STR_HASH_PERLLIKE
-#define json_global_set_string_hash fjson_global_set_string_hash
+#define json_global_set_string_hash(x) /**<< no longer exists or is needed */
 #endif
 
 #ifdef __cplusplus
