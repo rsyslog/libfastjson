@@ -19,6 +19,7 @@
 #include <string.h>
 #include <errno.h>
 #include <ctype.h>
+#include <stdint.h>
 
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
@@ -42,7 +43,6 @@
 
 #include "debug.h"
 #include "printbuf.h"
-#include "json_inttypes.h"
 #include "json_object.h"
 #include "json_tokener.h"
 #include "json_util.h"
