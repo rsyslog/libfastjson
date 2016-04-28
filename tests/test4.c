@@ -12,7 +12,6 @@
 
 #define DEBUG_SEED(s)
 
-#include "../json_inttypes.h"
 #include "../json_object.h"
 #include "../json_tokener.h"
 

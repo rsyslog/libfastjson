@@ -1,8 +1,8 @@
 #include "config.h"
 #include <stdio.h>
 #include <string.h>
+#include <inttypes.h>
 
-#include "../json_inttypes.h"
 #include "../json_util.h"
 
 static void checkit(const char *buf)

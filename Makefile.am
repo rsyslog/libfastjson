@@ -13,7 +13,6 @@ libfastjsonincludedir = $(includedir)/libfastjson
 libfastjsoninclude_HEADERS = \
 	atomic.h \
 	json.h \
-	json_inttypes.h \
 	json_object.h \
 	json_object_iterator.h \
 	json_object_private.h \

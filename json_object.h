@@ -18,7 +18,8 @@
 #define THIS_FUNCTION_IS_DEPRECATED(func) func
 #endif
 
-#include "json_inttypes.h"
+#include <stdint.h>
+#include <inttypes.h>
 
 #ifdef __cplusplus
 extern "C" {
