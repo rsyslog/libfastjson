@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2004, 2005 Metaparadigm Pte. Ltd.
  * Michael Clark <michael@metaparadigm.com>
+ * Copyright (c) 2016 Rainer Gerhards
  *
  * This library is free software; you can redistribute it and/or modify
  * it under the terms of the MIT license. See COPYING for details.
@@ -202,15 +203,15 @@ struct fjson_object* fjson_tokener_parse_verbose(const char *str, enum fjson_tok
  *   Returns 1 on success, sets tok->err and returns 0 if no more chars.
  *   Implicit inputs:  str, len vars
  */
-#define PEEK_CHAR(dest, tok)                                                  \
-  (((tok)->char_offset == len) ?                                          \
-   (((tok)->depth == 0 && state == fjson_tokener_state_eatws && saved_state == fjson_tokener_state_finish) ? \
-    (((tok)->err = fjson_tokener_success), 0)                              \
-    :                                                                   \
-    (((tok)->err = fjson_tokener_continue), 0)                             \
-    ) :                                                                 \
-   (((dest) = *str), 1)                                                 \
-   )
+#define PEEK_CHAR(dest, tok)                                                \
+	(((tok)->char_offset == len) ?                                      \
+		(((tok)->depth == 0 && state == fjson_tokener_state_eatws && saved_state == fjson_tokener_state_finish) ? \
+			(((tok)->err = fjson_tokener_success), 0)           \
+		:                                                           \
+			(((tok)->err = fjson_tokener_continue), 0)          \
+	) :                                                                 \
+		(((dest) = *str), 1)                                        \
+	)
 
 /* ADVANCE_CHAR() macro:
  *   Incrementes str & tok->char_offset.
@@ -218,7 +219,7 @@ struct fjson_object* fjson_tokener_parse_verbose(const char *str, enum fjson_tok
  *   Implicit inputs:  c var
  */
 #define ADVANCE_CHAR(str, tok) \
-  ( ++(str), ((tok)->char_offset)++, c)
+	( ++(str), ((tok)->char_offset)++, c)
 
 
 /* End optimization macro defs */
