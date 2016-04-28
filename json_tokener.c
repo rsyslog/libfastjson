@@ -63,21 +63,21 @@ static const char fjson_false_str[] = "false";
 static const int fjson_false_str_len = sizeof(fjson_false_str) - 1;
 
 const char* fjson_tokener_errors[15] = {
-  "success",
-  "continue",
-  "nesting too deep",
-  "unexpected end of data",
-  "unexpected character",
-  "null expected",
-  "boolean expected",
-  "number expected",
-  "array value separator ',' expected",
-  "quoted object property name expected",
-  "object property name separator ':' expected",
-  "object value separator ',' expected",
-  "invalid string sequence",
-  "expected comment",
-  "buffer size overflow"
+	"success",
+	"continue",
+	"nesting too deep",
+	"unexpected end of data",
+	"unexpected character",
+	"null expected",
+	"boolean expected",
+	"number expected",
+	"array value separator ',' expected",
+	"quoted object property name expected",
+	"object property name separator ':' expected",
+	"object value separator ',' expected",
+	"invalid string sequence",
+	"expected comment",
+	"buffer size overflow"
 };
 
 const char *fjson_tokener_error_desc(enum fjson_tokener_error jerr)
