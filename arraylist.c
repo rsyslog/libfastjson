@@ -84,7 +84,7 @@ array_list_put_idx(struct array_list *arr, int idx, void *data)
 int
 array_list_add(struct array_list *arr, void *data)
 {
-  return array_list_put_idx(arr, arr->length, data);
+	return array_list_put_idx(arr, arr->length, data);
 }
 
 /* work around wrong compiler message: GCC and clang do

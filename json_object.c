@@ -21,12 +21,12 @@
 #include <math.h>
 #include <errno.h>
 #include <assert.h>
+#include <stdint.h>
 
 #include "debug.h"
 #include "atomic.h"
 #include "printbuf.h"
 #include "arraylist.h"
-#include "json_inttypes.h"
 #include "json_object.h"
 #include "json_object_private.h"
 #include "json_object_iterator.h"
@@ -935,9 +935,9 @@ int fjson_object_get_string_len(struct fjson_object *jso)
 /* fjson_object_array */
 
 static int fjson_object_array_to_json_string(struct fjson_object* jso,
-                                            struct printbuf *pb,
-                                            int level,
-                                            int flags)
+	struct printbuf *pb,
+	int level,
+	int flags)
 {
 	int had_children = 0;
 	int ii;
