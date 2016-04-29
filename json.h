@@ -59,7 +59,8 @@ extern const char *fjson_version(void);
 
 #ifndef FJSON_NATIVE_API_ONLY
 #define JSON_C_STR_HASH_PERLLIKE FJSON_STR_HASH_PERLLIKE
-#define json_global_set_string_hash(x) /**<< no longer exists or is needed */
+#define json_global_set_string_hash(x) /**<< no longer exists nor is needed */
+#define fjson_global_set_string_hash(x) /**<< no longer exists nor is needed */
 #endif
 
 #ifdef __cplusplus
