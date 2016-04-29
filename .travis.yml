@@ -32,6 +32,7 @@ before_script:
   - if [ "$CC" == "gcc" ] && [ "$TRAVIS_OS_NAME" == "linux" ]; then export ENA_VG="--enable-valgrind"; fi
   - if [ "$CC" == "clang" ] && [ "$TRAVIS_OS_NAME" == "linux" ]; then export SANITIZER="-fsanitize=address" ; fi
   - if [ "$CC" == "clang" ] && [ "$TRAVIS_OS_NAME" == "linux" ]; then export CFLAGS="$CFLAGS -fsanitize=address" ; fi
+  - ./CI/check_codestyle.sh
   - ./configure $ENA_VG
 
 script:

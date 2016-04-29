@@ -162,7 +162,7 @@ _fjson_object_iter_peek_child(const struct fjson_object_iterator *const __restri
  */
 fjson_bool
 fjson_object_iter_equal(const struct fjson_object_iterator* iter1,
-                       const struct fjson_object_iterator* iter2)
+	const struct fjson_object_iterator* iter2)
 {
 	int is_eq;
 	JASSERT(NULL != iter1);
