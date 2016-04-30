@@ -56,7 +56,7 @@ To build and run the test programs:
 $ make check
 ```
 
-Linking to `liblibfastjson`
+Linking to `libfastjson`
 ---------------------------
 
 If your system has `pkgconfig`,
@@ -72,5 +72,5 @@ Without `pkgconfig`, you would do something like this:
 ```make
 LIBFASTJSON_DIR=/path/to/json_c/install
 CFLAGS += -I$(LIBFASTJSON_DIR)/include/libfastjson
-LDFLAGS+= -L$(LIBFASTJSON_DIR)/lib -llibfastjson
+LDFLAGS+= -L$(LIBFASTJSON_DIR)/lib -lfastjson
 ```
