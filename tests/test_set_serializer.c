@@ -1,5 +1,4 @@
 #include "config.h"
-#include <assert.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -9,6 +8,12 @@
 
 /* this is a work-around until we manage to fix configure.ac */
 #pragma GCC diagnostic ignored "-Wdeclaration-after-statement"
+
+#define CHK(x) if (!(x)) { \
+	printf("%s:%d: unexpected result with '%s'\n", \
+		__FILE__, __LINE__, #x); \
+	exit(1); \
+}
 
 struct myinfo {
 	int value;
@@ -52,7 +57,7 @@ int main(int __attribute__((unused)) argc, char __attribute__((unused)) **argv)
 	printf("Next line of output should be from the custom freeit function:\n");
 	freeit_was_called = 0;
 	fjson_object_set_serializer(my_object, NULL, NULL, NULL);
-	assert(freeit_was_called);
+	CHK(freeit_was_called);
 
 	printf("my_object.to_string(standard)=%s\n", fjson_object_to_json_string(my_object));
 
@@ -70,7 +75,7 @@ int main(int __attribute__((unused)) argc, char __attribute__((unused)) **argv)
 
 	freeit_was_called = 0;
 	fjson_object_put(my_object);
-	assert(freeit_was_called);
+	CHK(freeit_was_called);
 
 	return 0;
 }
