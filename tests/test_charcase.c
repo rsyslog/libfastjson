@@ -3,11 +3,16 @@
 #include <stdlib.h>
 #include <stddef.h>
 #include <string.h>
-#include <assert.h>
 
 #include "../json.h"
 #include "../json_tokener.h"
 #include "../debug.h"
+
+#define CHK(x) if (!(x)) { \
+	printf("%s:%d: unexpected result with '%s'\n", \
+		__FILE__, __LINE__, #x); \
+	exit(1); \
+}
 
 static void test_case_parse(void);
 
@@ -29,13 +34,13 @@ static void test_case_parse(void)
 	fjson_tokener_set_flags(tok, FJSON_TOKENER_STRICT);
 
 	new_obj = fjson_tokener_parse_ex(tok, "True", 4);
-	assert (new_obj == NULL);
+	CHK(new_obj == NULL);
 
 	new_obj = fjson_tokener_parse_ex(tok, "False", 5);
-	assert (new_obj == NULL);
+	CHK(new_obj == NULL);
 
 	new_obj = fjson_tokener_parse_ex(tok, "Null", 4);
-	assert (new_obj == NULL);
+	CHK(new_obj == NULL);
 
 	printf("OK\n");
 

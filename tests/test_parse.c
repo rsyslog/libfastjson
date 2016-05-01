@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <stddef.h>
 #include <string.h>
-#include <assert.h>
 
 #include "../json.h"
 #include "../json_tokener.h"
@@ -12,6 +11,12 @@
 static void test_basic_parse(void);
 static void test_verbose_parse(void);
 static void test_incremental_parse(void);
+
+#define CHK(x) if (!(x)) { \
+	printf("%s:%d: unexpected result with '%s'\n", \
+		__FILE__, __LINE__, #x); \
+	exit(1); \
+}
 
 int main(int __attribute__((unused)) argc, char __attribute__((unused)) **argv)
 {
@@ -162,19 +167,19 @@ static void test_verbose_parse(void)
 	enum fjson_tokener_error error = fjson_tokener_success;
 
 	new_obj = fjson_tokener_parse_verbose("{ foo }", &error);
-	assert (error == fjson_tokener_error_parse_object_key_name);
-	assert (new_obj == NULL);
+	CHK (error == fjson_tokener_error_parse_object_key_name);
+	CHK (new_obj == NULL);
 
 	new_obj = fjson_tokener_parse("{ foo }");
-	assert (new_obj == NULL);
+	CHK (new_obj == NULL);
 
 	new_obj = fjson_tokener_parse("foo");
-	assert (new_obj == NULL);
+	CHK (new_obj == NULL);
 	new_obj = fjson_tokener_parse_verbose("foo", &error);
-	assert (new_obj == NULL);
+	CHK (new_obj == NULL);
 
 	/* b/c the string starts with 'f' parsing return a boolean error */
-	assert (error == fjson_tokener_error_parse_boolean);
+	CHK (error == fjson_tokener_error_parse_boolean);
 
 	printf("fjson_tokener_parse_versbose() OK\n");
 }
