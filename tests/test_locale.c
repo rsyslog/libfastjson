@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <stddef.h>
 #include <string.h>
-#include <assert.h>
 
 #include "../json.h"
 #include "../json_tokener.h"
