@@ -1,5 +1,11 @@
 0.99.3 2016-0?-??
 - new dependency: autoconf-archive
+- exit() is no longer called in unexpected situations
+  The previous code called exit on some occasions and did not
+  give the caller a chance to do any cleanup or handling on
+  it's own. This has completely been removed. Note that it was
+  very unlikely that this problem affected a caller, as exit()
+  was only called under very rare circumstances (e.g. OOM).
 - fjson_version now returns configure VERSION
   This avoid inconsistency.
 - removal of Windows and Android bits
