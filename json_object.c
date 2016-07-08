@@ -132,7 +132,7 @@ static void fjson_escape_str(struct printbuf *pb, const char *str)
 {
 	const char *start_offset = str;
 	while(1) { /* broken below on 0-byte */
-		if(needsEscape[(int)*str]) {
+		if(needsEscape[*((unsigned char*)str)]) {
 			if(*str == '\0')
 				break;
 			if(str != start_offset)
