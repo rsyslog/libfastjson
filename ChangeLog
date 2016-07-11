@@ -1,4 +1,4 @@
-0.99.3 2016-0?-??
+0.99.3 2016-07-11
 - new dependency: autoconf-archive
 - exit() is no longer called in unexpected situations
   The previous code called exit on some occasions and did not
@@ -15,6 +15,9 @@
 - dropped support for Windows and Android as we do not target
   these platforms
 - "make distcheck" now works
+- fix invalid Unicode representation for some non US-ASCII
+  characters when printed as string. Note that this could
+  potentially also lead to a segfault
 
 0.99.2 2016-03-07
 - new API: json_object_get_member_count()
