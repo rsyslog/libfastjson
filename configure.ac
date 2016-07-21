@@ -120,7 +120,6 @@ AS_IF([test "x$enable_Bsymbolic" = "xcheck"],
 AS_IF([test "x$enable_Bsymbolic" = "xyes"], [JSON_BSYMBOLIC_LDFLAGS=-Wl[,]-Bsymbolic-functions])
 AC_SUBST(JSON_BSYMBOLIC_LDFLAGS)
 
-AX_COMPILER_FLAGS
 
 AC_CONFIG_FILES([
 Makefile
