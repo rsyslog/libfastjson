@@ -6,10 +6,13 @@ AC_CONFIG_HEADER(config.h)
 
 AM_INIT_AUTOMAKE([subdir-objects])
 AC_CONFIG_MACRO_DIR([m4])
-
-AC_PROG_CC_C99
-AC_PROG_MAKE_SET
 AC_USE_SYSTEM_EXTENSIONS
+
+AC_PROG_CC
+AC_PROG_CC_C99
+AC_DISABLE_STATIC
+AC_PROG_LIBTOOL
+AC_PROG_MAKE_SET
 
 AC_ARG_ENABLE(rdrand,
  AS_HELP_STRING([--enable-rdrand],
@@ -45,8 +48,6 @@ if test "$enable_valgrind" = "yes"; then
 	AC_SUBST(VALGRIND)
 	AC_DEFINE(VALGRIND, 1, [valgrind enabled])
 fi
-
-# Checks for programs.
 
 # Checks for libraries.
 
@@ -91,8 +92,6 @@ int main(int c,char* v) {return 0;}
 ])
 
 AC_LANG_POP([C])
-
-AM_PROG_LIBTOOL
 
 # Check for the -Bsymbolic-functions linker flag
 AC_ARG_ENABLE([Bsymbolic],
