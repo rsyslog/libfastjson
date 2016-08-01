@@ -1,7 +1,7 @@
 AC_PREREQ(2.52)
 
 # Process this file with autoconf to produce a configure script.
-AC_INIT([libfastjson], [0.99.3], [rsyslog@lists.adiscon.com])
+AC_INIT([libfastjson], [0.99.3.master], [rsyslog@lists.adiscon.com])
 AC_CONFIG_HEADER(config.h)
 
 AM_INIT_AUTOMAKE([subdir-objects])
@@ -9,7 +9,24 @@ AC_CONFIG_MACRO_DIR([m4])
 
 AC_PROG_CC_C99
 AC_PROG_MAKE_SET
-AC_USE_SYSTEM_EXTENSIONS
+m4_ifdef([AC_USE_SYSTEM_EXTENSIONS], [AC_USE_SYSTEM_EXTENSIONS])
+
+m4_ifdef([AX_IS_RELEASE], [
+	AX_IS_RELEASE([git-directory])
+	m4_ifdef([AX_COMPILER_FLAGS], [
+		AX_COMPILER_FLAGS()
+	], [
+		if test "$GCC" = "yes"
+		then CFLAGS="$CFLAGS -W -Wall -Wformat-security -Wshadow -Wcast-align -Wpointer-arith -Wmissing-format-attribute -g"
+		fi
+		AC_MSG_WARN([missing AX_COMPILER_FLAGS macro, not using it])
+	])
+], [
+	if test "$GCC" = "yes"
+	then CFLAGS="$CFLAGS -W -Wall -Wformat-security -Wshadow -Wcast-align -Wpointer-arith -Wmissing-format-attribute -g"
+	fi
+	AC_MSG_WARN([missing AX_IS_RELEASE macro, not using AX_COMPILER_FLAGS macro because of this])
+])
 
 AC_ARG_ENABLE(rdrand,
  AS_HELP_STRING([--enable-rdrand],
@@ -119,8 +136,6 @@ AS_IF([test "x$enable_Bsymbolic" = "xcheck"],
 
 AS_IF([test "x$enable_Bsymbolic" = "xyes"], [JSON_BSYMBOLIC_LDFLAGS=-Wl[,]-Bsymbolic-functions])
 AC_SUBST(JSON_BSYMBOLIC_LDFLAGS)
-
-AX_COMPILER_FLAGS
 
 AC_CONFIG_FILES([
 Makefile
