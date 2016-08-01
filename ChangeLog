@@ -1,3 +1,6 @@
+0.99.4 2016-08-??
+
+
 0.99.3 2016-07-11
 - new dependency: autoconf-archive
 - exit() is no longer called in unexpected situations
