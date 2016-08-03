@@ -94,7 +94,9 @@ array_list_add(struct array_list *arr, void *data)
 #ifdef __clang__
 #pragma GCC diagnostic ignored "-Wincompatible-pointer-types"
 #else
+#if __GNUC__ < 6
 #pragma GCC diagnostic ignored "-Werror"
+#endif
 #endif
 void
 array_list_sort(struct array_list *arr, int(*sort_fn)(const void *, const void *))
@@ -107,7 +109,9 @@ array_list_sort(struct array_list *arr, int(*sort_fn)(const void *, const void *
 #ifdef __clang__
 #pragma GCC diagnostic ignored "-Wincompatible-pointer-types"
 #else
+#if __GNUC__ < 6
 #pragma GCC diagnostic ignored "-Werror"
+#endif
 #endif
 void* array_list_bsearch(const void **key, struct array_list *arr,
 		int (*sort_fn)(const void *, const void *))
