@@ -1,7 +1,9 @@
-0.99.4 2016-08-??
+0.99.4 2016-08-03
 - fix tautology comparison in tautology in `fjson_object_iter_equal`
   Thanks to Andres Stieger for the patch
 - improve build system to handle slightly older autoconf versions
+- fix build problems with gcc6
+  Thanks to Andres Stieger for the patch
 
 0.99.3 2016-07-11
 - new dependency: autoconf-archive
