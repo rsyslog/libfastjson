@@ -173,7 +173,7 @@ fjson_object_iter_equal(const struct fjson_object_iterator* iter1,
 			is_eq = 1;
 		} else {
 			if ( (iter1->curr_idx == iter2->curr_idx) &&
-			     (iter2->pg == iter2->pg)                ) {
+			     (iter1->pg == iter2->pg)                ) {
 				is_eq = 1;
 			} else {
 				is_eq = 0;
