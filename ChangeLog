@@ -1,5 +1,7 @@
 0.99.4 2016-08-??
-
+- fix tautology comparison in tautology in `fjson_object_iter_equal`
+  Thanks to Andres Stieger for the patch
+- improve build system to handle slightly older autoconf versions
 
 0.99.3 2016-07-11
 - new dependency: autoconf-archive
