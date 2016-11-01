@@ -17,34 +17,21 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <stddef.h>
 #include <string.h>
 #include <math.h>
-#include <errno.h>
-#include <assert.h>
-#include <stdint.h>
 
-#include "debug.h"
-#include "atomic.h"
-#include "printbuf.h"
-#include "arraylist.h"
 #include "json_object.h"
 #include "json_object_private.h"
 #include "json_object_iterator.h"
-#include "json_util.h"
 
-#if !defined(HAVE_STRDUP)
-# error You do not have strdup on your system.
-#endif /* HAVE_STRDUP */
 
 #if !defined(HAVE_SNPRINTF)
 # error You do not have snprintf on your system.
 #endif /* HAVE_SNPRINTF */
 
-const char *fjson_number_chars = "0123456789.+-eE";
-const char *fjson_hex_chars = "0123456789abcdefABCDEF";
 
-
+/* Forward declaration of the write function */
+static size_t write(struct fjson_object *jso, int level, int flags, fjson_write_fn *func, void *ptr);
 
 /** 
  *  helper for accessing the optimized string data component in fjson_object
@@ -129,8 +116,10 @@ static char needsEscape[256] = {
  *  @param  ptr     user supplied pointer
  *  @return size_t  number of bytes written
  */
-static size_t escape(const char *str, fjson_print_fn *func, void *ptr)
+static size_t escape(const char *str, fjson_write_fn *func, void *ptr)
 {
+    int size;
+    char tempbuf[6];
     size_t result = 0;
 	const char *start_offset = str;
 	while(1) { /* broken below on 0-byte */
@@ -146,10 +135,9 @@ static size_t escape(const char *str, fjson_print_fn *func, void *ptr)
 			case '"':   result += func(ptr, "\\\"", 2); break;
 			case '\\':  result += func(ptr, "\\\\", 2); break;
 			case '/':   result += func(ptr, "\\/", 2); break;
-			default: 
-                char tempbuf[6];
-                auto bytes = sprintf(tempbuf, "\\u00%c%c", fjson_hex_chars[*str >> 4], fjson_hex_chars[*str & 0xf]);
-                result += func(ptr, tempbuf, bytes);
+			default:
+                size = snprintf(tempbuf, sizeof(tempbuf), "\\u00%c%c", fjson_hex_chars[*str >> 4], fjson_hex_chars[*str & 0xf]);
+                result += func(ptr, tempbuf, size);
 				break;
 			}
 			start_offset = ++str;
@@ -162,16 +150,17 @@ static size_t escape(const char *str, fjson_print_fn *func, void *ptr)
 
 /* add indentation */
 
-static void indent(int level, int flags, fjson_write_fn *func, void *ptr)
+static size_t indent(int level, int flags, fjson_write_fn *func, void *ptr)
 {
-    // skip if pretty-printing is not needed
-	if (!(flags & FJSON_TO_STRING_PRETTY)) return;
-    
-    // result variable
+    // result variable, and loop counter
     size_t result = 0;
+    int i;
+
+    // skip if pretty-printing is not needed
+	if (!(flags & FJSON_TO_STRING_PRETTY)) return 0;
     
     // iterate to add the spaces
-    for (size_t i = 0; i < level; ++i)
+    for (i = 0; i < level; ++i)
     {
         // write a tab or two spaces
         if (flags & FJSON_TO_STRING_PRETTY_TAB) result += func(ptr, "\t", 1);
@@ -186,7 +175,6 @@ static void indent(int level, int flags, fjson_write_fn *func, void *ptr)
 
 static size_t write_object(struct fjson_object* jso, int level, int flags, fjson_write_fn *func, void *ptr)
 {
-	struct fjson_object *val;
 	int had_children = 0;
     size_t result = 0;
 
@@ -234,13 +222,13 @@ static size_t write_int(struct fjson_object* jso, fjson_write_fn *func, void *pt
 {
     // temporary buffer
     char tempbuffer[32];
-    size_t bytes = sprintf(tempbuffer, "%" PRId64, jso->o.c_int64);
+    size_t bytes = snprintf(tempbuffer, sizeof(tempbuffer), "%" PRId64, jso->o.c_int64);
 	return func(ptr, tempbuffer, bytes);
 }
 
 /* write a json floating point */
 
-static size_t write_double(struct fjson_object* jso, fjson_write_fn *func, void *ptr)
+static size_t write_double(struct fjson_object* jso, int flags, fjson_write_fn *func, void *ptr)
 {
 	char buf[128], *p, *q;
 	int size;
@@ -296,7 +284,6 @@ static size_t write_array(struct fjson_object* jso, int level, int flags, fjson_
 	if (flags & FJSON_TO_STRING_PRETTY) result += func(ptr, "\n", 1);
 	for(ii=0; ii < fjson_object_array_length(jso); ii++)
 	{
-		struct fjson_object *val;
 		if (had_children)
 		{
 			result += func(ptr, ",", 1);
@@ -325,13 +312,29 @@ static size_t write(struct fjson_object *jso, int level, int flags, fjson_write_
     // if object is not set
 	if (!jso) return func(ptr, "null", 4);
 
-    // @todo implementation
-    return 0;
+    // check type
+    switch(jso->o_type) {
+    case fjson_type_null:       return func(ptr, "null", 4);
+    case fjson_type_boolean:    return write_boolean(jso, func, ptr);
+    case fjson_type_double:     return write_double(jso, flags, func, ptr);
+    case fjson_type_int:        return write_int(jso, func, ptr);
+    case fjson_type_object:     return write_object(jso, level, flags, func, ptr);
+    case fjson_type_array:      return write_array(jso, level, flags, func, ptr);
+    case fjson_type_string:     return write_string(jso, func, ptr);
+    default:                    return 0;
+    }
 }
 
-/* extended write function to string */
+/* wrapper around fwrite() that has the same signature as fjson_write_fn */
 
-size_t fjson_object_write_ext(struct fjson_object *jso, int flags, fjson_write_fn *func, void *ptr)
+static size_t fwrite_wrapper(void *ptr, const char *buffer, size_t size)
+{
+    return fwrite(buffer, 1, size, ptr);
+}
+
+/* extended dump function to string */
+
+size_t fjson_object_dump_ext(struct fjson_object *jso, int flags, fjson_write_fn *func, void *ptr)
 {
     // write the value
 	return write(jso, 0, flags, func, ptr);
@@ -339,9 +342,23 @@ size_t fjson_object_write_ext(struct fjson_object *jso, int flags, fjson_write_f
 
 /* more simple write function */
 
-size_t fjson_object_write_ext(struct fjson_object *jso, fjson_write_fn *func, void *ptr)
+size_t fjson_object_dump(struct fjson_object *jso, fjson_write_fn *func, void *ptr)
 {
     // write the value
 	return write(jso, 0, FJSON_TO_STRING_SPACED, func, ptr);
+}
+
+/* write to a file* */
+
+size_t fjson_object_write(struct fjson_object *obj, FILE *fp)
+{
+    return fjson_object_dump_ext(obj, FJSON_TO_STRING_SPACED, fwrite_wrapper, fp);
+}
+
+/* write to a file with custom output flags */
+
+size_t fjson_object_write_ext(struct fjson_object *obj, int flags, FILE *fp)
+{
+    return fjson_object_dump_ext(obj, flags, fwrite_wrapper, fp);
 }
 
