@@ -30,6 +30,7 @@ libfastjson_la_LIBADD = libfastjson-internal.la
 libfastjson_la_SOURCES = \
 	json_version.c \
 	json_object.c \
+	json_print.c \
 	json_object_iterator.c \
 	json_tokener.c \
 	json_util.c
