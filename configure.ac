@@ -2,6 +2,23 @@ AC_PREREQ(2.52)
 
 # Process this file with autoconf to produce a configure script.
 AC_INIT([libfastjson], [0.99.5.master], [rsyslog@lists.adiscon.com])
+# AIXPORT START: Detect the underlying OS
+unamestr=$(uname)
+AM_CONDITIONAL([AIX], [test x$unamestr = xAIX])
+# AIXPORT END
+
+# AIXPORT : Set the required variables for AIX config script
+if test "$unamestr" = "AIX"; then
+  export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig:/usr/lib/pkgconfig"
+  LIBS="-lbsd -lm"
+  CPPFLAGS="-D_THREAD_SAFE -D_BSD=43"
+  LDFLAGS="-qcpluscmt -brtl -bexpall "
+  CC="xlc"
+ AC_PREFIX_DEFAULT(/usr)
+fi
+# AIXPORT END
+
+
 AC_CONFIG_HEADER(config.h)
 
 AM_INIT_AUTOMAKE([subdir-objects])
