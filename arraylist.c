@@ -90,6 +90,7 @@ array_list_add(struct array_list *arr, void *data)
 /* work around wrong compiler message: GCC and clang do
  * not handle sort_fn correctly if -Werror is given.
  */
+#ifndef _AIX
 #pragma GCC diagnostic push
 #ifdef __clang__
 #pragma GCC diagnostic ignored "-Wincompatible-pointer-types"
@@ -98,11 +99,13 @@ array_list_add(struct array_list *arr, void *data)
 #pragma GCC diagnostic ignored "-Werror"
 #endif
 #endif
+#endif
 void
 array_list_sort(struct array_list *arr, int(*sort_fn)(const void *, const void *))
 {
 	qsort(arr->array, arr->length, sizeof(arr->array[0]), sort_fn);
 }
+#ifndef _AIX
 #pragma GCC diagnostic pop
 
 #pragma GCC diagnostic push
@@ -113,13 +116,16 @@ array_list_sort(struct array_list *arr, int(*sort_fn)(const void *, const void *
 #pragma GCC diagnostic ignored "-Werror"
 #endif
 #endif
+#endif
 void* array_list_bsearch(const void **key, struct array_list *arr,
 		int (*sort_fn)(const void *, const void *))
 {
 	return bsearch(key, arr->array, arr->length, sizeof(arr->array[0]),
 			sort_fn);
 }
+#ifndef  _AIX
 #pragma GCC diagnostic pop
+#endif
 
 int
 array_list_length(struct array_list *arr)

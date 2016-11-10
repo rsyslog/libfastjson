@@ -15,7 +15,9 @@
 #include "config.h"
 
 /* this is a work-around until we manage to fix configure.ac */
+#ifndef _AIX
 #pragma GCC diagnostic ignored "-Wdeclaration-after-statement"
+#endif
 
 #include <math.h>
 #include <stdio.h>
