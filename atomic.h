@@ -12,7 +12,7 @@
  * THESE MACROS MUST ONLY BE USED WITH WORD-SIZED DATA TYPES!
  *
  * Note: this file was obtained at 2015-12-16 from the rsyslog project.
- * 
+ *
  * Copyright 2008-2015 Rainer Gerhards and Adiscon GmbH.
  *
  * This file is part of the rsyslog runtime library.
@@ -20,11 +20,11 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *       http://www.apache.org/licenses/LICENSE-2.0
  *       -or-
  *       see COPYING.ASL20 in the source distribution
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -54,7 +54,7 @@
 	/* functions below are not needed if we have atomics */
 #	define DEF_ATOMIC_HELPER_MUT(x)
 #	define INIT_ATOMIC_HELPER_MUT(x)
-#	define DESTROY_ATOMIC_HELPER_MUT(x) 
+#	define DESTROY_ATOMIC_HELPER_MUT(x)
 
 	/* the following operations should preferrably be done atomic, but it is
 	 * not fatal if not -- that means we can live with some missed updates. So be
@@ -185,7 +185,7 @@
 
 #endif
 
-/* we need to handle 64bit atomics seperately as some platforms have 
+/* we need to handle 64bit atomics seperately as some platforms have
  * 32 bit atomics, but not 64 bit ones... -- rgerhards, 2010-12-01
  */
 #if 0 /* currently disabled, we don't need it now and dont' have the data types present */
@@ -196,7 +196,7 @@
 
 #	define DEF_ATOMIC_HELPER_MUT64(x)
 #	define INIT_ATOMIC_HELPER_MUT64(x)
-#	define DESTROY_ATOMIC_HELPER_MUT64(x) 
+#	define DESTROY_ATOMIC_HELPER_MUT64(x)
 #else
 #	define ATOMIC_INC_uint64(data, phlpmut)  { \
 		pthread_mutex_lock(phlpmut); \
