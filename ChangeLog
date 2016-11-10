@@ -1,5 +1,8 @@
 0.99.5 2016-??-??
 - fix tautology comparison in tautology in `fjson_object_iter_equal`
+- made to build under AIX
+  Thanks to github user purnimam1 for the patch
+
 0.99.4 2016-08-03
 - fix tautology comparison in tautology in `fjson_object_iter_equal`
   Thanks to Andres Stieger for the patch
