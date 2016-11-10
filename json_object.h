@@ -323,7 +323,7 @@ extern void fjson_object_object_add(struct fjson_object* obj, const char *key,
  * @param obj the fjson_object instance
  * @param key the object field name (a private copy will be duplicated)
  * @param val a fjson_object or NULL member to associate with the given field
- * @param opts process-modifying options. To specify multiple options, use 
+ * @param opts process-modifying options. To specify multiple options, use
  *             arithmetic or (OPT1|OPT2)
  */
 extern void fjson_object_object_add_ex(struct fjson_object* obj, const char *key,
