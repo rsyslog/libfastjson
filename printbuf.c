@@ -160,6 +160,9 @@ static int vasprintf(char **buf, const char *fmt, va_list ap)
 {
 	int chars;
 	char *b;
+#ifdef _AIX
+	static char _T_emptybuffer = '\0';
+#endif
 
 	if(!buf) { return -1; }
 
