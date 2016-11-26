@@ -6,6 +6,7 @@ AM_CFLAGS = $(WARN_CFLAGS)
 
 TESTS=
 TESTS+= ucs_copyright_char.test
+TESTS+= test_float.test
 TESTS+= test1.test
 TESTS+= test2.test
 TESTS+= test4.test
@@ -72,6 +73,7 @@ EXTRA_DIST += test2Formatted_pretty.expected
 EXTRA_DIST += test2Formatted_spaced.expected
 EXTRA_DIST += test4.expected
 EXTRA_DIST += ucs_copyright_char.expected
+EXTRA_DIST += test_float.expected
 EXTRA_DIST += test_cast.expected
 EXTRA_DIST += test_charcase.expected
 EXTRA_DIST += test_locale.expected
