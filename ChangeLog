@@ -2,6 +2,9 @@
 - fix tautology comparison in tautology in `fjson_object_iter_equal`
 - made to build under AIX
   Thanks to github user purnimam1 for the patch
+- fix floating point representation when fractional partis missing
+  see also https://github.com/rsyslog/libfastjson/issues/126
+  Thanks to Jan Gerhards for the patch.
 - m4: fix detection of atomics
   In cross-compilation, it is impossible to run code at configure time to
   detect the target specifics.
