@@ -80,6 +80,23 @@ if test "$enable_valgrind" = "yes"; then
 	AC_DEFINE(VALGRIND, 1, [valgrind enabled])
 fi
 
+AC_ARG_ENABLE(performance_testbench,
+        [AS_HELP_STRING([--enable-performance-testbench],[enable running the performance testbench @<:@default=no@:>@])],
+        [case "${enableval}" in
+         yes) enable_performance_testbench="yes" ;;
+          no) enable_performance_testbench="no" ;;
+           *) AC_MSG_ERROR(bad value ${enableval} for --enable-performance-testbench) ;;
+         esac],
+        [enable_performance_testbench="no"]
+)
+if test "$enable_performance_testbench" = "yes"; then
+        AC_CHECK_PROG(VALGRIND, [valgrind], [valgrind], [no])
+	if test "x$VALGRIND" = "xno"; then
+		AC_MSG_ERROR([--enable-performance-testbench given, but valgrind is not present on system])
+	fi
+fi
+AM_CONDITIONAL(ENABLE_PERFORMANCE_TESTBENCH, test x$enable_performance_testbench = xyes)
+
 # Checks for programs.
 
 # Checks for libraries.

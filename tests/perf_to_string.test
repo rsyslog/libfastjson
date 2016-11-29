@@ -10,6 +10,11 @@
 # first, get baseline from system-installed library
 rm -f callgrind.out &> /dev/null
 valgrind --tool=callgrind --callgrind-out-file=callgrind.out .libs/perf_to_string
+if [ $? -ne 0 ]; then
+    echo "Error obtaining performance baseline, assuming system is not able to"
+    echo "support this test - skipping"
+    exit 77
+fi
 export RETCODE=$?
 echo return code $RETCODE
 MAXCYCLES=$(grep < callgrind.out "^totals:" | tr -dc '0-9')

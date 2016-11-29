@@ -34,7 +34,7 @@ before_script:
   - if [ "$CC" == "clang" ] && [ "$TRAVIS_OS_NAME" == "linux" ]; then export SANITIZER="-fsanitize=address" ; fi
   - if [ "$CC" == "clang" ] && [ "$TRAVIS_OS_NAME" == "linux" ]; then export CFLAGS="$CFLAGS -fsanitize=address" ; fi
   - ./CI/check_codestyle.sh
-  - ./configure $ENA_VG
+  - ./configure --enable-performance-testbench $ENA_VG
 
 script:
   - if [ "$CC" == "clang" ] && [ "$TRAVIS_OS_NAME" == "linux" ]; then  scan-build-3.6 --status-bugs make check TESTS="" && make clean ; fi
