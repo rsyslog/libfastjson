@@ -28,6 +28,7 @@ install:
   - sh autogen.sh
 
 before_script:
+  - sudo apt-get -qq --force-yes install valgrind
   - # note: valgrind is only available on Linux
   - if [ "$CC" == "gcc" ] && [ "$TRAVIS_OS_NAME" == "linux" ]; then export ENA_VG="--enable-valgrind"; fi
   - if [ "$CC" == "clang" ] && [ "$TRAVIS_OS_NAME" == "linux" ]; then export SANITIZER="-fsanitize=address" ; fi
@@ -38,6 +39,8 @@ before_script:
 script:
   - if [ "$CC" == "clang" ] && [ "$TRAVIS_OS_NAME" == "linux" ]; then  scan-build-3.6 --status-bugs make check TESTS="" && make clean ; fi
   - make
+  - valgrind --tool=callgrind ls
   - export VERBOSE=1
   - make check
+  - cat tests/perf_to_string.trs
   - make distcheck

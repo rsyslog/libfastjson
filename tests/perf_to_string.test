@@ -1,0 +1,32 @@
+#!/bin/sh
+# Common definitions
+#if test -z "$srcdir"; then
+    #srcdir="${0%/*}"
+    #test "$srcdir" = "$0" && srcdir=.
+    #test -z "$srcdir" && srcdir=.
+#fi
+#. "$srcdir/test-defs.sh"
+
+# first, get baseline from system-installed library
+rm -f callgrind.out &> /dev/null
+valgrind --tool=callgrind --callgrind-out-file=callgrind.out .libs/perf_to_string
+export RETCODE=$?
+echo return code $RETCODE
+MAXCYCLES=$(grep < callgrind.out "^totals:" | tr -dc '0-9')
+echo "system installed libfastjson requires $MAXCYCLES cycles"
+# give 5% allowence to care for exec env differences between runs
+MAXCYCLES=$((MAXCYCLES * 105))
+MAXCYCLES=$((MAXCYCLES / 100))
+
+ls -l ../.libs/libfastjson.so
+rm -f callgrind.out &> /dev/null
+LD_PRELOAD="../.libs/libfastjson.so.4" valgrind --tool=callgrind --callgrind-out-file=callgrind.out .libs/perf_to_string
+CYCLES=$(grep < callgrind.out "^totals:" | tr -dc '0-9')
+echo "libfastjson being testes requires $CYCLES cycles"
+
+if [ $CYCLES -gt $MAXCYCLES ]; then
+    echo
+    echo performance issue: we need $CYCLES cycles, but upper bound is $MAXCYCLES
+    exit 1
+fi
+rm callgrind.out

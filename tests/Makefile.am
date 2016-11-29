@@ -32,7 +32,8 @@ check_PROGRAMS += $(TESTS:.test=)
 
 # some programs that do internal checking
 check_PROGRAMS += chk_version \
-	cr_obj_multi
+	cr_obj_multi \
+	perf_to_string
 
 TESTS += chk_version
 
@@ -59,6 +60,12 @@ test2Formatted_CPPFLAGS = -DTEST_FORMATTED
 check_PROGRAMS += test_object_object_add_exFormatted 
 test_object_object_add_exFormatted_SOURCES = test_object_object_add_ex.c parse_flags.c parse_flags.h
 test_object_object_add_exFormatted_CPPFLAGS = -DTEST_FORMATTED
+
+# performancebaseline tests
+# TODO: guard via configure switch! -- rgerhards, 2016-11-29
+TESTS += perf_to_string.test
+
+
 
 EXTRA_DIST=
 EXTRA_DIST += $(TESTS)
