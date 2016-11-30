@@ -22,6 +22,19 @@
   present, but where the toolchain does not have threads (and anyway, it
   is much more efficient to use the intrisics rather than use mutexes).
   Thanks to Yann E. MORIN for the patch.
+- add fjson_object_dump() and fjson_object_write() functions
+  ... that make it possible to dump the json tree without having to
+  dynamically allocate a string, and to write the tree to a FILE*.
+  NOTE: right now, most of the code is simply copied from the functions
+  that use the "printbuf" for writing the data. I have not touched the old
+  printbuf-implementation, because some other code may still rely on it.
+  However, in my opinion these printbuf-based functions (if it is desirable
+  to keep them in the first place) can now be re-implemented to use the more
+  flexible fjson_object_dump() function.
+  MAINTAINER NOTE: we need to performance-test any new implementation and will
+  do so. The results will ultimately decide which parts of the code remain in
+  the codebase.
+  Thanks to Emiel Bruijntjes for the patch.
 
 0.99.4 2016-08-03
 - fix tautology comparison in tautology in `fjson_object_iter_equal`
