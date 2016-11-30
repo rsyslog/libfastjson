@@ -32,8 +32,7 @@ check_PROGRAMS += $(TESTS:.test=)
 
 # some programs that do internal checking
 check_PROGRAMS += chk_version \
-	cr_obj_multi \
-	perf_to_string
+	cr_obj_multi
 
 TESTS += chk_version
 
@@ -62,9 +61,10 @@ test_object_object_add_exFormatted_SOURCES = test_object_object_add_ex.c parse_f
 test_object_object_add_exFormatted_CPPFLAGS = -DTEST_FORMATTED
 
 # performancebaseline tests
-# TODO: guard via configure switch! -- rgerhards, 2016-11-29
+if ENABLE_PERFORMANCE_TESTBENCH
+check_PROGRAMS += perf_to_string
 TESTS += perf_to_string.test
-
+endif
 
 
 EXTRA_DIST=
@@ -97,6 +97,7 @@ EXTRA_DIST += test_object_object_add_exFormatted_pretty.expected
 EXTRA_DIST += test_object_object_add_exFormatted_spaced.expected
 EXTRA_DIST += test_many_subobj.expected
 EXTRA_DIST += test_obj_obj_get_ex-null.expected
+EXTRA_DIST += perf_to_string.c
 
 testsubdir=testSubDir
 TESTS_ENVIRONMENT       = top_builddir=$(top_builddir)

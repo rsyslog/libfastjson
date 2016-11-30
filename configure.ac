@@ -90,8 +90,8 @@ AC_ARG_ENABLE(performance_testbench,
         [enable_performance_testbench="no"]
 )
 if test "$enable_performance_testbench" = "yes"; then
-        AC_CHECK_PROG(VALGRIND, [valgrind], [valgrind], [no])
-	if test "x$VALGRIND" = "xno"; then
+        AC_CHECK_PROG(VALGRIND_CALLGRIND, [valgrind], [valgrind], [no])
+	if test "x$VALGRIND_CALLGRIND" = "xno"; then
 		AC_MSG_ERROR([--enable-performance-testbench given, but valgrind is not present on system])
 	fi
 fi
