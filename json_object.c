@@ -91,11 +91,15 @@ get_string_component(struct fjson_object *jso)
  * extra table lookup costs performance, but right the contrary
  * is the case. We get amore than 30% performance increase due
  * to it (compared to the latest version of the code that did not
- * do the lookups.
+ * do the lookups).
  * rgerhards@adiscon.com, 2015-11-18
+ * I have renamed needsEscape to char_needsEscape and made it
+ * external. This makes it possible to share the implementation
+ * with the newly contributed json_print.c module.
+ * rgerhards, 2016-11-30
  */
 
-static char needsEscape[256] = {
+char char_needsEscape[256] = {
 	1, 1, 1, 1, 1, 1, 1, 1, /* ascii codes 0 .. 7 */
 	1, 1, 1, 1, 1, 1, 1, 1,
 	1, 1, 1, 1, 1, 1, 1, 1,
@@ -134,7 +138,7 @@ static void fjson_escape_str(struct printbuf *pb, const char *str)
 {
 	const char *start_offset = str;
 	while(1) { /* broken below on 0-byte */
-		if(needsEscape[*((unsigned char*)str)]) {
+		if(char_needsEscape[*((unsigned char*)str)]) {
 			if(*str == '\0')
 				break;
 			if(str != start_offset)

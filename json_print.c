@@ -71,43 +71,11 @@ static const char *get_string_component(struct fjson_object *jso)
  *  extra table lookup costs performance, but right the contrary
  *  is the case. We get amore than 30% performance increase due
  *  to it (compared to the latest version of the code that did not
- *  do the lookups.
+ *  do the lookups).
  *  rgerhards@adiscon.com, 2015-11-18
+ *  using now external char_needsEscape array. -- rgerhards, 2016-11-30
  */
-static char needsEscape[256] = {
-	1, 1, 1, 1, 1, 1, 1, 1, /* ascii codes 0 .. 7 */
-	1, 1, 1, 1, 1, 1, 1, 1,
-	1, 1, 1, 1, 1, 1, 1, 1,
-	1, 1, 1, 1, 1, 1, 1, 1,
-	0, 0, 1, 0, 0, 0, 0, 0, /* ascii codes 32 .. 39 */
-	0, 0, 0, 0, 0, 0, 0, 1,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 1, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0
-};
+extern const char char_needsEscape[256];
 
 /**
  *  Function to escape a string
@@ -123,7 +91,7 @@ static size_t escape(const char *str, fjson_write_fn *func, void *ptr)
 	size_t result = 0;
 	const char *start_offset = str;
 	while(1) { /* broken below on 0-byte */
-		if(needsEscape[*((unsigned char*)str)]) {
+		if(char_needsEscape[*((unsigned char*)str)]) {
 			if(*str == '\0') break;
 			if(str != start_offset) result += func(ptr, start_offset, str - start_offset);
 			switch(*str) {
