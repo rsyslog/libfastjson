@@ -20,6 +20,8 @@
 
 #include <stdint.h>
 #include <inttypes.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -127,6 +129,11 @@ typedef struct fjson_object_iter fjson_object_iter;
 typedef struct fjson_tokener fjson_tokener;
 
 /**
+ * Type for a user-supplied write function
+ */
+typedef size_t (fjson_write_fn)(void *ptr, const char *buffer, size_t size);
+
+/**
  * Type of custom user delete functions.  See fjson_object_set_serializer.
  */
 typedef void (fjson_object_delete_fn)(struct fjson_object *jso, void *userdata);
@@ -202,6 +209,44 @@ extern int fjson_object_is_type(struct fjson_object *obj, enum fjson_type type);
  */
 extern enum fjson_type fjson_object_get_type(struct fjson_object *obj);
 
+
+/** Dump object to a user-supplied function.
+ * Equivalent to fjson_object_write_ext(obj, FJSON_TO_STRING_SPACED, func, ptr)
+ * @param obj object to be written
+ * @param func your function that will be called to write the data
+ * @param ptr pointer that will be passed as first argument to your function
+ * @returns number of bytes written (the sum of all return values of calls to func)
+ */
+extern size_t fjson_object_dump(struct fjson_object *obj, fjson_write_fn *func, void *ptr);
+
+/**
+ * Extended dump function that allows passing extra option. You can use all
+ * FJSON_TO_STRING_* constants for the flags
+ * @param obj object to be written
+ * @param flags extra flags
+ * @param func your function that will be called to write the data
+ * @param ptr pointer that will be passed as first argument to your function
+ * @returns number of bytes written (the sum of all return values of calls to func)
+ */
+extern size_t fjson_object_dump_ext(struct fjson_object *obj, int flags, fjson_write_fn *func, void *ptr);
+
+/**
+ * Write the json tree to a file
+ * Equivalent to fjson_object_write_ext(obj, FJSON_TO_STRING_SPACED, fp)
+ * @param obj object to be written
+ * @param fp file-pointer to which output will be written
+ * @returns number of bytes written
+ */
+extern size_t fjson_object_write(struct fjson_object *obj, FILE *fp);
+
+/**
+ * Extended write function that allows flags to be passed
+ * @param obj object to be written
+ * @param flags extra flags
+ * @param fp file-pointer to which output will be written
+ * @returns number of bytes written
+ */
+extern size_t fjson_object_write_ext(struct fjson_object *obj, int flags, FILE *fp);
 
 /** Stringify object to json format.
  * Equivalent to fjson_object_to_json_string_ext(obj, FJSON_TO_STRING_SPACED)
