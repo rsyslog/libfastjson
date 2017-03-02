@@ -201,9 +201,11 @@ int fjson_object_put(struct fjson_object *jso)
 
 static void fjson_object_generic_delete(struct fjson_object* jso)
 {
-	printbuf_free(jso->_pb);
-	DESTROY_ATOMIC_HELPER_MUT(jso->_mut_ref_count);
-	free(jso);
+	if (jso) {
+		printbuf_free(jso->_pb);
+		DESTROY_ATOMIC_HELPER_MUT(jso->_mut_ref_count);
+		free(jso);
+	}
 }
 
 static struct fjson_object* fjson_object_new(const enum fjson_type o_type)
