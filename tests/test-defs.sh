@@ -41,7 +41,7 @@ esac
 
 rm -rf "$testsubdir" > /dev/null 2>&1
 mkdir -p "$testsubdir"
-CURDIR=$(pwd)
+CURDIR=`pwd`
 cd "$testsubdir" \
    || { echo "Cannot make or change into $testsubdir"; exit 1; }
 
