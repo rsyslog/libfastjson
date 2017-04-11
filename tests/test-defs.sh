@@ -41,7 +41,7 @@ esac
 
 rm -rf "$testsubdir" > /dev/null 2>&1
 mkdir -p "$testsubdir"
-CURDIR=$(pwd)
+CURDIR=`pwd`
 cd "$testsubdir" \
    || { echo "Cannot make or change into $testsubdir"; exit 1; }
 
@@ -119,7 +119,7 @@ run_output_test()
 	# remove temp files for successful builds
 	# this clanup is required for "make distcheck"
 	if [ $err -eq 0 ] ; then
-	    rm -rfv ${CURDIR}/${testsubdir}/*
+	    rm -rf ${CURDIR}/${testsubdir}/*
 	fi
 
 	return $err

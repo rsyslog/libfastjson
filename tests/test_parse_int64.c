@@ -99,12 +99,6 @@ int main(int __attribute__((unused)) argc, char __attribute__((unused)) **argv)
 	strcpy(buf, "18446744073709551615"); // UINT64_MAX
 	checkit(buf);
 
-	strcpy(buf, "18446744073709551616"); // UINT64_MAX + 1
-	checkit(buf);
-
-	strcpy(buf, "-18446744073709551616"); // -UINT64_MAX
-	checkit(buf);
-
 	// Ensure we can still parse valid numbers after parsing out of range ones.
 	strcpy(buf, "123");
 	checkit(buf);
