@@ -20,8 +20,10 @@ libfastjsoninclude_HEADERS = \
 	json_util.h
 
 libfastjson_la_CFLAGS = $(WARN_CFLAGS)
+# info on version-info:
+# http://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html
 libfastjson_la_LDFLAGS = \
-	-version-info 4:0:0 \
+	-version-info 5:0:1 \
 	-export-symbols-regex '^fjson_.*' \
 	-no-undefined \
 	@JSON_BSYMBOLIC_LDFLAGS@
