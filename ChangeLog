@@ -1,4 +1,5 @@
-0.99.6 2017-05-??
+0.99.6 2017-05-12
+- fix a build issue under Solaris
 
 0.99.5 2017-05-03
 - fix tautology comparison in tautology in `fjson_object_iter_equal`
