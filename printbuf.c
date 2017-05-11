@@ -156,13 +156,20 @@ int printbuf_memset(struct printbuf *pb, int offset, int charvalue, int len)
 
 #if !defined(HAVE_VASPRINTF)
 /* CAW: compliant version of vasprintf */
-static int vasprintf(char **buf, const char *fmt, va_list ap)
+/* Note: on OpenCSW, we have vasprintf() inside the headers, but not inside the lib.
+ * So we need to use a different name, else we get issues with redefinitions. We
+ * we solve this by using the macro below, which just renames the function BUT
+ * does not affect the (variadic) arguments.
+ * rgerhards, 2017-04-11
+ */
+#define  vasprintf rs_vasprintf
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wformat-nonliteral"
+static int rs_vasprintf(char **buf, const char *fmt, va_list ap)
 {
 	int chars;
 	char *b;
-#ifdef _AIX
 	static char _T_emptybuffer = '\0';
-#endif
 
 	if(!buf) { return -1; }
 
@@ -182,6 +189,7 @@ static int vasprintf(char **buf, const char *fmt, va_list ap)
 
 	return chars;
 }
+#pragma GCC diagnostic pop
 #endif /* !HAVE_VASPRINTF */
 
 int sprintbuf(struct printbuf *p, const char *msg, ...)
