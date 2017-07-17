@@ -190,8 +190,6 @@ int fjson_object_put(struct fjson_object *jso)
 	const int cnt = ATOMIC_DEC_AND_FETCH(&jso->_ref_count, &jso->_mut_ref_count);
 	if(cnt > 0) return 0;
 
-	if (jso->_user_delete)
-		jso->_user_delete(jso, jso->_userdata);
 	jso->_delete(jso);
 	return 1;
 }
@@ -202,6 +200,7 @@ int fjson_object_put(struct fjson_object *jso)
 static void fjson_object_generic_delete(struct fjson_object* jso)
 {
 	if (jso) {
+		if (jso->o_type == fjson_type_double) free(jso->o.c_double.source);
 		printbuf_free(jso->_pb);
 		DESTROY_ATOMIC_HELPER_MUT(jso->_mut_ref_count);
 		free(jso);
@@ -236,61 +235,6 @@ enum fjson_type fjson_object_get_type(struct fjson_object *jso)
 		return fjson_type_null;
 	return jso->o_type;
 }
-
-/* set a custom conversion to string */
-
-void fjson_object_set_serializer(fjson_object *jso,
-	fjson_object_to_json_string_fn to_string_func,
-	void *userdata,
-	fjson_object_delete_fn *user_delete)
-{
-	// First, clean up any previously existing user info
-	if (jso->_user_delete)
-	{
-		jso->_user_delete(jso, jso->_userdata);
-	}
-	jso->_userdata = NULL;
-	jso->_user_delete = NULL;
-
-	if (to_string_func == NULL)
-	{
-		// Reset to the standard serialization function
-		switch(jso->o_type)
-		{
-		case fjson_type_null:
-			jso->_to_json_string = NULL;
-			break;
-		case fjson_type_boolean:
-			jso->_to_json_string = &fjson_object_boolean_to_json_string;
-			break;
-		case fjson_type_double:
-			jso->_to_json_string = &fjson_object_double_to_json_string;
-			break;
-		case fjson_type_int:
-			jso->_to_json_string = &fjson_object_int_to_json_string;
-			break;
-		case fjson_type_object:
-			jso->_to_json_string = &fjson_object_object_to_json_string;
-			break;
-		case fjson_type_array:
-			jso->_to_json_string = &fjson_object_array_to_json_string;
-			break;
-		case fjson_type_string:
-			jso->_to_json_string = &fjson_object_string_to_json_string;
-			break;
-		default:
-			/* this should NOT HAPPEN! */
-			jso->_to_json_string = NULL;
-			break;
-		}
-		return;
-	}
-
-	jso->_to_json_string = to_string_func;
-	jso->_userdata = userdata;
-	jso->_user_delete = user_delete;
-}
-
 
 /* extended conversion to string */
 
@@ -602,7 +546,7 @@ fjson_bool fjson_object_get_boolean(struct fjson_object *jso)
 	case fjson_type_int:
 		return (jso->o.c_int64 != 0);
 	case fjson_type_double:
-		return (jso->o.c_double != 0);
+		return (jso->o.c_double.value != 0);
 	case fjson_type_string:
 		return (jso->o.c_string.len != 0);
 	case fjson_type_null:
@@ -665,7 +609,7 @@ int32_t fjson_object_get_int(struct fjson_object *jso)
 		else
 			return (int32_t)cint64;
 	case fjson_type_double:
-		return (int32_t)jso->o.c_double;
+		return (int32_t)jso->o.c_double.value;
 	case fjson_type_boolean:
 		return jso->o.c_boolean;
 	case fjson_type_null:
@@ -698,7 +642,7 @@ int64_t fjson_object_get_int64(struct fjson_object *jso)
 	case fjson_type_int:
 		return jso->o.c_int64;
 	case fjson_type_double:
-		return (int64_t)jso->o.c_double;
+		return (int64_t)jso->o.c_double.value;
 	case fjson_type_boolean:
 		return jso->o.c_boolean;
 	case fjson_type_string:
@@ -728,17 +672,17 @@ static int fjson_object_double_to_json_string(struct fjson_object* jso,
 	 * ECMA 262 section 9.8.1 defines
 	 * how to handle these cases as strings
 	 */
-	if(isnan(jso->o.c_double))
+	if(isnan(jso->o.c_double.value))
 		size = snprintf(buf, sizeof(buf), "NaN");
-	else if(isinf(jso->o.c_double))
-		if(jso->o.c_double > 0)
+	else if(isinf(jso->o.c_double.value))
+		if(jso->o.c_double.value > 0)
 			size = snprintf(buf, sizeof(buf), "Infinity");
 		else
 			size = snprintf(buf, sizeof(buf), "-Infinity");
 	else
 		size = snprintf(buf, sizeof(buf),
-			(modf(jso->o.c_double, &dummy)==0)?"%.17g.0":"%.17g",
-			jso->o.c_double);
+			(modf(jso->o.c_double.value, &dummy)==0)?"%.17g.0":"%.17g",
+			jso->o.c_double.value);
 
 	p = strchr(buf, ',');
 	if (p) {
@@ -766,7 +710,8 @@ struct fjson_object* fjson_object_new_double(double d)
 	if (!jso)
 		return NULL;
 	jso->_to_json_string = &fjson_object_double_to_json_string;
-	jso->o.c_double = d;
+	jso->o.c_double.value = d;
+    jso->o.c_double.source = NULL;
 	return jso;
 }
 
@@ -776,25 +721,24 @@ struct fjson_object* fjson_object_new_double_s(double d, const char *ds)
 	if (!jso)
 		return NULL;
 
-	char *new_ds = strdup(ds);
-	if (!new_ds)
+	jso->o.c_double.source = strdup(ds);
+	if (!jso->o.c_double.source)
 	{
 		fjson_object_generic_delete(jso);
 		errno = ENOMEM;
 		return NULL;
 	}
-	fjson_object_set_serializer(jso, fjson_object_userdata_to_json_string,
-	    new_ds, fjson_object_free_userdata);
 	return jso;
 }
 
-int fjson_object_userdata_to_json_string(struct fjson_object *jso,
-	struct printbuf *pb, int __attribute__((unused)) level, int __attribute__((unused)) flags)
-{
-	int userdata_len = strlen((const char *)jso->_userdata);
-	printbuf_memappend_no_nul(pb, (const char *)jso->_userdata, userdata_len);
-	return 0; /* we need to keep compatible with the API */
-}
+/* @todo this shold be done by the double_to_json_string function */
+//int fjson_object_userdata_to_json_string(struct fjson_object *jso,
+//	struct printbuf *pb, int __attribute__((unused)) level, int __attribute__((unused)) flags)
+//{
+//	int userdata_len = strlen((const char *)jso->_userdata);
+//	printbuf_memappend_no_nul(pb, (const char *)jso->_userdata, userdata_len);
+//	return 0; /* we need to keep compatible with the API */
+//}
 
 void fjson_object_free_userdata(struct fjson_object __attribute__((unused)) *jso, void *userdata)
 {
@@ -809,7 +753,7 @@ double fjson_object_get_double(struct fjson_object *jso)
 	if(!jso) return 0.0;
 	switch(jso->o_type) {
 	case fjson_type_double:
-		return jso->o.c_double;
+		return jso->o.c_double.value;
 	case fjson_type_int:
 		return jso->o.c_int64;
 	case fjson_type_boolean:

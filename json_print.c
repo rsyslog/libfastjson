@@ -205,15 +205,15 @@ static size_t write_double(struct fjson_object* jso, int flags, fjson_write_fn *
 	 * ECMA 262 section 9.8.1 defines
 	 * how to handle these cases as strings
 	 */
-	if(isnan(jso->o.c_double))
+	if(isnan(jso->o.c_double.value))
 		size = snprintf(buf, sizeof(buf), "NaN");
-	else if(isinf(jso->o.c_double))
-		if(jso->o.c_double > 0)
+	else if(isinf(jso->o.c_double.value))
+		if(jso->o.c_double.value > 0)
 			size = snprintf(buf, sizeof(buf), "Infinity");
 		else
 			size = snprintf(buf, sizeof(buf), "-Infinity");
 	else
-		size = snprintf(buf, sizeof(buf), "%.17g", jso->o.c_double);
+		size = snprintf(buf, sizeof(buf), "%.17g", jso->o.c_double.value);
 
 	p = strchr(buf, ',');
 	if (p) {

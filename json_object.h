@@ -269,46 +269,6 @@ extern const char* fjson_object_to_json_string_ext(struct fjson_object *obj, int
 flags);
 
 /**
- * Set a custom serialization function to be used when this particular object
- * is converted to a string by fjson_object_to_json_string.
- *
- * If a custom serializer is already set on this object, any existing
- * user_delete function is called before the new one is set.
- *
- * If to_string_func is NULL, the other parameters are ignored
- * and the default behaviour is reset.
- *
- * The userdata parameter is optional and may be passed as NULL.  If provided,
- * it is passed to to_string_func as-is.  This parameter may be NULL even
- * if user_delete is non-NULL.
- *
- * The user_delete parameter is optional and may be passed as NULL, even if
- * the userdata parameter is non-NULL.  It will be called just before the
- * fjson_object is deleted, after it's reference count goes to zero
- * (see fjson_object_put()).
- * If this is not provided, it is up to the caller to free the userdata at
- * an appropriate time. (i.e. after the fjson_object is deleted)
- *
- * @param jso the object to customize
- * @param to_string_func the custom serialization function
- * @param userdata an optional opaque cookie
- * @param user_delete an optional function from freeing userdata
- */
-extern void fjson_object_set_serializer(fjson_object *jso,
-	fjson_object_to_json_string_fn to_string_func,
-	void *userdata,
-	fjson_object_delete_fn *user_delete);
-
-/**
- * Simply call free on the userdata pointer.
- * Can be used with fjson_object_set_serializer().
- *
- * @param jso unused
- * @param userdata the pointer that is passed to free().
- */
-fjson_object_delete_fn fjson_object_free_userdata;
-
-/**
  * Copy the jso->_userdata string over to pb as-is.
  * Can be used with fjson_object_set_serializer().
  *
