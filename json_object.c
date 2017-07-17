@@ -200,7 +200,6 @@ int fjson_object_put(struct fjson_object *jso)
 static void fjson_object_generic_delete(struct fjson_object* jso)
 {
 	if (jso) {
-		if (jso->o_type == fjson_type_double) free(jso->o.c_double.source);
 		printbuf_free(jso->_pb);
 		DESTROY_ATOMIC_HELPER_MUT(jso->_mut_ref_count);
 		free(jso);
@@ -279,8 +278,8 @@ static void indent(struct printbuf *pb, int level, int flags)
 /* fjson_object_object */
 
 static int fjson_object_object_to_json_string(struct fjson_object* jso,
-					     struct printbuf *pb,
-					     int level,
+						 struct printbuf *pb,
+						 int level,
 						 int flags)
 {
 	struct fjson_object *val;
@@ -514,8 +513,8 @@ void fjson_object_object_del(struct fjson_object* jso, const char *key)
 /* fjson_object_boolean */
 
 static int fjson_object_boolean_to_json_string(struct fjson_object* jso,
-					      struct printbuf *pb,
-					      int __attribute__((unused)) level,
+						  struct printbuf *pb,
+						  int __attribute__((unused)) level,
 						  int __attribute__((unused)) flags)
 {
 	if (jso->o.c_boolean)
@@ -660,13 +659,19 @@ int64_t fjson_object_get_int64(struct fjson_object *jso)
 /* fjson_object_double */
 
 static int fjson_object_double_to_json_string(struct fjson_object* jso,
-					     struct printbuf *pb,
-					     int __attribute__((unused)) level,
+						 struct printbuf *pb,
+						 int __attribute__((unused)) level,
 						 int __attribute__((unused)) flags)
 {
 	char buf[128], *p, *q;
 	int size;
 	double dummy;  /* needed for modf() */
+	
+	if (jso->o.c_double.source) {
+		printbuf_memappend_no_nul(pb, jso->o.c_double.source, strlen(jso->o.c_double.source));
+		return 0; /* we need to keep compatible with the API */
+	}
+	
 	/* Although JSON RFC does not support
 	 * NaN or Infinity as numeric values
 	 * ECMA 262 section 9.8.1 defines
@@ -704,6 +709,12 @@ static int fjson_object_double_to_json_string(struct fjson_object* jso,
 	return 0; /* we need to keep compatible with the API */
 }
 
+static void fjson_object_double_delete(struct fjson_object *jso)
+{
+	free(jso->o.c_double.source);
+	fjson_object_generic_delete(jso);
+}
+
 struct fjson_object* fjson_object_new_double(double d)
 {
 	struct fjson_object *jso = fjson_object_new(fjson_type_double);
@@ -711,7 +722,7 @@ struct fjson_object* fjson_object_new_double(double d)
 		return NULL;
 	jso->_to_json_string = &fjson_object_double_to_json_string;
 	jso->o.c_double.value = d;
-    jso->o.c_double.source = NULL;
+	jso->o.c_double.source = NULL;
 	return jso;
 }
 
@@ -728,21 +739,8 @@ struct fjson_object* fjson_object_new_double_s(double d, const char *ds)
 		errno = ENOMEM;
 		return NULL;
 	}
+	jso->_delete = &fjson_object_double_delete;
 	return jso;
-}
-
-/* @todo this shold be done by the double_to_json_string function */
-//int fjson_object_userdata_to_json_string(struct fjson_object *jso,
-//	struct printbuf *pb, int __attribute__((unused)) level, int __attribute__((unused)) flags)
-//{
-//	int userdata_len = strlen((const char *)jso->_userdata);
-//	printbuf_memappend_no_nul(pb, (const char *)jso->_userdata, userdata_len);
-//	return 0; /* we need to keep compatible with the API */
-//}
-
-void fjson_object_free_userdata(struct fjson_object __attribute__((unused)) *jso, void *userdata)
-{
-	free(userdata);
 }
 
 double fjson_object_get_double(struct fjson_object *jso)
@@ -801,9 +799,9 @@ double fjson_object_get_double(struct fjson_object *jso)
 /* fjson_object_string */
 
 static int fjson_object_string_to_json_string(struct fjson_object* jso,
-					     struct printbuf *pb,
-					     int __attribute__((unused)) level,
-					     int __attribute__((unused)) flags)
+						 struct printbuf *pb,
+						 int __attribute__((unused)) level,
+						 int __attribute__((unused)) flags)
 {
 	printbuf_memappend_char(pb, '\"');
 	fjson_escape_str(pb, get_string_component(jso));
@@ -995,13 +993,13 @@ int fjson_object_array_add(struct fjson_object *jso,struct fjson_object *val)
 }
 
 int fjson_object_array_put_idx(struct fjson_object *jso, int idx,
-			      struct fjson_object *val)
+				  struct fjson_object *val)
 {
 	return array_list_put_idx(jso->o.c_array, idx, val);
 }
 
 struct fjson_object* fjson_object_array_get_idx(struct fjson_object *jso,
-					      int idx)
+						  int idx)
 {
 	return (struct fjson_object*)array_list_get_idx(jso->o.c_array, idx);
 }

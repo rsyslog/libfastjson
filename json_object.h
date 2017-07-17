@@ -133,19 +133,6 @@ typedef struct fjson_tokener fjson_tokener;
  */
 typedef size_t (fjson_write_fn)(void *ptr, const char *buffer, size_t size);
 
-/**
- * Type of custom user delete functions.  See fjson_object_set_serializer.
- */
-typedef void (fjson_object_delete_fn)(struct fjson_object *jso, void *userdata);
-
-/**
- * Type of a custom serialization function.  See fjson_object_set_serializer.
- */
-typedef int (fjson_object_to_json_string_fn)(struct fjson_object *jso,
-						struct printbuf *pb,
-						int level,
-						int flags);
-
 /* supported object types */
 
 typedef enum fjson_type {
@@ -267,17 +254,6 @@ extern const char* fjson_object_to_json_string(struct fjson_object *obj);
  */
 extern const char* fjson_object_to_json_string_ext(struct fjson_object *obj, int
 flags);
-
-/**
- * Copy the jso->_userdata string over to pb as-is.
- * Can be used with fjson_object_set_serializer().
- *
- * @param jso The object whose _userdata is used.
- * @param pb The destination buffer.
- * @param level Ignored.
- * @param flags Ignored.
- */
-fjson_object_to_json_string_fn fjson_object_userdata_to_json_string;
 
 
 /* object type methods */
@@ -464,7 +440,7 @@ extern int fjson_object_array_add(struct fjson_object *obj,
  * @param val the fjson_object to be added
  */
 extern int fjson_object_array_put_idx(struct fjson_object *obj, int idx,
-				     struct fjson_object *val);
+					 struct fjson_object *val);
 
 /** Get the element at specificed index of the array (a fjson_object of type fjson_type_array)
  * @param obj the fjson_object instance
@@ -472,7 +448,7 @@ extern int fjson_object_array_put_idx(struct fjson_object *obj, int idx,
  * @returns the fjson_object at the specified index (or NULL)
  */
 extern struct fjson_object* fjson_object_array_get_idx(struct fjson_object *obj,
-						     int idx);
+							 int idx);
 
 /* fjson_bool type methods */
 
@@ -556,7 +532,7 @@ extern struct fjson_object* fjson_object_new_double(double d);
 
 /**
  * Create a new fjson_object of type fjson_type_double, using
- * the exact serialized representation of the value.
+ * the exact representation of the value.
  *
  * This allows for numbers that would otherwise get displayed
  * inefficiently (e.g. 12.3 => "12.300000000000001") to be
@@ -564,13 +540,6 @@ extern struct fjson_object* fjson_object_new_double(double d);
  *
  * Note: this is used by fjson_tokener_parse_ex() to allow for
  *   an exact re-serialization of a parsed object.
- *
- * An equivalent sequence of calls is:
- * @code
- *   jso = fjson_object_new_double(d);
- *   fjson_object_set_serializer(d, fjson_object_userdata_to_json_string,
- *       strdup(ds), fjson_object_free_userdata)
- * @endcode
  *
  * @param d the numeric value of the double.
  * @param ds the string representation of the double.  This will be copied.
