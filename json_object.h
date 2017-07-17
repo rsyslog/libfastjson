@@ -196,8 +196,25 @@ extern int fjson_object_is_type(struct fjson_object *obj, enum fjson_type type);
  */
 extern enum fjson_type fjson_object_get_type(struct fjson_object *obj);
 
+/**
+ * Get the size of the json string if it was dumped
+ * @param obj object to calculate the size of
+ * @returns the size of the json string
+ */
+extern size_t fjson_object_size(struct fjson_object *obj);
 
-/** Dump object to a user-supplied function.
+/**
+ * Extended version of the above function that accept a flags parameter identical
+ * to the fjson_object_dump_ext() function that you can use the specify how to
+ * format the string for which the size is calculated
+ * @param obj the object to calculate the size of
+ * @param flags extra flags
+ * @return size_t
+ */
+extern size_t fjson_object_size_ext(struct fjson_object *obj, int flags);
+
+/** 
+ * Dump object to a user-supplied function.
  * Equivalent to fjson_object_write_ext(obj, FJSON_TO_STRING_SPACED, func, ptr)
  * @param obj object to be written
  * @param func your function that will be called to write the data
