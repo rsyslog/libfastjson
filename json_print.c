@@ -200,6 +200,10 @@ static size_t write_double(struct fjson_object* jso, int flags, fjson_write_fn *
 {
 	char buf[128], *p, *q;
 	int size;
+	double dummy;  /* needed for modf() */
+	
+	if (jso->o.c_double.source) return func(ptr, jso->o.c_double.source, strlen(jso->o.c_double.source));
+	
 	/* Although JSON RFC does not support
 	 * NaN or Infinity as numeric values
 	 * ECMA 262 section 9.8.1 defines
@@ -213,7 +217,9 @@ static size_t write_double(struct fjson_object* jso, int flags, fjson_write_fn *
 		else
 			size = snprintf(buf, sizeof(buf), "-Infinity");
 	else
-		size = snprintf(buf, sizeof(buf), "%.17g", jso->o.c_double.value);
+		size = snprintf(buf, sizeof(buf),
+			(modf(jso->o.c_double.value, &dummy)==0)?"%.17g.0":"%.17g",
+			jso->o.c_double.value);
 
 	p = strchr(buf, ',');
 	if (p) {
