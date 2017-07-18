@@ -154,11 +154,15 @@ static size_t buffer_printf(struct buffer *buffer, const char *format, ...)
     // make sure we have sufficient room in our buffer
     if (buffer->size - buffer->filled < 32) result += buffer_flush(buffer);
 
-    // user stack buffer first
+    // initialize varargs
     va_start(arguments, format);
-    
+
     // write to the buffer (note the extra char for the extra null that is written by vsnprintf())
     size = vsnprintf(buffer->buffer + buffer->filled, buffer->size - buffer->filled - 1, format, arguments);
+
+    // clean up varargs (it is not possible to reuse the vararg arguments later on,
+    // the have to be reset and possible reinitialized later on)
+    va_end(arguments);
     
     // was this all successful?
     if (size >= 0 && size < (int)(buffer->size - buffer->filled))
@@ -172,15 +176,30 @@ static size_t buffer_printf(struct buffer *buffer, const char *format, ...)
         // we would have been able to use the entire buffer, so we reset the buffer,
         // and retry the whole procedure
         result += buffer_flush(buffer);
-        
-        // buffer is empty now, we can retry
+
+        // buffer is empty now, we can retry, start with the vararg initialization
+        va_start(arguments, format);
+
+        // format into the buffer, again
         buffer->size += vsnprintf(buffer->buffer + buffer->filled, buffer->size - buffer->filled - 1, format, arguments);
+        
+        // clean up varargs
+        va_end(arguments);
     }
     else
     {
+        // initialize varargs
+        va_start(arguments, format);
+
         // our own buffer is not big enough to fit the text, we are going to use
-        // a dynamically allocated buffer using vasprintf()
+        // a dynamically allocated buffer using vasprintf(), init varargs first
+        va_start(arguments, format);
+
+        // use dynamically allocated vasprintf() call
         size = vasprintf(&tmp, format, arguments);
+        
+        // clean up varargs
+        va_end(arguments);
         
         // was this a success?
         if (size > 0) result += buffer_append(buffer, tmp, size);
@@ -189,9 +208,6 @@ static size_t buffer_printf(struct buffer *buffer, const char *format, ...)
         if (size >= 0) free(tmp);
     }
 
-    // clean up the va_list
-    va_end(arguments);
-    
     // done
     return result;
 }
