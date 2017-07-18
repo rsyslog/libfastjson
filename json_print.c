@@ -477,6 +477,13 @@ static size_t fwrite_wrapper(void *ptr, const char *buffer, size_t size)
 	return fwrite(buffer, 1, size, ptr);
 }
 
+/* dummy output function that does not output, but is used to calculate the size */
+
+static size_t calculate(void __attribute__((unused)) *ptr, const char __attribute__((unused)) *buffer, size_t size)
+{
+    return size;
+}
+
 /* extended dump to which the helper buffer can be passed */
 
 size_t fjson_object_dump_buffered(struct fjson_object *jso, int flags, char *temp, size_t size, fjson_write_fn *func, void *ptr)
@@ -518,6 +525,24 @@ size_t fjson_object_dump(struct fjson_object *jso, fjson_write_fn *func, void *p
 {
 	// write the value
 	return fjson_object_dump_ext(jso, FJSON_TO_STRING_SPACED, func, ptr);
+}
+
+/* extended function to calculate the size */
+
+size_t fjson_object_size_ext(struct fjson_object *jso, int flags)
+{
+    // write the value with a dummy function (this is a simple implementation that
+    // can later be optimized in a pure size-calculating function)
+    return fjson_object_dump_ext(jso, flags, &calculate, NULL);
+}
+
+/* function to calculate the size */
+
+size_t fjson_object_size(struct fjson_object *jso)
+{
+    // write the value with a dummy function (this is a simple implementation that
+    // can later be optimized in a pure size-calculating function)
+    return fjson_object_dump(jso, &calculate, NULL);
 }
 
 /* write to a file* */
