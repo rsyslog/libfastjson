@@ -2,7 +2,7 @@
  * Copyright (c) 2004, 2005 Metaparadigm Pte. Ltd.
  * Michael Clark <michael@metaparadigm.com>
  * Copyright (c) 2009 Hewlett-Packard Development Company, L.P.
- * Copyright (c) 2015 Rainer Gerhards
+ * Copyright (c) 2015-2017 Rainer Gerhards
  *
  * This library is free software; you can redistribute it and/or modify
  * it under the terms of the MIT license. See COPYING for details.
@@ -29,6 +29,7 @@
 #include "atomic.h"
 #include "printbuf.h"
 #include "arraylist.h"
+#include "json.h"
 #include "json_object.h"
 #include "json_object_private.h"
 #include "json_object_iterator.h"
@@ -55,6 +56,11 @@ static fjson_object_to_json_string_fn fjson_object_double_to_json_string;
 static fjson_object_to_json_string_fn fjson_object_string_to_json_string;
 static fjson_object_to_json_string_fn fjson_object_array_to_json_string;
 
+static int do_case_sensitive_comparison = 1;
+void fjson_global_do_case_sensitive_comparison(const int newval)
+{
+	do_case_sensitive_comparison = newval;
+}
 
 /* helper for accessing the optimized string data component in fjson_object
  */
@@ -370,8 +376,13 @@ _fjson_find_child(struct fjson_object *const __restrict__ jso,
 	struct fjson_object_iterator it = fjson_object_iter_begin(jso);
 	struct fjson_object_iterator itEnd = fjson_object_iter_end(jso);
 	while (!fjson_object_iter_equal(&it, &itEnd)) {
-		if (!strcmp (key, fjson_object_iter_peek_name(&it)))
-			return _fjson_object_iter_peek_child(&it);
+		if (do_case_sensitive_comparison) {
+			if (!strcmp (key, fjson_object_iter_peek_name(&it)))
+				return _fjson_object_iter_peek_child(&it);
+		} else {
+			if (!strcasecmp (key, fjson_object_iter_peek_name(&it)))
+				return _fjson_object_iter_peek_child(&it);
+		}
 		fjson_object_iter_next(&it);
 	}
 	return NULL;

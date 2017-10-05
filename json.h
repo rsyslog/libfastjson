@@ -42,6 +42,19 @@ extern "C" {
  * @param size new initial size for printbuf (formatting buffer)
  */
 extern void fjson_global_set_printbuf_initial_size(int size);
+
+/**
+ * Set case sensitive/insensitive comparison mode. If set to 0,
+ * comparisons for JSON keys will be case-insensitive. Otherwise,
+ * they will be case-sensitive.
+ * NOTE: the JSON standard demands case sensitivity. By turning
+ * this off, the JSON standard is not obeyed. Most importantly,
+ * if keys exists which only differ in case, only partial data
+ * access is possible. So use with care and only if you know
+ * exactly what you are doing!
+ */
+extern void fjson_global_do_case_sensitive_comparison(const int newval);
+
 /**
  * report the current libfastjson version
  */
