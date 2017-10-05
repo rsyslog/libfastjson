@@ -77,11 +77,11 @@ static int rs_vasprintf(char **buf, const char *fmt, va_list ap)
  *  Internal structure that we use for buffering the print output
  */
 struct buffer {
-    char *buffer;
-    size_t size;
-    size_t filled;
-    fjson_write_fn *overflow;
-    void *ptr;
+	char *buffer;
+	size_t size;
+	size_t filled;
+	fjson_write_fn *overflow;
+	void *ptr;
 };
 
 /**
@@ -91,14 +91,14 @@ struct buffer {
  */
 static size_t buffer_flush(struct buffer *buffer)
 {
-    // call the user-supplied overflow function
-    size_t result = buffer->overflow(buffer->ptr, buffer->buffer, buffer->filled);
-    
-    // buffer is empty now
-    buffer->filled = 0;
-    
-    // done
-    return result;
+	// call the user-supplied overflow function
+	size_t result = buffer->overflow(buffer->ptr, buffer->buffer, buffer->filled);
+
+	// buffer is empty now
+	buffer->filled = 0;
+
+	// done
+	return result;
 }
 
 /**
@@ -110,27 +110,27 @@ static size_t buffer_flush(struct buffer *buffer)
  */
 static size_t buffer_append(struct buffer *buffer, const char *data, size_t size)
 {
-    // return value
-    size_t result = 0;
-    
-    // is the data to big to fit in the buffer?
-    if (buffer->filled + size > buffer->size)
-    {
-        // flush current buffer
-        if (buffer->filled > 0) result += buffer_flush(buffer);
-        
-        // does it still not fit? then we pass it to the callback immediately
-        if (size > buffer->size) return result + buffer->overflow(buffer->ptr, data, size);
-    }
-    
-    // append to the buffer
-    memcpy(buffer->buffer + buffer->filled, data, size);
-    
-    // update buffer size
-    buffer->filled += size;
-    
-    // done
-    return result;
+	// return value
+	size_t result = 0;
+
+	// is the data to big to fit in the buffer?
+	if (buffer->filled + size > buffer->size)
+	{
+		// flush current buffer
+		if (buffer->filled > 0) result += buffer_flush(buffer);
+
+		// does it still not fit? then we pass it to the callback immediately
+		if (size > buffer->size) return result + buffer->overflow(buffer->ptr, data, size);
+	}
+
+	// append to the buffer
+	memcpy(buffer->buffer + buffer->filled, data, size);
+
+	// update buffer size
+	buffer->filled += size;
+
+	// done
+	return result;
 }
 
 /**
@@ -141,75 +141,75 @@ static size_t buffer_append(struct buffer *buffer, const char *data, size_t size
  *  @return size_t
  */
 __attribute__((__format__(__printf__, 2, 3)))
-static size_t buffer_printf(struct buffer *buffer, const char *format, ...) 
+static size_t buffer_printf(struct buffer *buffer, const char *format, ...)
 {
-    // return value
-    size_t result = 0;
-    
-    // variables used in this function
-    va_list arguments;
-    char *tmp;
-    int size;
+	// return value
+	size_t result = 0;
 
-    // make sure we have sufficient room in our buffer
-    if (buffer->size - buffer->filled < 32) result += buffer_flush(buffer);
+	// variables used in this function
+	va_list arguments;
+	char *tmp;
+	int size;
 
-    // initialize varargs
-    va_start(arguments, format);
+	// make sure we have sufficient room in our buffer
+	if (buffer->size - buffer->filled < 32) result += buffer_flush(buffer);
 
-    // write to the buffer (note the extra char for the extra null that is written by vsnprintf())
-    size = vsnprintf(buffer->buffer + buffer->filled, buffer->size - buffer->filled - 1, format, arguments);
+	// initialize varargs
+	va_start(arguments, format);
 
-    // clean up varargs (it is not possible to reuse the vararg arguments later on,
-    // the have to be reset and possible reinitialized later on)
-    va_end(arguments);
-    
-    // was this all successful?
-    if (size >= 0 && size < (int)(buffer->size - buffer->filled))
-    {
-        // this was a major success
-        buffer->filled += size;
-    }
-    else if (size > 0 && size < (int)buffer->size)
-    {
-        // there was not enough room in the buffer, but it would have been enough if
-        // we would have been able to use the entire buffer, so we reset the buffer,
-        // and retry the whole procedure
-        result += buffer_flush(buffer);
+	// write to the buffer (note the extra char for the extra null that is written by vsnprintf())
+	size = vsnprintf(buffer->buffer + buffer->filled, buffer->size - buffer->filled - 1, format, arguments);
 
-        // buffer is empty now, we can retry, start with the vararg initialization
-        va_start(arguments, format);
+	// clean up varargs (it is not possible to reuse the vararg arguments later on,
+	// the have to be reset and possible reinitialized later on)
+	va_end(arguments);
 
-        // format into the buffer, again
-        buffer->size += vsnprintf(buffer->buffer + buffer->filled, buffer->size - buffer->filled - 1, format, arguments);
-        
-        // clean up varargs
-        va_end(arguments);
-    }
-    else
-    {
-        // initialize varargs
-        va_start(arguments, format);
+	// was this all successful?
+	if (size >= 0 && size < (int)(buffer->size - buffer->filled))
+	{
+		// this was a major success
+		buffer->filled += size;
+	}
+	else if (size > 0 && size < (int)buffer->size)
+	{
+		// there was not enough room in the buffer, but it would have been enough if
+		// we would have been able to use the entire buffer, so we reset the buffer,
+		// and retry the whole procedure
+		result += buffer_flush(buffer);
 
-        // our own buffer is not big enough to fit the text, we are going to use
-        // a dynamically allocated buffer using vasprintf(), init varargs first
-        va_start(arguments, format);
+		// buffer is empty now, we can retry, start with the vararg initialization
+		va_start(arguments, format);
 
-        // use dynamically allocated vasprintf() call
-        size = vasprintf(&tmp, format, arguments);
-        
-        // clean up varargs
-        va_end(arguments);
-        
-        // was this a success?
-        if (size > 0) result += buffer_append(buffer, tmp, size);
-        
-        // deallocate the memory
-        if (size >= 0) free(tmp);
-    }
+		// format into the buffer, again
+		buffer->size += vsnprintf(buffer->buffer + buffer->filled, buffer->size - buffer->filled - 1, format, arguments);
 
-    // done
-    return result;
+		// clean up varargs
+		va_end(arguments);
+	}
+	else
+	{
+		// initialize varargs
+		va_start(arguments, format);
+
+		// our own buffer is not big enough to fit the text, we are going to use
+		// a dynamically allocated buffer using vasprintf(), init varargs first
+		va_start(arguments, format);
+
+		// use dynamically allocated vasprintf() call
+		size = vasprintf(&tmp, format, arguments);
+
+		// clean up varargs
+		va_end(arguments);
+
+		// was this a success?
+		if (size > 0) result += buffer_append(buffer, tmp, size);
+
+		// deallocate the memory
+		if (size >= 0) free(tmp);
+	}
+
+	// done
+	return result;
 }
 
 /* Forward declaration of the write function */
@@ -283,7 +283,7 @@ static size_t escape(const char *str, struct buffer *buffer)
 			case '\\':  result += buffer_append(buffer, "\\\\", 2); break;
 			case '/':   result += buffer_append(buffer, "\\/", 2); break;
 			default:
-                result += buffer_printf(buffer, "\\u00%c%c", fjson_hex_chars[*str >> 4], fjson_hex_chars[*str & 0xf]);
+				result += buffer_printf(buffer, "\\u00%c%c", fjson_hex_chars[*str >> 4], fjson_hex_chars[*str & 0xf]);
 				break;
 			}
 			start_offset = ++str;
@@ -366,26 +366,26 @@ static size_t write_boolean(struct fjson_object* jso, struct buffer *buffer)
 
 static size_t write_int(struct fjson_object* jso, struct buffer *buffer)
 {
-    // printf into the buffer
-    return buffer_printf(buffer, "%" PRId64, jso->o.c_int64);
+	// printf into the buffer
+	return buffer_printf(buffer, "%" PRId64, jso->o.c_int64);
 }
 
 /* write a json floating point */
 
 static size_t write_double(struct fjson_object* jso, int flags, struct buffer *buffer)
 {
-    // return value for the function
-    size_t result = 0;
-    
-    // helper functions to fix the output
+	// return value for the function
+	size_t result = 0;
+
+	// helper functions to fix the output
 	char *buf, *p, *q;
-    
-    // needed for modf()
+
+	// needed for modf()
 	double dummy;
-	
-    // if the original value is set, we reuse that
+
+	// if the original value is set, we reuse that
 	if (jso->o.c_double.source) return buffer_append(buffer, jso->o.c_double.source, strlen(jso->o.c_double.source));
-	
+
 	/* Although JSON RFC does not support
 	 * NaN or Infinity as numeric values
 	 * ECMA 262 section 9.8.1 defines
@@ -394,25 +394,25 @@ static size_t write_double(struct fjson_object* jso, int flags, struct buffer *b
 	if(isnan(jso->o.c_double.value)) return buffer_append(buffer, "NaN", 3);
 	if(isinf(jso->o.c_double.value)) return buffer_printf(buffer, jso->o.c_double.value > 0 ? "Infinity" : "-Infinity");
 
-    // store the beginning of the buffer (this is where buffer_printf() will most likely write)
-    buf = buffer->buffer + buffer->filled;
-    
-    // write to the buffer
-    result = buffer_printf(buffer, (modf(jso->o.c_double.value, &dummy)==0)?"%.17g.0":"%.17g", jso->o.c_double.value);
-    
-    // if the buffer got flushed
-    if (buffer->buffer + buffer->filled < buf) buf = buffer->buffer;
-    
-    // if localization stuff caused "," to be generated instead of "."
-    // @todo is there not a nicer way to work around that???
+	// store the beginning of the buffer (this is where buffer_printf() will most likely write)
+	buf = buffer->buffer + buffer->filled;
+
+	// write to the buffer
+	result = buffer_printf(buffer, (modf(jso->o.c_double.value, &dummy)==0)?"%.17g.0":"%.17g", jso->o.c_double.value);
+
+	// if the buffer got flushed
+	if (buffer->buffer + buffer->filled < buf) buf = buffer->buffer;
+
+	// if localization stuff caused "," to be generated instead of "."
+	// @todo is there not a nicer way to work around that???
 	p = strchr(buf, ',');
 	if (p) {
 		*p = '.';
 	} else {
 		p = strchr(buf, '.');
 	}
-    
-    // remove trailing zero's
+
+	// remove trailing zero's
 	if (p && (flags & FJSON_TO_STRING_NOZERO)) {
 		/* last useful digit, always keep 1 zero */
 		p++;
@@ -420,10 +420,10 @@ static size_t write_double(struct fjson_object* jso, int flags, struct buffer *b
 			if (*q!='0') p=q;
 		}
 		/* drop trailing zeroes */
-        buffer->filled = p - buffer->buffer;
+		buffer->filled = p - buffer->buffer;
 	}
-    
-    // done
+
+	// done
 	return result;
 }
 
@@ -497,42 +497,43 @@ static size_t fwrite_wrapper(void *ptr, const char *buffer, size_t size)
 
 static size_t calculate(void __attribute__((unused)) *ptr, const char __attribute__((unused)) *buffer, size_t size)
 {
-    return size;
+	return size;
 }
 
 /* extended dump to which the helper buffer can be passed */
 
-size_t fjson_object_dump_buffered(struct fjson_object *jso, int flags, char *temp, size_t size, fjson_write_fn *func, void *ptr)
+size_t fjson_object_dump_buffered(struct fjson_object *jso, int flags, char *temp,
+size_t size, fjson_write_fn *func, void *ptr)
 {
-    // construct a buffer
-    struct buffer object;
-    
-    // initialize the properties
-    object.buffer = temp;
-    object.size = size;
-    object.filled = 0;
-    object.overflow = func;
-    object.ptr = ptr;
-    
+	// construct a buffer
+	struct buffer object;
+
+	// initialize the properties
+	object.buffer = temp;
+	object.size = size;
+	object.filled = 0;
+	object.overflow = func;
+	object.ptr = ptr;
+
 	// write the value
 	size_t result = write(jso, 0, flags, &object);
-    
-    // ready if buffer is now empty
-    if (object.size == 0) return result;
-    
-    // flush the buffer
-    return result + buffer_flush(&object);
+
+	// ready if buffer is now empty
+	if (object.size == 0) return result;
+
+	// flush the buffer
+	return result + buffer_flush(&object);
 }
 
 /* extended dump function to string */
 
 size_t fjson_object_dump_ext(struct fjson_object *jso, int flags, fjson_write_fn *func, void *ptr)
 {
-    // create a local 1k buffer on the stack
-    char buffer[1024];
-    
-    // pass on to the other function
-    return fjson_object_dump_buffered(jso, flags, buffer, 1024, func, ptr);
+	// create a local 1k buffer on the stack
+	char buffer[1024];
+
+	// pass on to the other function
+	return fjson_object_dump_buffered(jso, flags, buffer, 1024, func, ptr);
 }
 
 /* more simple write function */
@@ -547,18 +548,18 @@ size_t fjson_object_dump(struct fjson_object *jso, fjson_write_fn *func, void *p
 
 size_t fjson_object_size_ext(struct fjson_object *jso, int flags)
 {
-    // write the value with a dummy function (this is a simple implementation that
-    // can later be optimized in a pure size-calculating function)
-    return fjson_object_dump_ext(jso, flags, &calculate, NULL);
+	// write the value with a dummy function (this is a simple implementation that
+	// can later be optimized in a pure size-calculating function)
+	return fjson_object_dump_ext(jso, flags, &calculate, NULL);
 }
 
 /* function to calculate the size */
 
 size_t fjson_object_size(struct fjson_object *jso)
 {
-    // write the value with a dummy function (this is a simple implementation that
-    // can later be optimized in a pure size-calculating function)
-    return fjson_object_dump(jso, &calculate, NULL);
+	// write the value with a dummy function (this is a simple implementation that
+	// can later be optimized in a pure size-calculating function)
+	return fjson_object_dump(jso, &calculate, NULL);
 }
 
 /* write to a file* */

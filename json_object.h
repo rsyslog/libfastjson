@@ -213,7 +213,7 @@ extern size_t fjson_object_size(struct fjson_object *obj);
  */
 extern size_t fjson_object_size_ext(struct fjson_object *obj, int flags);
 
-/** 
+/**
  * Dump object to a user-supplied function.
  * Equivalent to fjson_object_write_ext(obj, FJSON_TO_STRING_SPACED, func, ptr)
  * @param obj object to be written
@@ -235,14 +235,14 @@ extern size_t fjson_object_dump(struct fjson_object *obj, fjson_write_fn *func, 
 extern size_t fjson_object_dump_ext(struct fjson_object *obj, int flags, fjson_write_fn *func, void *ptr);
 
 /**
- * Dump function that uses a user-supplied temporary buffer for dumping the 
- * json. Both the above declared fjson_object_dump() and fjson_object_dump_ext() 
- * functions uses an internal buffer of 128 bytes that is first filled before 
- * the user-supplied function is called. This buffer prevents that many calls 
- * to the callback function are done for single quotes, comma's and curly 
- * braces. All these calls are first buffered and grouped into a single call 
- * to the user space function. However, since the buffer limit is somewhat 
- * arbitrary, you can also use this fjson_object_dump_buffered() function to 
+ * Dump function that uses a user-supplied temporary buffer for dumping the
+ * json. Both the above declared fjson_object_dump() and fjson_object_dump_ext()
+ * functions uses an internal buffer of 128 bytes that is first filled before
+ * the user-supplied function is called. This buffer prevents that many calls
+ * to the callback function are done for single quotes, comma's and curly
+ * braces. All these calls are first buffered and grouped into a single call
+ * to the user space function. However, since the buffer limit is somewhat
+ * arbitrary, you can also use this fjson_object_dump_buffered() function to
  * use your own temporary buffer. Note that the buffer might be completely
  * overwritten during the call to this function, and that the contents of the
  * buffer are undefined after the call.
@@ -253,8 +253,8 @@ extern size_t fjson_object_dump_ext(struct fjson_object *obj, int flags, fjson_w
  * @param func your function that will be called to write the data
  * @param ptr pointer that will be passed as first argument to your function
  */
-extern size_t fjson_object_dump_buffered(struct fjson_object *obj, int flags, 
-                    char *temp, size_t size, fjson_write_fn *func, void *ptr);
+extern size_t fjson_object_dump_buffered(struct fjson_object *obj, int flags, char *temp,
+size_t size, fjson_write_fn *func, void *ptr);
 
 /**
  * Write the json tree to a file
