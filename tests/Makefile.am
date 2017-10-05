@@ -17,7 +17,6 @@ TESTS+= test_parse.test
 TESTS+= test_locale.test
 TESTS+= test_charcase.test
 TESTS+= test_printbuf.test
-TESTS+= test_set_serializer.test
 TESTS+= test_obj_iter-del.test
 TESTS+= test_object_object_add_ex.test
 TESTS+= test_many_subobj.test
@@ -43,7 +42,6 @@ cr_obj_multi_SOURCES = cr_obj_multi.c
 chk_version_SOURCES = chk_version.c
 
 test_printbuf_SOURCES = test_printbuf.c
-test_set_serializer_SOURCES = test_set_serializer.c
 
 # Note: handled by test1.test
 check_PROGRAMS += test1Formatted 
@@ -82,7 +80,6 @@ EXTRA_DIST += test_parse.expected
 EXTRA_DIST += test_parse_int64.expected
 EXTRA_DIST += test_printbuf.expected
 EXTRA_DIST += testReplaceExisting.expected
-EXTRA_DIST += test_set_serializer.expected
 EXTRA_DIST += test_obj_iter-del.expected
 EXTRA_DIST += test_object_object_add_ex.expected
 EXTRA_DIST += test_object_object_add_exFormatted_plain.expected
