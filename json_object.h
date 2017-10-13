@@ -739,8 +739,6 @@ typedef struct fjson_tokener fjson_tokener;
 #define json_object_object_add(a, b, c) fjson_object_object_add((a), (b), (c))
 #define json_object_object_add_ex fjson_object_object_add_ex
 #define json_object_object_get_ex fjson_object_object_get_ex
-#define json_object_object_foreach fjson_object_object_foreach
-#define json_object_object_foreachC fjson_object_object_foreachC
 #define json_object_object_get fjson_object_object_get
 #define json_object_object_del fjson_object_object_del
 #define json_object_new_array fjson_object_new_array
