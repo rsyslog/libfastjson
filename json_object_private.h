@@ -19,7 +19,14 @@ extern "C" {
 
 #define LEN_DIRECT_STRING_DATA 32 /**< how many bytes are directly stored in fjson_object for strings? */
 
+/**
+ *  Type of the delete and serialization functions.
+ */
 typedef void (fjson_object_private_delete_fn)(struct fjson_object *o);
+typedef int (fjson_object_to_json_string_fn)(struct fjson_object *jso,
+						struct printbuf *pb,
+						int level,
+						int flags);
 
 struct _fjson_child {
 	/**
@@ -50,7 +57,10 @@ struct fjson_object
 	struct printbuf *_pb;
 	union data {
 		fjson_bool c_boolean;
-		double c_double;
+		struct {
+			double value;
+			char *source;
+		} c_double;
 		int64_t c_int64;
 		struct {
 			int nelem;
@@ -70,8 +80,6 @@ struct fjson_object
 		int len;
 		} c_string;
 	} o;
-	fjson_object_delete_fn *_user_delete;
-	void *_userdata;
 	DEF_ATOMIC_HELPER_MUT(_mut_ref_count)
 };
 
