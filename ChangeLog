@@ -1,5 +1,4 @@
-0.99.6 2017-05-12
-- fix a build issue under Solaris
+0.99.7 2017-10-17
 - added option for case-insensitive comparisons
   This permits to search for json keys in a case-sensitive way.
   The default is "off", as this is against the JSON spec. However,
@@ -8,6 +7,29 @@
   We add a new API call to switch between case-sensitive and
   case-insensitive comparison, with case-sensitive being the default.
   closes https://github.com/rsyslog/libfastjson/issues/142
+- Removed userdata and custom-serialization functions
+  Reasoning (from pull request):
+  The library uses the concept of "userdata" and "custom serialization
+  functions" that can be set from user space. However, to effectively
+  make use of this feature, a user must have a deep understanding of
+  the internal data representation of the library, which makes this
+  feature not very useful.
+  But what is worse: internally, the library itself also sometimes
+  assigns data to this userdata member (especially when working with
+  doubles), and it also sometimes assigns alternative serialization
+  functions. This makes the feature even more unusable, because as a
+  user you never can know when the userdata pointer is save to use
+  for your own settings, and when you must leave it alone because
+  it is used by the library.
+  Long story short. In this pull request I got rid of the userdata
+  pointer completely. The case where the library was using the
+  "userdata" (for storing the original string representation of a
+  parsed double) has been moved into the union that is already used
+  for storing values.
+  see also: https://github.com/rsyslog/libfastjson/pull/141
+  Thanks to Emiel Bruijntjes for the patch.
+0.99.6 2017-06-19
+- fix a build issue under Solaris
 0.99.5 2017-05-03
 - fix tautology comparison in tautology in `fjson_object_iter_equal`
 - made build under Solaris again
