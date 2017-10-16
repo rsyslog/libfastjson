@@ -133,19 +133,6 @@ typedef struct fjson_tokener fjson_tokener;
  */
 typedef size_t (fjson_write_fn)(void *ptr, const char *buffer, size_t size);
 
-/**
- * Type of custom user delete functions.  See fjson_object_set_serializer.
- */
-typedef void (fjson_object_delete_fn)(struct fjson_object *jso, void *userdata);
-
-/**
- * Type of a custom serialization function.  See fjson_object_set_serializer.
- */
-typedef int (fjson_object_to_json_string_fn)(struct fjson_object *jso,
-						struct printbuf *pb,
-						int level,
-						int flags);
-
 /* supported object types */
 
 typedef enum fjson_type {
@@ -209,8 +196,25 @@ extern int fjson_object_is_type(struct fjson_object *obj, enum fjson_type type);
  */
 extern enum fjson_type fjson_object_get_type(struct fjson_object *obj);
 
+/**
+ * Get the size of the json string if it was dumped
+ * @param obj object to calculate the size of
+ * @returns the size of the json string
+ */
+extern size_t fjson_object_size(struct fjson_object *obj);
 
-/** Dump object to a user-supplied function.
+/**
+ * Extended version of the above function that accept a flags parameter identical
+ * to the fjson_object_dump_ext() function that you can use the specify how to
+ * format the string for which the size is calculated
+ * @param obj the object to calculate the size of
+ * @param flags extra flags
+ * @return size_t
+ */
+extern size_t fjson_object_size_ext(struct fjson_object *obj, int flags);
+
+/**
+ * Dump object to a user-supplied function.
  * Equivalent to fjson_object_write_ext(obj, FJSON_TO_STRING_SPACED, func, ptr)
  * @param obj object to be written
  * @param func your function that will be called to write the data
@@ -229,6 +233,28 @@ extern size_t fjson_object_dump(struct fjson_object *obj, fjson_write_fn *func, 
  * @returns number of bytes written (the sum of all return values of calls to func)
  */
 extern size_t fjson_object_dump_ext(struct fjson_object *obj, int flags, fjson_write_fn *func, void *ptr);
+
+/**
+ * Dump function that uses a user-supplied temporary buffer for dumping the
+ * json. Both the above declared fjson_object_dump() and fjson_object_dump_ext()
+ * functions uses an internal buffer of 128 bytes that is first filled before
+ * the user-supplied function is called. This buffer prevents that many calls
+ * to the callback function are done for single quotes, comma's and curly
+ * braces. All these calls are first buffered and grouped into a single call
+ * to the user space function. However, since the buffer limit is somewhat
+ * arbitrary, you can also use this fjson_object_dump_buffered() function to
+ * use your own temporary buffer. Note that the buffer might be completely
+ * overwritten during the call to this function, and that the contents of the
+ * buffer are undefined after the call.
+ * @param obj object to be written
+ * @param flags extra flags
+ * @param temp your temporary buffer that is used to group calls
+ * @param size size of your temporary buffer
+ * @param func your function that will be called to write the data
+ * @param ptr pointer that will be passed as first argument to your function
+ */
+extern size_t fjson_object_dump_buffered(struct fjson_object *obj, int flags, char *temp,
+size_t size, fjson_write_fn *func, void *ptr);
 
 /**
  * Write the json tree to a file
@@ -267,57 +293,6 @@ extern const char* fjson_object_to_json_string(struct fjson_object *obj);
  */
 extern const char* fjson_object_to_json_string_ext(struct fjson_object *obj, int
 flags);
-
-/**
- * Set a custom serialization function to be used when this particular object
- * is converted to a string by fjson_object_to_json_string.
- *
- * If a custom serializer is already set on this object, any existing
- * user_delete function is called before the new one is set.
- *
- * If to_string_func is NULL, the other parameters are ignored
- * and the default behaviour is reset.
- *
- * The userdata parameter is optional and may be passed as NULL.  If provided,
- * it is passed to to_string_func as-is.  This parameter may be NULL even
- * if user_delete is non-NULL.
- *
- * The user_delete parameter is optional and may be passed as NULL, even if
- * the userdata parameter is non-NULL.  It will be called just before the
- * fjson_object is deleted, after it's reference count goes to zero
- * (see fjson_object_put()).
- * If this is not provided, it is up to the caller to free the userdata at
- * an appropriate time. (i.e. after the fjson_object is deleted)
- *
- * @param jso the object to customize
- * @param to_string_func the custom serialization function
- * @param userdata an optional opaque cookie
- * @param user_delete an optional function from freeing userdata
- */
-extern void fjson_object_set_serializer(fjson_object *jso,
-	fjson_object_to_json_string_fn to_string_func,
-	void *userdata,
-	fjson_object_delete_fn *user_delete);
-
-/**
- * Simply call free on the userdata pointer.
- * Can be used with fjson_object_set_serializer().
- *
- * @param jso unused
- * @param userdata the pointer that is passed to free().
- */
-fjson_object_delete_fn fjson_object_free_userdata;
-
-/**
- * Copy the jso->_userdata string over to pb as-is.
- * Can be used with fjson_object_set_serializer().
- *
- * @param jso The object whose _userdata is used.
- * @param pb The destination buffer.
- * @param level Ignored.
- * @param flags Ignored.
- */
-fjson_object_to_json_string_fn fjson_object_userdata_to_json_string;
 
 
 /* object type methods */
@@ -504,7 +479,7 @@ extern int fjson_object_array_add(struct fjson_object *obj,
  * @param val the fjson_object to be added
  */
 extern int fjson_object_array_put_idx(struct fjson_object *obj, int idx,
-				     struct fjson_object *val);
+					 struct fjson_object *val);
 
 /** Get the element at specificed index of the array (a fjson_object of type fjson_type_array)
  * @param obj the fjson_object instance
@@ -512,7 +487,7 @@ extern int fjson_object_array_put_idx(struct fjson_object *obj, int idx,
  * @returns the fjson_object at the specified index (or NULL)
  */
 extern struct fjson_object* fjson_object_array_get_idx(struct fjson_object *obj,
-						     int idx);
+							 int idx);
 
 /* fjson_bool type methods */
 
@@ -596,7 +571,7 @@ extern struct fjson_object* fjson_object_new_double(double d);
 
 /**
  * Create a new fjson_object of type fjson_type_double, using
- * the exact serialized representation of the value.
+ * the exact representation of the value.
  *
  * This allows for numbers that would otherwise get displayed
  * inefficiently (e.g. 12.3 => "12.300000000000001") to be
@@ -604,13 +579,6 @@ extern struct fjson_object* fjson_object_new_double(double d);
  *
  * Note: this is used by fjson_tokener_parse_ex() to allow for
  *   an exact re-serialization of a parsed object.
- *
- * An equivalent sequence of calls is:
- * @code
- *   jso = fjson_object_new_double(d);
- *   fjson_object_set_serializer(d, fjson_object_userdata_to_json_string,
- *       strdup(ds), fjson_object_free_userdata)
- * @endcode
  *
  * @param d the numeric value of the double.
  * @param ds the string representation of the double.  This will be copied.
