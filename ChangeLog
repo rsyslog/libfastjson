@@ -1,3 +1,4 @@
+0.99.8 2017-
 0.99.7 2017-10-17
 - added option for case-insensitive comparisons
   This permits to search for json keys in a case-sensitive way.
