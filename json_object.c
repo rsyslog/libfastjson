@@ -658,6 +658,7 @@ int64_t fjson_object_get_int64(struct fjson_object *jso)
 	case fjson_type_string:
 		if (fjson_parse_int64(get_string_component(jso), &cint) == 0)
 			return cint;
+		ATTR_FALLTHROUGH
 	case fjson_type_null:
 	case fjson_type_object:
 	case fjson_type_array:

@@ -32,6 +32,7 @@
 #include "printbuf.h"
 #include "arraylist.h"
 #include "json_object.h"
+#include "json_object_private.h"
 #include "json_tokener.h"
 #include "json_util.h"
 
@@ -305,6 +306,8 @@ redo_char:
 					tok->err = fjson_tokener_error_parse_unexpected;
 					goto out;
 				}
+				/* TODO: verify if FALLTHROUGH is actually right! */
+				ATTR_FALLTHROUGH
 			case '"':
 				state = fjson_tokener_state_string;
 				printbuf_reset(tok->pb);
