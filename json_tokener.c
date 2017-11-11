@@ -136,7 +136,8 @@ void fjson_tokener_free(struct fjson_tokener *tok)
 	free(tok);
 }
 
-static void fjson_tokener_reset_level(struct fjson_tokener *tok, int depth)
+static void __attribute__((nonnull(1)))
+fjson_tokener_reset_level(struct fjson_tokener *const tok, const int depth)
 {
 	tok->stack[depth].state = fjson_tokener_state_eatws;
 	tok->stack[depth].saved_state = fjson_tokener_state_start;
@@ -146,7 +147,7 @@ static void fjson_tokener_reset_level(struct fjson_tokener *tok, int depth)
 	tok->stack[depth].obj_field_name = NULL;
 }
 
-void fjson_tokener_reset(struct fjson_tokener *tok)
+void fjson_tokener_reset(struct fjson_tokener *const tok)
 {
 	int i;
 	if (!tok)
@@ -158,7 +159,8 @@ void fjson_tokener_reset(struct fjson_tokener *tok)
 	tok->err = fjson_tokener_success;
 }
 
-struct fjson_object *fjson_tokener_parse(const char *str)
+struct fjson_object * __attribute__((nonnull(1)))
+fjson_tokener_parse(const char *const str)
 {
 	enum fjson_tokener_error jerr_ignored;
 	struct fjson_object *obj;
@@ -166,7 +168,9 @@ struct fjson_object *fjson_tokener_parse(const char *str)
 	return obj;
 }
 
-struct fjson_object *fjson_tokener_parse_verbose(const char *str, enum fjson_tokener_error *error)
+struct fjson_object * __attribute__((nonnull(1, 2)))
+fjson_tokener_parse_verbose(const char *const str,
+	enum fjson_tokener_error *const error)
 {
 	struct fjson_tokener *tok;
 	struct fjson_object *obj;
