@@ -181,7 +181,8 @@ static size_t buffer_printf(struct buffer *buffer, const char *format, ...)
 		va_start(arguments, format);
 
 		// format into the buffer, again
-		buffer->size += vsnprintf(buffer->buffer + buffer->filled, buffer->size - buffer->filled - 1, format, arguments);
+		buffer->size += vsnprintf(buffer->buffer + buffer->filled,
+			buffer->size - buffer->filled - 1, format, arguments);
 
 		// clean up varargs
 		va_end(arguments);
@@ -283,7 +284,8 @@ static size_t escape(const char *str, struct buffer *buffer)
 			case '\\':  result += buffer_append(buffer, "\\\\", 2); break;
 			case '/':   result += buffer_append(buffer, "\\/", 2); break;
 			default:
-				result += buffer_printf(buffer, "\\u00%c%c", fjson_hex_chars[*str >> 4], fjson_hex_chars[*str & 0xf]);
+				result += buffer_printf(buffer, "\\u00%c%c",
+					fjson_hex_chars[*str >> 4], fjson_hex_chars[*str & 0xf]);
 				break;
 			}
 			start_offset = ++str;

@@ -550,12 +550,14 @@ redo_char:
 
 							if (got_hi_surrogate) {
 								if (IS_LOW_SURROGATE(tok->ucs_char)) {
-									/* Recalculate the ucs_char, then fall thru to process normally */
+									/* Recalculate the ucs_char, then fall thru to process
+									   normally */
 									tok->ucs_char =
 									    DECODE_SURROGATE_PAIR(got_hi_surrogate,
 												  tok->ucs_char);
 								} else {
-									/* Hi surrogate was not followed by a low surrogate */
+									/* Hi surrogate was not followed by a low
+									 * surrogate */
 									/* Replace the hi and process the rest normally */
 									printbuf_memappend_fast(tok->pb,
 												(char *)
@@ -563,10 +565,11 @@ redo_char:
 												3);
 								}
 								got_hi_surrogate = 0;
-								/* clang static analyzer thins that got_hi_surrogate is never read,
-								 * however, it is read on each iteration. So I assume clang has a false
-								 * positive. We use the otherwise nonsense statement below to make it
-								 * happy.
+								/* clang static analyzer thins that got_hi_surrogate
+								 * is never read, * however, it is read on each
+								 * iteration. So I assume clang has a false positive.
+								 * We use the otherwise nonsense statement below to
+								 * make it happy.
 								 */
 								if (got_hi_surrogate) {
 								};
@@ -591,8 +594,9 @@ redo_char:
 								if ((tok->char_offset + 1 != len) &&
 								    (tok->char_offset + 2 != len) &&
 								    (str[1] == '\\') && (str[2] == 'u')) {
-									/* Advance through the 16 bit surrogate, and move on to the
-									 * next sequence. The next step is to process the following
+									/* Advance through the 16 bit surrogate, and
+									 * move on to the next sequence. The next
+									 * step is to process the following
 									 * characters.
 									 */
 									if (!ADVANCE_CHAR(str, tok)
@@ -615,11 +619,11 @@ redo_char:
 									}
 									tok->ucs_char = 0;
 									tok->st_pos = 0;
-									continue;	/* other fjson_tokener_state_escape_unicode */
+									continue;/* other fjson_tokener_state_escape_unicode */
 								} else {
-									/* Got a high surrogate without another sequence following
-									 * it.  Put a replacement char in for the hi surrogate
-									 * and pretend we finished.
+									/* Got a high surrogate without another sequence
+									 * following it.  Put a replacement char in for
+									 * the hi surrogate and pretend we finished.
 									 */
 									printbuf_memappend_fast(tok->pb,
 												(char *)
