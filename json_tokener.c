@@ -256,6 +256,9 @@ struct fjson_object *fjson_tokener_parse_ex(struct fjson_tokener *tok, const cha
 	   the string length is less than INT32_MAX (2GB) */
 	if ((len < -1) || (len == -1 && strlen(str) > INT32_MAX)) {
 		tok->err = fjson_tokener_error_size;
+#		ifdef HAVE_SETLOCALE
+		free(oldlocale);
+#		endif
 		return NULL;
 	}
 
