@@ -7,6 +7,12 @@
   double-free, use-after-free or no problem.
   see also https://github.com/rsyslog/rsyslog/issues/1839
   closes https://github.com/rsyslog/libfastjson/issues/148
+- fix potentially invalid return value of fjson_object_iter_begin
+  this could lead to callers doing improper opreations and thus
+  could lead to a segfault in callers
+  detected by Coverity scan, CID 198891
+- fix small potential memory leak in json_tokener (unlinkely to occur)
+  detected by Coverity Scan, CID 198890
 0.99.7 2017-10-17
 - added option for case-insensitive comparisons
   This permits to search for json keys in a case-sensitive way.
