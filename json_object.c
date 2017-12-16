@@ -510,7 +510,9 @@ void fjson_object_object_del(struct fjson_object* jso, const char *key)
 {
 	struct _fjson_child *const chld = _fjson_find_child(jso, key);
 	if (chld != NULL) {
-		free((void*)chld->k);
+		if(!chld->flags.k_is_constant) {
+			free((void*)chld->k);
+		}
 		fjson_object_put(chld->v);
 		chld->flags.k_is_constant = 0;
 		chld->k = NULL;
