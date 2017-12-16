@@ -1,5 +1,12 @@
 0.99.8 2017-
 - make build under gcc7 with strict settings (warning==error)
+- bugfix: constant key names not properly handled
+  if fjson_object_object_add_ex() is used with option
+  FJSON_OBJECT_KEY_IS_CONSTANT, fjson_object_object_del() will still
+  try to delete the key name. Depending on use, this can lead to
+  double-free, use-after-free or no problem.
+  see also https://github.com/rsyslog/rsyslog/issues/1839
+  closes https://github.com/rsyslog/libfastjson/issues/148
 0.99.7 2017-10-17
 - added option for case-insensitive comparisons
   This permits to search for json keys in a case-sensitive way.
