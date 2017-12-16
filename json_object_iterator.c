@@ -91,13 +91,11 @@ fjson_object_iter_begin(struct fjson_object *const __restrict__ obj)
 struct fjson_object_iterator
 fjson_object_iter_end(const struct fjson_object __attribute__((unused)) *obj)
 {
-	struct fjson_object_iterator iter;
-
-	JASSERT(NULL != obj);
-
-	/// @note the end condition is actually that no more entries are
-	///       present, so only set that property.
-	iter.objs_remain = 0;
+	struct fjson_object_iterator iter = {
+		.objs_remain = 0,
+		.curr_idx = 0,
+		.pg = NULL
+		};
 	return iter;
 }
 
