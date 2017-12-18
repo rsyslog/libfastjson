@@ -1,7 +1,7 @@
 AC_PREREQ(2.52)
 
 # Process this file with autoconf to produce a configure script.
-AC_INIT([libfastjson], [0.99.8.master], [rsyslog@lists.adiscon.com])
+AC_INIT([libfastjson], [0.99.8], [rsyslog@lists.adiscon.com])
 # AIXPORT START: Detect the underlying OS
 unamestr=$(uname)
 AM_CONDITIONAL([AIX], [test x$unamestr = xAIX])

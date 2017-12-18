@@ -1,4 +1,4 @@
-0.99.8 2017-
+0.99.8 2017-12-18
 - make build under gcc7 with strict settings (warning==error)
 - bugfix: constant key names not properly handled
   if fjson_object_object_add_ex() is used with option
