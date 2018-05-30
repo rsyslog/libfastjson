@@ -74,4 +74,3 @@ LIBFASTJSON_DIR=/path/to/json_c/install
 CFLAGS += -I$(LIBFASTJSON_DIR)/include/libfastjson
 LDFLAGS+= -L$(LIBFASTJSON_DIR)/lib -lfastjson
 ```
-
