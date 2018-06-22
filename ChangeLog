@@ -1,3 +1,6 @@
+0.99.9 ???
+- add API fjson_object_array_del_idx()
+  Thanks to Noriko Hosoi for contributing the patch.
 0.99.8 2017-12-18
 - make build under gcc7 with strict settings (warning==error)
 - bugfix: constant key names not properly handled
