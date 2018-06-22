@@ -13,7 +13,9 @@
 #include "config.h"
 
 /* this is a work-around until we manage to fix configure.ac */
+#ifndef _AIX
 #pragma GCC diagnostic ignored "-Wdeclaration-after-statement"
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -44,8 +46,10 @@
  * rgerhards, 2017-04-11
  */
 #define  vasprintf rs_vasprintf
+#ifndef _AIX
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wformat-nonliteral"
+#endif
 static int rs_vasprintf(char **buf, const char *fmt, va_list ap)
 {
 	int chars;
@@ -70,7 +74,9 @@ static int rs_vasprintf(char **buf, const char *fmt, va_list ap)
 
 	return chars;
 }
+#ifndef _AIX
 #pragma GCC diagnostic pop
+#endif
 #endif /* !HAVE_VASPRINTF */
 
 /**
