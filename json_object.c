@@ -396,6 +396,7 @@ fjson_child_get_empty_etry(struct fjson_object *const __restrict__ jso)
 {
 	struct _fjson_child *chld = NULL;
 	struct _fjson_child_pg *pg;
+	int pg_idx;
 
 	if (jso->o.c_obj.ndeleted > 0) {
 		/* we first fill deleted spots */
@@ -415,7 +416,7 @@ fjson_child_get_empty_etry(struct fjson_object *const __restrict__ jso)
 		goto done;
 	}
 
-	const int pg_idx = jso->o.c_obj.nelem % FJSON_OBJECT_CHLD_PG_SIZE;
+	pg_idx = jso->o.c_obj.nelem % FJSON_OBJECT_CHLD_PG_SIZE;
 	if (jso->o.c_obj.nelem > 0 && pg_idx == 0) {
 		if((pg = calloc(1, sizeof(struct _fjson_child_pg))) == NULL) {
 			errno = ENOMEM;
