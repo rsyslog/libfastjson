@@ -644,6 +644,18 @@ struct fjson_object* fjson_object_new_int64(int64_t i)
 	return jso;
 }
 
+uint32_t fjson_object_get_uint(struct fjson_object *jso)
+{
+	int64_t cint = fjson_object_get_int64(jso);
+	if (errno) return 0;
+
+	if (cint > UINT32_MAX) return UINT32_MAX;
+
+	if (cint < 0) return 0;
+
+	return (uint32_t) cint;
+}
+
 int64_t fjson_object_get_int64(struct fjson_object *jso)
 {
 	int64_t cint;
