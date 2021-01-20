@@ -100,6 +100,7 @@ array_list_del_idx(struct array_list *const arr, const int idx)
 	if (--arr->length > idx) {
 		memmove(arr->array + idx, arr->array + idx + 1, (arr->length - idx) * sizeof(void *));
 	}
+	arr->array[arr->length] = NULL;
 	return;
 }
 
