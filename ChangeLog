@@ -1,3 +1,5 @@
+1.21x.0
+- change of release number
 0.99.9 2021-01-26
 - add API fjson_object_get_uint()
   Thanks to Janmejay Singh for contributing the patch.
