@@ -1,4 +1,4 @@
-0.99.9 ???
+0.99.9 2021-01-26
 - add API fjson_object_get_uint()
   Thanks to Janmejay Singh for contributing the patch.
 - add API fjson_object_array_del_idx()
