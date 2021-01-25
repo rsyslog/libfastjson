@@ -396,6 +396,7 @@ fjson_child_get_empty_etry(struct fjson_object *const __restrict__ jso)
 {
 	struct _fjson_child *chld = NULL;
 	struct _fjson_child_pg *pg;
+	int pg_idx;
 
 	if (jso->o.c_obj.ndeleted > 0) {
 		/* we first fill deleted spots */
@@ -415,7 +416,7 @@ fjson_child_get_empty_etry(struct fjson_object *const __restrict__ jso)
 		goto done;
 	}
 
-	const int pg_idx = jso->o.c_obj.nelem % FJSON_OBJECT_CHLD_PG_SIZE;
+	pg_idx = jso->o.c_obj.nelem % FJSON_OBJECT_CHLD_PG_SIZE;
 	if (jso->o.c_obj.nelem > 0 && pg_idx == 0) {
 		if((pg = calloc(1, sizeof(struct _fjson_child_pg))) == NULL) {
 			errno = ENOMEM;
@@ -510,7 +511,9 @@ void fjson_object_object_del(struct fjson_object* jso, const char *key)
 {
 	struct _fjson_child *const chld = _fjson_find_child(jso, key);
 	if (chld != NULL) {
-		free((void*)chld->k);
+		if(!chld->flags.k_is_constant) {
+			free((void*)chld->k);
+		}
 		fjson_object_put(chld->v);
 		chld->flags.k_is_constant = 0;
 		chld->k = NULL;
@@ -641,6 +644,18 @@ struct fjson_object* fjson_object_new_int64(int64_t i)
 	return jso;
 }
 
+uint32_t fjson_object_get_uint(struct fjson_object *jso)
+{
+	int64_t cint = fjson_object_get_int64(jso);
+	if (errno) return 0;
+
+	if (cint > UINT32_MAX) return UINT32_MAX;
+
+	if (cint < 0) return 0;
+
+	return (uint32_t) cint;
+}
+
 int64_t fjson_object_get_int64(struct fjson_object *jso)
 {
 	int64_t cint;
@@ -658,6 +673,7 @@ int64_t fjson_object_get_int64(struct fjson_object *jso)
 	case fjson_type_string:
 		if (fjson_parse_int64(get_string_component(jso), &cint) == 0)
 			return cint;
+		ATTR_FALLTHROUGH
 	case fjson_type_null:
 	case fjson_type_object:
 	case fjson_type_array:
@@ -1013,6 +1029,14 @@ struct fjson_object* fjson_object_array_get_idx(struct fjson_object *jso,
 						  int idx)
 {
 	return (struct fjson_object*)array_list_get_idx(jso->o.c_array, idx);
+}
+
+/*
+ * Deleting the idx-th element in the array type object.
+ */
+void fjson_object_array_del_idx(struct fjson_object *jso, int idx)
+{
+	array_list_del_idx(jso->o.c_array, idx);
 }
 
 int fjson_object_get_member_count(struct fjson_object *jso)

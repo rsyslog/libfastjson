@@ -13,7 +13,9 @@
 #include "config.h"
 
 /* this is a work-around until we manage to fix configure.ac */
+#ifndef _AIX
 #pragma GCC diagnostic ignored "-Wdeclaration-after-statement"
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -44,8 +46,10 @@
  * rgerhards, 2017-04-11
  */
 #define  vasprintf rs_vasprintf
+#ifndef _AIX
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wformat-nonliteral"
+#endif
 static int rs_vasprintf(char **buf, const char *fmt, va_list ap)
 {
 	int chars;
@@ -70,7 +74,9 @@ static int rs_vasprintf(char **buf, const char *fmt, va_list ap)
 
 	return chars;
 }
+#ifndef _AIX
 #pragma GCC diagnostic pop
+#endif
 #endif /* !HAVE_VASPRINTF */
 
 /**
@@ -181,7 +187,8 @@ static size_t buffer_printf(struct buffer *buffer, const char *format, ...)
 		va_start(arguments, format);
 
 		// format into the buffer, again
-		buffer->size += vsnprintf(buffer->buffer + buffer->filled, buffer->size - buffer->filled - 1, format, arguments);
+		buffer->size += vsnprintf(buffer->buffer + buffer->filled,
+			buffer->size - buffer->filled - 1, format, arguments);
 
 		// clean up varargs
 		va_end(arguments);
@@ -283,7 +290,8 @@ static size_t escape(const char *str, struct buffer *buffer)
 			case '\\':  result += buffer_append(buffer, "\\\\", 2); break;
 			case '/':   result += buffer_append(buffer, "\\/", 2); break;
 			default:
-				result += buffer_printf(buffer, "\\u00%c%c", fjson_hex_chars[*str >> 4], fjson_hex_chars[*str & 0xf]);
+				result += buffer_printf(buffer, "\\u00%c%c",
+					fjson_hex_chars[*str >> 4], fjson_hex_chars[*str & 0xf]);
 				break;
 			}
 			start_offset = ++str;

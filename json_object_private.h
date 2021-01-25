@@ -17,6 +17,13 @@
 extern "C" {
 #endif
 
+/* define a couple of attributes to improve cross-platform builds */
+#if __GNUC__ > 6
+	#define ATTR_FALLTHROUGH __attribute__((fallthrough));
+#else
+	#define ATTR_FALLTHROUGH
+#endif
+
 #define LEN_DIRECT_STRING_DATA 32 /**< how many bytes are directly stored in fjson_object for strings? */
 
 /**

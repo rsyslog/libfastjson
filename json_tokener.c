@@ -32,6 +32,7 @@
 #include "printbuf.h"
 #include "arraylist.h"
 #include "json_object.h"
+#include "json_object_private.h"
 #include "json_tokener.h"
 #include "json_util.h"
 
@@ -135,7 +136,8 @@ void fjson_tokener_free(struct fjson_tokener *tok)
 	free(tok);
 }
 
-static void fjson_tokener_reset_level(struct fjson_tokener *tok, int depth)
+static void __attribute__((nonnull(1)))
+fjson_tokener_reset_level(struct fjson_tokener *const tok, const int depth)
 {
 	tok->stack[depth].state = fjson_tokener_state_eatws;
 	tok->stack[depth].saved_state = fjson_tokener_state_start;
@@ -145,7 +147,7 @@ static void fjson_tokener_reset_level(struct fjson_tokener *tok, int depth)
 	tok->stack[depth].obj_field_name = NULL;
 }
 
-void fjson_tokener_reset(struct fjson_tokener *tok)
+void fjson_tokener_reset(struct fjson_tokener *const tok)
 {
 	int i;
 	if (!tok)
@@ -157,7 +159,8 @@ void fjson_tokener_reset(struct fjson_tokener *tok)
 	tok->err = fjson_tokener_success;
 }
 
-struct fjson_object *fjson_tokener_parse(const char *str)
+struct fjson_object * __attribute__((nonnull(1)))
+fjson_tokener_parse(const char *const str)
 {
 	enum fjson_tokener_error jerr_ignored;
 	struct fjson_object *obj;
@@ -165,7 +168,9 @@ struct fjson_object *fjson_tokener_parse(const char *str)
 	return obj;
 }
 
-struct fjson_object *fjson_tokener_parse_verbose(const char *str, enum fjson_tokener_error *error)
+struct fjson_object * __attribute__((nonnull(1, 2)))
+fjson_tokener_parse_verbose(const char *const str,
+	enum fjson_tokener_error *const error)
 {
 	struct fjson_tokener *tok;
 	struct fjson_object *obj;
@@ -251,6 +256,9 @@ struct fjson_object *fjson_tokener_parse_ex(struct fjson_tokener *tok, const cha
 	   the string length is less than INT32_MAX (2GB) */
 	if ((len < -1) || (len == -1 && strlen(str) > INT32_MAX)) {
 		tok->err = fjson_tokener_error_size;
+#		ifdef HAVE_SETLOCALE
+		free(oldlocale);
+#		endif
 		return NULL;
 	}
 
@@ -305,6 +313,8 @@ redo_char:
 					tok->err = fjson_tokener_error_parse_unexpected;
 					goto out;
 				}
+				/* TODO: verify if FALLTHROUGH is actually right! */
+				ATTR_FALLTHROUGH
 			case '"':
 				state = fjson_tokener_state_string;
 				printbuf_reset(tok->pb);
@@ -543,12 +553,14 @@ redo_char:
 
 							if (got_hi_surrogate) {
 								if (IS_LOW_SURROGATE(tok->ucs_char)) {
-									/* Recalculate the ucs_char, then fall thru to process normally */
+									/* Recalculate the ucs_char, then fall thru to process
+									   normally */
 									tok->ucs_char =
 									    DECODE_SURROGATE_PAIR(got_hi_surrogate,
 												  tok->ucs_char);
 								} else {
-									/* Hi surrogate was not followed by a low surrogate */
+									/* Hi surrogate was not followed by a low
+									 * surrogate */
 									/* Replace the hi and process the rest normally */
 									printbuf_memappend_fast(tok->pb,
 												(char *)
@@ -556,10 +568,11 @@ redo_char:
 												3);
 								}
 								got_hi_surrogate = 0;
-								/* clang static analyzer thins that got_hi_surrogate is never read,
-								 * however, it is read on each iteration. So I assume clang has a false
-								 * positive. We use the otherwise nonsense statement below to make it
-								 * happy.
+								/* clang static analyzer thins that got_hi_surrogate
+								 * is never read, * however, it is read on each
+								 * iteration. So I assume clang has a false positive.
+								 * We use the otherwise nonsense statement below to
+								 * make it happy.
 								 */
 								if (got_hi_surrogate) {
 								};
@@ -584,8 +597,9 @@ redo_char:
 								if ((tok->char_offset + 1 != len) &&
 								    (tok->char_offset + 2 != len) &&
 								    (str[1] == '\\') && (str[2] == 'u')) {
-									/* Advance through the 16 bit surrogate, and move on to the
-									 * next sequence. The next step is to process the following
+									/* Advance through the 16 bit surrogate, and
+									 * move on to the next sequence. The next
+									 * step is to process the following
 									 * characters.
 									 */
 									if (!ADVANCE_CHAR(str, tok)
@@ -608,11 +622,11 @@ redo_char:
 									}
 									tok->ucs_char = 0;
 									tok->st_pos = 0;
-									continue;	/* other fjson_tokener_state_escape_unicode */
+									continue;/* other fjson_tokener_state_escape_unicode */
 								} else {
-									/* Got a high surrogate without another sequence following
-									 * it.  Put a replacement char in for the hi surrogate
-									 * and pretend we finished.
+									/* Got a high surrogate without another sequence
+									 * following it.  Put a replacement char in for
+									 * the hi surrogate and pretend we finished.
 									 */
 									printbuf_memappend_fast(tok->pb,
 												(char *)

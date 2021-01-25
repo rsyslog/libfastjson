@@ -489,6 +489,8 @@ extern int fjson_object_array_put_idx(struct fjson_object *obj, int idx,
 extern struct fjson_object* fjson_object_array_get_idx(struct fjson_object *obj,
 							 int idx);
 
+extern void fjson_object_array_del_idx(struct fjson_object *jso, int idx);
+
 /* fjson_bool type methods */
 
 /** Create a new empty fjson_object of type fjson_type_boolean
@@ -544,6 +546,22 @@ extern struct fjson_object* fjson_object_new_int64(int64_t i);
  * @returns an int
  */
 extern int32_t fjson_object_get_int(struct fjson_object *obj);
+
+/** Get the uint32 value of a fjson_object
+ *
+ * The type is coerced to a int if the passed object is not a int.
+ * double objects will return their integer conversion. Strings will be
+ * parsed as an integer. If no conversion exists then 0 is returned
+ * and errno is set to EINVAL. null is equivalent to 0 (no error values set)
+ *
+ * Note that integers are stored internally as 64-bit values.
+ * If the value of too big or too small to fit into unsigned 32-bit
+ * representation, UINT32_MAX or UINT32_MIN are returned, respectively.
+ *
+ * @param obj the fjson_object instance
+ * @returns an int
+ */
+extern uint32_t fjson_object_get_uint(struct fjson_object *obj);
 
 /** Get the int value of a fjson_object
  *
@@ -728,9 +746,11 @@ typedef struct fjson_tokener fjson_tokener;
 #define json_object_new_string_len fjson_object_new_string_len
 #define json_object_get_string fjson_object_get_string
 #define json_object_get_int fjson_object_get_int
+#define json_object_get_uint fjson_object_get_uint
 #define json_object_get_int64 fjson_object_get_int64
 #define json_object_get_string_len fjson_object_get_string_len
 #define json_object_get_member_count fjson_object_get_member_count
+#define json_object_array_del_idx fjson_object_array_del_idx
 
 
 #endif
