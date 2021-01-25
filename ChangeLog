@@ -1,6 +1,18 @@
 0.99.9 ???
+- add API fjson_object_get_uint()
+  Thanks to Janmejay Singh for contributing the patch.
 - add API fjson_object_array_del_idx()
   Thanks to Noriko Hosoi for contributing the patch.
+- bugfix for dangling pointer that causes segfault
+  The other functions assume that the memory is either set to NULL or a valid
+  json object. The array_list_del_idx function only moves the elements, but
+  does not set the pointer to null, which causes the same pointer to remain
+  in the list (outside of arr->length). Then, when array_list_put_idx is
+  called, the array_list_expand_internal leaps out, meaning that it has not
+  set the indices outside of the requested length to 0. array_list_put_idx
+  finds the pointer, tries to free it and a double free will be incurred,
+  because the actual element is still in the list.
+  Thanks to Michael van der Werve for contributing the patch.
 0.99.8 2017-12-18
 - make build under gcc7 with strict settings (warning==error)
 - bugfix: constant key names not properly handled
