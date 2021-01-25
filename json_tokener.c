@@ -378,7 +378,7 @@ redo_char:
 				    (strncmp(fjson_inf_str, infbuf, size_inf) == 0)
 				    ) {
 					if (tok->st_pos == fjson_inf_str_len) {
-						current = fjson_object_new_double(is_negative ? -INFINITY : INFINITY);
+						current = fjson_object_new_double((double) (is_negative ? -INFINITY : INFINITY));
 						saved_state = fjson_tokener_state_finish;
 						state = fjson_tokener_state_eatws;
 						goto redo_char;
@@ -412,7 +412,7 @@ redo_char:
 					   (strncmp(fjson_nan_str, tok->pb->buf, size_nan) == 0)
 				    ) {
 					if (tok->st_pos == fjson_nan_str_len) {
-						current = fjson_object_new_double(NAN);
+						current = fjson_object_new_double((double)NAN);
 						saved_state = fjson_tokener_state_finish;
 						state = fjson_tokener_state_eatws;
 						goto redo_char;
