@@ -1,5 +1,8 @@
-1.21x.0
+1.22xx.0
 - change of release number
+- fix Fix CVE-2020-12762
+  Note: the CVE did not affect rsyslog use due to size limits
+  Thanks to Wang Haitao for the patch.
 0.99.9 2021-01-26
 - add API fjson_object_get_uint()
   Thanks to Janmejay Singh for contributing the patch.
