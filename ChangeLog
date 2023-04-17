@@ -1,5 +1,5 @@
-1.22xx.0
-- change of release number
+1.2304.0, 2023-04-18
+- change of release number scheme, now like rsyslog
 - fix Fix CVE-2020-12762
   Note: the CVE did not affect rsyslog use due to size limits
   Thanks to Wang Haitao for the patch.
