@@ -58,6 +58,13 @@ check_PROGRAMS += test_object_object_add_exFormatted
 test_object_object_add_exFormatted_SOURCES = test_object_object_add_ex.c parse_flags.c parse_flags.h
 test_object_object_add_exFormatted_CPPFLAGS = -DTEST_FORMATTED
 
+# performancebaseline tests
+if ENABLE_PERFORMANCE_TESTBENCH
+check_PROGRAMS += perf_to_string
+TESTS += perf_to_string.test
+endif
+
+
 EXTRA_DIST=
 EXTRA_DIST += $(TESTS)
 EXTRA_DIST += test-defs.sh
@@ -87,6 +94,7 @@ EXTRA_DIST += test_object_object_add_exFormatted_pretty.expected
 EXTRA_DIST += test_object_object_add_exFormatted_spaced.expected
 EXTRA_DIST += test_many_subobj.expected
 EXTRA_DIST += test_obj_obj_get_ex-null.expected
+EXTRA_DIST += perf_to_string.c
 
 testsubdir=testSubDir
 TESTS_ENVIRONMENT       = top_builddir=$(top_builddir)
