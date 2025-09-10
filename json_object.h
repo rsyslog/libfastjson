@@ -274,19 +274,30 @@ extern size_t fjson_object_write(struct fjson_object *obj, FILE *fp);
  */
 extern size_t fjson_object_write_ext(struct fjson_object *obj, int flags, FILE *fp);
 
-/** Stringify object to json format.
- * Equivalent to fjson_object_to_json_string_ext(obj, FJSON_TO_STRING_SPACED)
- * The pointer you get is an internal of your json object. You don't
- * have to free it, later use of fjson_object_put() should be sufficient.
- * If you can not ensure there's no concurrent access to *obj use
- * strdup().
+/** Stringify object to JSON format.
+ * Equivalent to calling fjson_object_to_json_string_ext(obj,
+ * FJSON_TO_STRING_SPACED).
+ *
+ * The returned pointer refers to an internal print buffer managed by @p obj and
+ * **must not be freed**.  Each invocation, or any later mutation of @p obj,
+ * overwrites this buffer and invalidates previously returned pointers.  The
+ * function performs no internal locking and is therefore not thread safe.
+ * Duplicate the string (e.g. with `strdup()`) if it must persist beyond the
+ * next call or be used concurrently.
+ *
  * @param obj the fjson_object instance
  * @returns a string in JSON format
  */
 extern const char* fjson_object_to_json_string(struct fjson_object *obj);
 
-/** Stringify object to json format
- * @see fjson_object_to_json_string() for details on how to free string.
+/** Stringify object to JSON format.
+ *
+ * Behaviour and memory ownership are identical to
+ * fjson_object_to_json_string(); the only difference is that @p flags control
+ * formatting of the output.  The pointer is owned by @p obj, is overwritten on
+ * subsequent serialisation or mutation, and no internal locking is performed.
+ * Use `strdup()` or similar when a persistent or thread-safe copy is required.
+ *
  * @param obj the fjson_object instance
  * @param flags formatting options, see FJSON_TO_STRING_PRETTY and other constants
  * @returns a string in JSON format
@@ -642,13 +653,25 @@ extern struct fjson_object* fjson_object_new_string(const char *s);
 
 extern struct fjson_object* fjson_object_new_string_len(const char *s, int len);
 
-/** Get the string value of a fjson_object
+/** Get the string value of a fjson_object.
  *
- * If the passed object is not of type fjson_type_string then the JSON
- * representation of the object is returned.
+ * If @p obj is not of type @ref fjson_type_string its JSON representation is
+ * serialized into an internal print buffer and a pointer to that buffer is
+ * returned.
  *
- * The returned string memory is managed by the fjson_object and will
- * be freed when the reference count of the fjson_object drops to zero.
+ * The returned pointer always refers to memory owned by @p obj and **must not
+ * be freed by the caller**.  Any subsequent call that serializes or otherwise
+ * mutates @p obj will overwrite this buffer and invalidate previously returned
+ * pointers.  These functions perform no internal locking and are therefore not
+ * thread safe.  Callers needing a persistent or concurrently accessible copy
+ * should duplicate the string (e.g. with `strdup()`) while holding appropriate
+ * external synchronisation.
+ *
+ * @par Implementation note
+ * For objects that are currently of type @ref fjson_type_string the pointer is
+ * taken directly from the object without re-serialisation and typically remains
+ * stable until the object is modified or released.  This is current behaviour
+ * only and should not be relied upon as part of the API contract.
  *
  * @param obj the fjson_object instance
  * @returns a string
