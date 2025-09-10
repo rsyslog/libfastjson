@@ -8,5 +8,5 @@ Description: a fast JSON implementation in C
 Version: @VERSION@
 Requires:
 Libs.private: @LIBS@
-Libs:  -L${libdir} -lfastjson
+Libs:  -L${libdir} -lfastjson -lm
 Cflags: -I${includedir}/libfastjson
