@@ -105,9 +105,8 @@ AC_FUNC_VPRINTF
 AC_FUNC_MEMCMP
 AC_CHECK_FUNCS(strcasecmp strdup strerror snprintf vsnprintf vasprintf open vsyslog strncasecmp setlocale)
 
-if test "$ac_cv_have_decl_isnan" = "yes" ; then
-   AC_TRY_LINK([#include <math.h>], [float f = 0.0; return isnan(f)], [], [LIBS="$LIBS -lm"])
-fi
+# Force linking against libm (needed for modf on glibc >= 2.42)
+AC_CHECK_LIB([m], [modf], [LIBS="$LIBS -lm"],[AC_MSG_ERROR([libm (math library) is required for modf()])])
 
 #check if .section.gnu.warning accepts long strings (for __warn_references)
 AC_LANG_PUSH([C])
