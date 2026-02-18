@@ -214,7 +214,7 @@ static void fjson_object_generic_delete(struct fjson_object* jso)
 
 static struct fjson_object* fjson_object_new(const enum fjson_type o_type)
 {
-	struct fjson_object *const jso = (struct fjson_object*)calloc(sizeof(struct fjson_object), 1);
+	struct fjson_object *const jso = (struct fjson_object*)calloc(1, sizeof(struct fjson_object));
 	if (!jso)
 		return NULL;
 	jso->o_type = o_type;
