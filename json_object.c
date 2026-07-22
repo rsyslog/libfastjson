@@ -373,17 +373,21 @@ static struct _fjson_child*
 _fjson_find_child(struct fjson_object *const __restrict__ jso,
 	const char *const key)
 {
-	struct fjson_object_iterator it = fjson_object_iter_begin(jso);
-	struct fjson_object_iterator itEnd = fjson_object_iter_end(jso);
-	while (!fjson_object_iter_equal(&it, &itEnd)) {
-		if (do_case_sensitive_comparison) {
-			if (!strcmp (key, fjson_object_iter_peek_name(&it)))
-				return _fjson_object_iter_peek_child(&it);
-		} else {
-			if (!strcasecmp (key, fjson_object_iter_peek_name(&it)))
-				return _fjson_object_iter_peek_child(&it);
+	struct _fjson_child_pg *pg = &jso->o.c_obj.pg;
+	while (pg != NULL) {
+		for (int i = 0; i < FJSON_OBJECT_CHLD_PG_SIZE; ++i) {
+			struct _fjson_child *const chld = &pg->children[i];
+			if (chld->k == NULL)
+				continue;
+			if (do_case_sensitive_comparison) {
+				if (!strcmp(key, chld->k))
+					return chld;
+			} else {
+				if (!strcasecmp(key, chld->k))
+					return chld;
+			}
 		}
-		fjson_object_iter_next(&it);
+		pg = pg->next;
 	}
 	return NULL;
 }

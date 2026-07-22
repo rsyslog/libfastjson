@@ -1,0 +1,40 @@
+{
+  "characterization_revision": "f1983a831a1abd6ab8d8cdbc5137f7bc997b4018",
+  "complete_sessions": 2,
+  "measured_trials_per_workload_per_session": 11,
+  "case_sensitive": false,
+  "all_oracles_passed": true,
+  "workloads_per_session": 50,
+  "all_relative_mad_at_most_0_05": true,
+  "findings": {
+    "lookup_ns_per_operation": {
+      "width_1_first": [14.813, 14.740],
+      "width_8_last": [36.571, 37.194],
+      "width_16_last": [59.685, 59.141],
+      "width_32_last": [137.794, 139.116],
+      "width_32_miss": [117.778, 117.625]
+    },
+    "string_ns_per_operation": {
+      "bytes_31": [21.739, 22.274],
+      "bytes_32": [29.416, 29.346],
+      "bytes_33": [29.513, 29.540],
+      "bytes_128": [29.616, 30.278],
+      "bytes_208": [29.960, 29.867],
+      "bytes_4096": [88.574, 88.935]
+    },
+    "known_new_speedup": {
+      "width_1": [1.099, 1.106],
+      "width_4": [1.355, 1.360],
+      "width_8": [1.722, 1.720],
+      "width_16": [2.143, 2.122],
+      "width_32": [2.747, 2.717]
+    }
+  },
+  "candidate_order": [
+    "direct_child_page_lookup",
+    "larger_inline_string_threshold",
+    "safe_known_new_rsyslog_call_sites",
+    "hybrid_index_for_wide_objects_only"
+  ],
+  "runtime_candidate_accepted": false
+}
