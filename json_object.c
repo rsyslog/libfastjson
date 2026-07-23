@@ -366,8 +366,19 @@ struct fjson_object* fjson_object_new_object(void)
 }
 
 
-/* finds the child with given key if it exists in a json object
- * and returns a pointer to it. Returns NULL if not found.
+/**
+ * \brief Find an object member by key.
+ *
+ * Object members are stored in fixed-size linked pages rather than in a hash
+ * table. Walk those pages and their occupied slots directly: this keeps the
+ * lookup linear, preserves the existing insertion and deletion semantics, and
+ * avoids iterator cross-page bookkeeping on this frequently used path.
+ *
+ * The explicit comparison also deliberately honours
+ * \c do_case_sensitive_comparison; a separate index would need the same
+ * case-mode-dependent key semantics.
+ *
+ * \return A pointer to the matching child, or \c NULL when no key matches.
  */
 static struct _fjson_child*
 _fjson_find_child(struct fjson_object *const __restrict__ jso,
