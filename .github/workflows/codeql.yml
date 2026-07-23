@@ -1,0 +1,74 @@
+---
+name: CodeQL
+
+on:
+  push:
+    branches: ["master"]
+    paths-ignore:
+      - "ChangeLog"
+      - "**/*.md"
+      - "**/*.txt"
+
+  pull_request:
+    branches: ["master"]
+    paths-ignore:
+      - "ChangeLog"
+      - "**/*.md"
+      - "**/*.txt"
+
+  schedule:
+    - cron: "23 2 * * 3"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions: {}
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read  # CodeQL reads Actions metadata for workflow analysis.
+      contents: read
+      security-events: write  # CodeQL uploads results to code scanning.
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [c-cpp, actions]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        with:
+          persist-credentials: false
+
+      - name: Install build packages
+        if: ${{ matrix.language == 'c-cpp' }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes \
+            autoconf \
+            automake \
+            libtool \
+            pkg-config
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@53e96ec3b35fce51c141c0d6f0e31028a448722d # v3
+        with:
+          languages: ${{ matrix.language }}
+          queries: +security-and-quality
+
+      - name: Build project
+        if: ${{ matrix.language == 'c-cpp' }}
+        run: |
+          autoreconf -fvi
+          ./configure
+          make
+
+      - name: Perform CodeQL analysis
+        uses: github/codeql-action/analyze@53e96ec3b35fce51c141c0d6f0e31028a448722d # v3
+        with:
+          category: "/language:${{ matrix.language }}"
