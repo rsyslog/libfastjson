@@ -156,22 +156,30 @@ static size_t buffer_printf(struct buffer *buffer, const char *format, ...)
 	va_list arguments;
 	char *tmp;
 	int size;
+	size_t available;
 
 	// make sure we have sufficient room in our buffer
-	if (buffer->size - buffer->filled < 32) result += buffer_flush(buffer);
+	if (buffer->size - buffer->filled < 32 && buffer->filled > 0)
+		result += buffer_flush(buffer);
 
-	// initialize varargs
-	va_start(arguments, format);
+	available = buffer->size - buffer->filled;
+	if (available > 0) {
+		// initialize varargs
+		va_start(arguments, format);
 
-	// write to the buffer (note the extra char for the extra null that is written by vsnprintf())
-	size = vsnprintf(buffer->buffer + buffer->filled, buffer->size - buffer->filled - 1, format, arguments);
+		// write to the buffer
+		size = vsnprintf(buffer->buffer + buffer->filled, available, format, arguments);
 
-	// clean up varargs (it is not possible to reuse the vararg arguments later on,
-	// the have to be reset and possible reinitialized later on)
-	va_end(arguments);
+		// clean up varargs (it is not possible to reuse the vararg arguments later on,
+		// they have to be reset and possibly reinitialized later on)
+		va_end(arguments);
+	} else {
+		// force use of a dynamically allocated buffer when there is no room
+		size = 0;
+	}
 
 	// was this all successful?
-	if (size >= 0 && size < (int)(buffer->size - buffer->filled))
+	if (size >= 0 && size < (int)available)
 	{
 		// this was a major success
 		buffer->filled += size;
@@ -187,17 +195,14 @@ static size_t buffer_printf(struct buffer *buffer, const char *format, ...)
 		va_start(arguments, format);
 
 		// format into the buffer, again
-		buffer->size += vsnprintf(buffer->buffer + buffer->filled,
-			buffer->size - buffer->filled - 1, format, arguments);
+		buffer->filled += vsnprintf(buffer->buffer + buffer->filled,
+			buffer->size - buffer->filled, format, arguments);
 
 		// clean up varargs
 		va_end(arguments);
 	}
 	else
 	{
-		// initialize varargs
-		va_start(arguments, format);
-
 		// our own buffer is not big enough to fit the text, we are going to use
 		// a dynamically allocated buffer using vasprintf(), init varargs first
 		va_start(arguments, format);

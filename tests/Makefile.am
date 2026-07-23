@@ -7,6 +7,7 @@ AM_CFLAGS = $(WARN_CFLAGS)
 TESTS_DEFAULT=
 TESTS_DEFAULT+= ucs_copyright_char.test
 TESTS_DEFAULT+= test_float.test
+TESTS_DEFAULT+= test_dump_buffered.test
 TESTS_DEFAULT+= test1.test
 TESTS_DEFAULT+= test2.test
 TESTS_DEFAULT+= test4.test
