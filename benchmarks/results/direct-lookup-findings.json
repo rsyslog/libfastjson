@@ -1,0 +1,31 @@
+{
+  "baseline_revision": "f1983a831a1abd6ab8d8cdbc5137f7bc997b4018",
+  "candidate": "direct_child_page_lookup",
+  "candidate_source_fingerprint": "9047b06416fe428dfc5880263bfa341a95344212f5e3d57b1e379757f925fdd1",
+  "complete_sessions": 2,
+  "measured_pairs_per_workload_per_session": 11,
+  "workloads_per_complete_session": 50,
+  "ratio_definition": "baseline_ns_per_operation / candidate_ns_per_operation",
+  "acceptance": {
+    "minimum_target_improvement_percent": 10,
+    "maximum_core_regression_percent": 5,
+    "maximum_relative_mad": 0.05,
+    "retained": false
+  },
+  "representative_results": {
+    "lookup_width_1_first": [3.1195, 3.1259],
+    "lookup_width_8_last": [2.3126, 2.3627],
+    "lookup_width_16_last": [1.9043, 1.9395],
+    "replace_width_1_first": [1.6046, 1.1726],
+    "replace_width_8_last": [1.8451, 1.8613],
+    "replace_width_32_last": [1.8809, 1.8726]
+  },
+  "minimum_core_guardrail_ratio": [0.9667, 0.9708],
+  "inconclusive_after_one_rerun": [
+    "lookup_width_32_last",
+    "lookup_width_32_miss",
+    "replace_width_8_first"
+  ],
+  "observable_semantics_or_public_api_changed": false,
+  "rsyslog_end_to_end_validated": false
+}

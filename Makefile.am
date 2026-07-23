@@ -1,5 +1,11 @@
 
 EXTRA_DIST = README.html
+EXTRA_DIST += \
+	benchmarks/README.md \
+	benchmarks/benchmark.c \
+	benchmarks/run.sh \
+	benchmarks/runner.py \
+	benchmarks/selftest.py
 
 SUBDIRS = . tests
 
