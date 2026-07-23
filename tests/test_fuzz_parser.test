@@ -1,0 +1,7 @@
+#!/bin/sh
+
+. "${srcdir-.}/test-defs.sh"
+
+for seed in "$srcdir"/fuzz/corpus/parser/*; do
+	"$top_builddir/test_fuzz_parser" "$seed" || exit $?
+done
