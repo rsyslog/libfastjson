@@ -150,6 +150,11 @@ def build_metadata(build_dir, label, harness_hash):
     tracked_diff = subprocess.run(
         ["git", "diff", "--binary", "HEAD", "--", "*.c", "*.h", "Makefile.am", "configure.ac"],
         cwd=build_dir, check=True, stdout=subprocess.PIPE).stdout
+
+    # A fingerprint alone cannot reproduce an uncommitted source tree. Refuse
+    # to publish benchmark records unless both builds are committed states.
+    if tracked_diff:
+        raise SystemExit("build directory has uncommitted library sources; benchmark a clean commit")
     config_status = Path(build_dir, "config.status")
     library = Path(build_dir, ".libs", "libfastjson.so")
     if not library.exists():

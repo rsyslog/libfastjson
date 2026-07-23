@@ -174,6 +174,8 @@ run_replace(const size_t width, const char *const position, const uint64_t itera
 static uint64_t
 run_string(const size_t value_bytes, const uint64_t iterations)
 {
+	if (value_bytes == SIZE_MAX)
+		fail("string value bytes too large");
 	char *const value = malloc(value_bytes + 1);
 	if (value == NULL)
 		fail("string source allocation failed");

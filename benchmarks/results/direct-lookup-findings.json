@@ -10,7 +10,7 @@
     "minimum_target_improvement_percent": 10,
     "maximum_core_regression_percent": 5,
     "maximum_relative_mad": 0.05,
-    "retained": true
+    "retained": false
   },
   "representative_results": {
     "lookup_width_1_first": [3.1195, 3.1259],

@@ -34,8 +34,10 @@ core guardrail ratios were 0.9667 and 0.9708, both string workloads independent
 of object lookup. Normal object construction improved as duplicate checks grew,
 while known-new construction remained effectively neutral as expected.
 
-The candidate is retained. Stable targeted read and replacement profiles beat
-the required 10% improvement in both independent sessions, and every core
-guardrail stayed within the 5% regression limit. This is standalone
+The candidate is not retained yet: three workloads remained inconclusive after
+one rerun, exceeding the documented relative-MAD limit. Stable targeted read
+and replacement profiles beat the required 10% improvement in both independent
+sessions, and every core guardrail stayed within the 5% regression limit. A
+clean-tree rerun is needed before treating this as retained standalone
 libfastjson evidence; an rsyslog end-to-end run remains a separate integration
 check before attributing the full library speedup to `$!varname` throughput.

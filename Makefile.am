@@ -5,21 +5,7 @@ EXTRA_DIST += \
 	benchmarks/benchmark.c \
 	benchmarks/run.sh \
 	benchmarks/runner.py \
-	benchmarks/selftest.py \
-	benchmarks/results/current-main-a.json \
-	benchmarks/results/current-main-a.md \
-	benchmarks/results/current-main-b.json \
-	benchmarks/results/current-main-b.md \
-	benchmarks/results/current-main-findings.json \
-	benchmarks/results/current-main-findings.md \
-	benchmarks/results/direct-lookup-a.json \
-	benchmarks/results/direct-lookup-a.md \
-	benchmarks/results/direct-lookup-b.json \
-	benchmarks/results/direct-lookup-b.md \
-	benchmarks/results/direct-lookup-b-rerun.json \
-	benchmarks/results/direct-lookup-b-rerun.md \
-	benchmarks/results/direct-lookup-findings.json \
-	benchmarks/results/direct-lookup-findings.md
+	benchmarks/selftest.py
 
 SUBDIRS = . tests
 

@@ -18,6 +18,9 @@ CFLAGS='-O2 -g -fno-omit-frame-pointer' ./autogen.sh --configure
 make -j"$(nproc)"
 ```
 
+Benchmark build directories must be clean Git checkouts. The runner rejects
+uncommitted library sources so recorded measurements can be reproduced.
+
 Record a characterization session:
 
 ```sh
