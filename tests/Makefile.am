@@ -4,27 +4,29 @@ LDADD = $(top_builddir)/libfastjson.la \
 
 AM_CFLAGS = $(WARN_CFLAGS)
 
-TESTS=
-TESTS+= ucs_copyright_char.test
-TESTS+= test_float.test
-TESTS+= test1.test
-TESTS+= test2.test
-TESTS+= test4.test
-TESTS+= testReplaceExisting.test
-TESTS+= test_parse_int64.test
-TESTS+= test_cast.test
-TESTS+= test_parse.test
-TESTS+= test_locale.test
-TESTS+= test_charcase.test
-TESTS+= test_printbuf.test
-TESTS+= test_obj_iter-del.test
-TESTS+= test_object_object_add_ex.test
-TESTS+= test_many_subobj.test
-TESTS+= test_obj_obj_get_ex-null.test
+TESTS_DEFAULT=
+TESTS_DEFAULT+= ucs_copyright_char.test
+TESTS_DEFAULT+= test_float.test
+TESTS_DEFAULT+= test1.test
+TESTS_DEFAULT+= test2.test
+TESTS_DEFAULT+= test4.test
+TESTS_DEFAULT+= testReplaceExisting.test
+TESTS_DEFAULT+= test_parse_int64.test
+TESTS_DEFAULT+= test_cast.test
+TESTS_DEFAULT+= test_parse.test
+TESTS_DEFAULT+= test_locale.test
+TESTS_DEFAULT+= test_charcase.test
+TESTS_DEFAULT+= test_printbuf.test
+TESTS_DEFAULT+= test_obj_iter-del.test
+TESTS_DEFAULT+= test_object_object_add_ex.test
+TESTS_DEFAULT+= test_many_subobj.test
+TESTS_DEFAULT+= test_obj_obj_get_ex-null.test
 # we officially do NOT support NUL bytes (however, we may
 # later add a workaround to at least transparently pass them
 # through, thus I keep this as reference).
-#TESTS+= test_null.test 
+#TESTS_DEFAULT+= test_null.test
+
+TESTS = $(TESTS_DEFAULT)
 
 check_PROGRAMS=
 check_PROGRAMS += $(TESTS:.test=)
@@ -59,7 +61,9 @@ test_object_object_add_exFormatted_SOURCES = test_object_object_add_ex.c parse_f
 test_object_object_add_exFormatted_CPPFLAGS = -DTEST_FORMATTED
 
 EXTRA_DIST=
-EXTRA_DIST += $(TESTS)
+# Only shell test drivers are source-distribution inputs. chk_version is a
+# check program and must be built from its source in the distcheck tree.
+EXTRA_DIST += $(TESTS_DEFAULT)
 EXTRA_DIST += test-defs.sh
 EXTRA_DIST += test1.expected
 EXTRA_DIST += test1Formatted_plain.expected
