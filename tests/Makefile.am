@@ -8,6 +8,8 @@ TESTS_DEFAULT=
 TESTS_DEFAULT+= ucs_copyright_char.test
 TESTS_DEFAULT+= test_float.test
 TESTS_DEFAULT+= test_dump_buffered.test
+TESTS_DEFAULT+= test_json_util.test
+TESTS_DEFAULT+= test_array_api.test
 TESTS_DEFAULT+= test1.test
 TESTS_DEFAULT+= test2.test
 TESTS_DEFAULT+= test4.test
@@ -22,11 +24,6 @@ TESTS_DEFAULT+= test_obj_iter-del.test
 TESTS_DEFAULT+= test_object_object_add_ex.test
 TESTS_DEFAULT+= test_many_subobj.test
 TESTS_DEFAULT+= test_obj_obj_get_ex-null.test
-# we officially do NOT support NUL bytes (however, we may
-# later add a workaround to at least transparently pass them
-# through, thus I keep this as reference).
-#TESTS_DEFAULT+= test_null.test
-
 TESTS = $(TESTS_DEFAULT)
 
 check_PROGRAMS=
@@ -81,7 +78,6 @@ EXTRA_DIST += test_dump_buffered.expected
 EXTRA_DIST += test_cast.expected
 EXTRA_DIST += test_charcase.expected
 EXTRA_DIST += test_locale.expected
-EXTRA_DIST += test_null.expected
 EXTRA_DIST += test_parse.expected
 EXTRA_DIST += test_parse_int64.expected
 EXTRA_DIST += test_printbuf.expected
@@ -93,6 +89,8 @@ EXTRA_DIST += test_object_object_add_exFormatted_pretty.expected
 EXTRA_DIST += test_object_object_add_exFormatted_spaced.expected
 EXTRA_DIST += test_many_subobj.expected
 EXTRA_DIST += test_obj_obj_get_ex-null.expected
+EXTRA_DIST += test_json_util.expected
+EXTRA_DIST += test_array_api.expected
 
 testsubdir=testSubDir
 TESTS_ENVIRONMENT       = top_builddir=$(top_builddir)
