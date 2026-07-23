@@ -1,0 +1,6 @@
+#!/bin/sh
+
+. "${srcdir-.}/test-defs.sh"
+
+run_output_test test_array_api
+exit $?
