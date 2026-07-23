@@ -249,7 +249,7 @@ extern size_t fjson_object_dump_ext(struct fjson_object *obj, int flags, fjson_w
  * @param obj object to be written
  * @param flags extra flags
  * @param temp your temporary buffer that is used to group calls
- * @param size size of your temporary buffer
+ * @param size size of your temporary buffer; temp may be NULL when size is zero
  * @param func your function that will be called to write the data
  * @param ptr pointer that will be passed as first argument to your function
  */
