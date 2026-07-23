@@ -1,0 +1,198 @@
+---
+name: draft source release
+
+'on':
+  push:
+    tags:
+      - 'v1.*'
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: Optional tag name for manual draft-release tests
+        required: false
+        type: string
+      target_commitish:
+        description: Commit or branch to tag when a manual test tag does not exist
+        required: false
+        type: string
+      create_draft_release:
+        description: Create or update a draft GitHub release after building
+        required: false
+        default: false
+        type: boolean
+
+concurrency:
+  group: >-
+    ${{ github.workflow }}-${{ github.event_name }}-${{
+    github.ref_name || github.event.inputs.tag_name || github.run_id }}
+  cancel-in-progress: false
+
+permissions: {}
+
+jobs:
+  build_release_artifacts:
+    name: build release artifacts
+    runs-on: ubuntu-latest
+    if: ${{ github.repository == 'rsyslog/libfastjson' }}
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Set up source distribution build
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes \
+            autoconf \
+            automake \
+            libtool \
+            libtool-bin \
+            make \
+            pkg-config
+
+      - name: Build maintainer tarball
+        run: |
+          set -euo pipefail
+          rm -f libfastjson-*.tar.gz libfastjson-*.tar.gz.sha256
+          autoreconf -fvi
+          ./configure
+          make dist
+
+      - name: Generate checksum and locate assets
+        id: dist_assets
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          tarballs=(libfastjson-*.tar.gz)
+          if [ "${#tarballs[@]}" -ne 1 ]; then
+            echo "ERROR: expected exactly one libfastjson tarball" >&2
+            exit 1
+          fi
+          dist_tarball="${tarballs[0]}"
+          sha256sum "$dist_tarball" > "$dist_tarball.sha256"
+          printf 'dist_tarball=%s\n' "$dist_tarball" >> "$GITHUB_OUTPUT"
+          printf 'dist_tarball_sha256=%s\n' \
+            "$dist_tarball.sha256" >> "$GITHUB_OUTPUT"
+
+      - name: Upload release artifacts
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: draft-release-assets
+          path: |
+            ${{ steps.dist_assets.outputs.dist_tarball }}
+            ${{ steps.dist_assets.outputs.dist_tarball_sha256 }}
+          if-no-files-found: error
+
+  update_draft_release:
+    name: update draft release
+    runs-on: ubuntu-latest
+    needs: build_release_artifacts
+    if: >-
+      ${{
+        github.repository == 'rsyslog/libfastjson' &&
+        (
+          github.event_name == 'push' ||
+          github.event.inputs.create_draft_release == 'true'
+        )
+      }}
+    permissions:
+      contents: write  # Creates or updates draft releases and uploads assets.
+
+    steps:
+      - name: Download release artifacts
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: draft-release-assets
+          path: release-assets
+
+      - name: Resolve release tag
+        id: release_tag
+        env:
+          MANUAL_TAG_NAME: ${{ github.event.inputs.tag_name }}
+        run: |
+          set -euo pipefail
+          official_tag_re='^v1\.[0-9]+\.[0-9]+$'
+          manual_tag_re='^(v1\.[0-9]+\.[0-9]+|test-release-.*)$'
+          if [ "$GITHUB_EVENT_NAME" = "push" ]; then
+            release_tag="$GITHUB_REF_NAME"
+            if [[ ! "$release_tag" =~ $official_tag_re ]]; then
+              echo "ERROR: pushed tag '$release_tag' is not a v1.x.y tag" >&2
+              exit 1
+            fi
+          else
+            release_tag="${MANUAL_TAG_NAME:-}"
+            if [[ ! "$release_tag" =~ $manual_tag_re ]]; then
+              echo "ERROR: use a v1.x.y or test-release-* tag" >&2
+              exit 1
+            fi
+          fi
+          printf 'release_tag=%s\n' "$release_tag" >> "$GITHUB_OUTPUT"
+
+      - name: Validate downloaded assets
+        id: asset_paths
+        run: |
+          set -euo pipefail
+          cd release-assets
+          shopt -s nullglob
+          tarballs=(libfastjson-*.tar.gz)
+          checksums=(libfastjson-*.tar.gz.sha256)
+          if [ "${#tarballs[@]}" -ne 1 ] || [ "${#checksums[@]}" -ne 1 ]; then
+            echo "ERROR: expected exactly one tarball and checksum" >&2
+            exit 1
+          fi
+          sha256sum -c "${checksums[0]}"
+          printf 'tarball_path=%s\n' \
+            "release-assets/${tarballs[0]}" >> "$GITHUB_OUTPUT"
+          printf 'checksum_path=%s\n' \
+            "release-assets/${checksums[0]}" >> "$GITHUB_OUTPUT"
+
+      - name: Create or update draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ steps.release_tag.outputs.release_tag }}
+          TARGET_COMMITISH: ${{ github.event.inputs.target_commitish }}
+          TARBALL_PATH: ${{ steps.asset_paths.outputs.tarball_path }}
+          CHECKSUM_PATH: ${{ steps.asset_paths.outputs.checksum_path }}
+        run: |
+          set -euo pipefail
+          printf '%s\n' \
+            'This draft contains the maintainer-built libfastjson source tarball.' \
+            > release-notes.md
+
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            gh release edit "$RELEASE_TAG" \
+              --draft \
+              --title "$RELEASE_TAG" \
+              --notes-file release-notes.md
+          else
+            create_args=(
+              "$RELEASE_TAG"
+              --draft
+              --title "$RELEASE_TAG"
+              --notes-file release-notes.md
+            )
+            if gh api \
+              "repos/$GITHUB_REPOSITORY/git/ref/tags/$RELEASE_TAG" \
+              >/dev/null 2>&1; then
+              create_args+=(--verify-tag)
+            else
+              if [ "$GITHUB_EVENT_NAME" != "workflow_dispatch" ] ||
+                 [ -z "${TARGET_COMMITISH:-}" ]; then
+                echo "ERROR: missing remote tag or target commit" >&2
+                exit 1
+              fi
+              create_args+=(--target "$TARGET_COMMITISH")
+            fi
+            gh release create "${create_args[@]}"
+          fi
+
+          gh release upload "$RELEASE_TAG" \
+            "$TARBALL_PATH" \
+            "$CHECKSUM_PATH" \
+            --clobber
