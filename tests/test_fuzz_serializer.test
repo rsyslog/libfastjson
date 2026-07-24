@@ -1,0 +1,7 @@
+#!/bin/sh
+
+. "${srcdir-.}/test-defs.sh"
+
+for seed in "$srcdir"/fuzz/corpus/serializer/*; do
+	"$top_builddir/test_fuzz_serializer" "$seed" || exit $?
+done

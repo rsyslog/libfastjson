@@ -1,0 +1,147 @@
+---
+name: Fuzzing
+
+'on':
+  pull_request:
+  schedule:
+    - cron: '41 3 * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pr_smoke:
+    name: fuzz smoke
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        # actions/checkout v5
+        uses: >-
+          actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
+        with:
+          persist-credentials: false
+
+      - name: Install fuzzing build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes autoconf automake clang g++ libtool
+
+      - name: Build and run fuzzers
+        env:
+          FUZZ_SECONDS: 30
+        run: |
+          autoreconf -fvi
+          ./configure
+          make fuzz-smoke
+
+  daily:
+    name: daily parser and serializer fuzzing
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      issues: write  # Create or update the upstream issue after fuzzing fails.
+    steps:
+      - name: Check whether this commit was already fuzzed
+        id: daily_fuzz_marker
+        # actions/cache v6.1.0
+        uses: >-
+          actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: /tmp/libfastjson-daily-fuzz-complete
+          key: daily-fuzz-v1-${{ github.sha }}
+          lookup-only: true
+
+      - name: Report unchanged commit
+        if: steps.daily_fuzz_marker.outputs.cache-hit == 'true'
+        run: |
+          echo '::notice title=Fuzzing skipped::Exact commit already fuzzed.'
+
+      - name: Checkout repository
+        if: steps.daily_fuzz_marker.outputs.cache-hit != 'true'
+        # actions/checkout v5
+        uses: >-
+          actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
+        with:
+          persist-credentials: false
+
+      - name: Install fuzzing build dependencies
+        if: steps.daily_fuzz_marker.outputs.cache-hit != 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes autoconf automake clang g++ libtool
+
+      - name: Build and run fuzzers
+        if: steps.daily_fuzz_marker.outputs.cache-hit != 'true'
+        env:
+          FUZZ_SECONDS: 300
+        run: |
+          autoreconf -fvi
+          ./configure
+          make fuzz-smoke
+
+      - name: Create or update daily fuzzing failure issue
+        if: >-
+          failure() && github.event_name == 'schedule' &&
+          github.repository == 'rsyslog/libfastjson'
+        # actions/github-script v9.0.0
+        uses: >-
+          actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const title = 'Daily fuzzing failures';
+            const runUrl = `${context.serverUrl}/${owner}/${repo}` +
+              `/actions/runs/${context.runId}`;
+            const body = [
+              'The daily parser/serializer fuzzing campaign failed.',
+              '',
+              `Commit: ${context.sha}`,
+              `Run: ${runUrl}`,
+              '',
+              'The failed commit has no completion marker, so the next',
+              'scheduled campaign will retry it if no newer commit arrives.'
+            ].join('\n');
+            const query = `repo:${owner}/${repo} ` +
+              `is:issue is:open in:title ${title}`;
+            const { data: issues } =
+              await github.rest.search.issuesAndPullRequests({
+                q: query,
+                per_page: 1,
+              });
+            if (issues.items.length > 0) {
+              await github.rest.issues.update({
+                owner,
+                repo,
+                issue_number: issues.items[0].number,
+                body,
+              });
+            } else {
+              await github.rest.issues.create({owner, repo, title, body});
+            }
+
+      - name: Mark successful fuzzing campaign
+        if: steps.daily_fuzz_marker.outputs.cache-hit != 'true'
+        run: |
+          marker=/tmp/libfastjson-daily-fuzz-complete
+          mkdir -p "$marker"
+          printf '%s\n' "$GITHUB_SHA" > "$marker/commit"
+
+      - name: Cache successful fuzzing campaign
+        if: steps.daily_fuzz_marker.outputs.cache-hit != 'true'
+        # actions/cache v6.1.0
+        uses: >-
+          actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: /tmp/libfastjson-daily-fuzz-complete
+          key: daily-fuzz-v1-${{ github.sha }}

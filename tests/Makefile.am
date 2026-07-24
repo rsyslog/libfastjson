@@ -10,6 +10,8 @@ TESTS_DEFAULT+= test_float.test
 TESTS_DEFAULT+= test_dump_buffered.test
 TESTS_DEFAULT+= test_json_util.test
 TESTS_DEFAULT+= test_array_api.test
+TESTS_DEFAULT+= test_fuzz_parser.test
+TESTS_DEFAULT+= test_fuzz_serializer.test
 TESTS_DEFAULT+= test1.test
 TESTS_DEFAULT+= test2.test
 TESTS_DEFAULT+= test4.test
@@ -42,6 +44,8 @@ cr_obj_multi_SOURCES = cr_obj_multi.c
 chk_version_SOURCES = chk_version.c
 
 test_printbuf_SOURCES = test_printbuf.c
+test_fuzz_parser_CPPFLAGS = -DFUZZ_REPLAY
+test_fuzz_serializer_CPPFLAGS = -DFUZZ_REPLAY
 
 # Note: handled by test1.test
 check_PROGRAMS += test1Formatted 
@@ -91,6 +95,17 @@ EXTRA_DIST += test_many_subobj.expected
 EXTRA_DIST += test_obj_obj_get_ex-null.expected
 EXTRA_DIST += test_json_util.expected
 EXTRA_DIST += test_array_api.expected
+EXTRA_DIST += fuzz/README.md
+EXTRA_DIST += fuzz/json.dict
+EXTRA_DIST += fuzz/corpus/parser/array.json
+EXTRA_DIST += fuzz/corpus/parser/deep.json
+EXTRA_DIST += fuzz/corpus/parser/escaped.json
+EXTRA_DIST += fuzz/corpus/parser/invalid.json
+EXTRA_DIST += fuzz/corpus/parser/number.json
+EXTRA_DIST += fuzz/corpus/parser/object.json
+EXTRA_DIST += fuzz/corpus/parser/truncated.json
+EXTRA_DIST += fuzz/corpus/serializer/nesting.seed
+EXTRA_DIST += fuzz/corpus/serializer/strings.seed
 
 testsubdir=testSubDir
 TESTS_ENVIRONMENT       = top_builddir=$(top_builddir)
