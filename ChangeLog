@@ -1,3 +1,5 @@
+1.2612.0
+ - TBD
 1.2609.0, 2026-09-01
 - speed up object member lookup by traversing child pages directly
 - fix buffered JSON dumping with zero-sized and small workspaces
